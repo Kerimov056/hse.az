@@ -27,6 +27,7 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\HomeController;
 
 
 /**
@@ -68,7 +69,7 @@ Route::get('/signup', fn() => redirect()->route('auth.show', 'register'));
 Route::get('/signin', fn() => redirect()->route('auth.show', 'login'));
 
 /** Ana səhifə */
-Route::view('/', 'educve.index')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 /** Tasks */
 Route::resource('tasks', TaskController::class);
