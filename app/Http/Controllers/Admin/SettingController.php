@@ -26,6 +26,7 @@ class SettingController extends Controller
 
         return view('admin.settings.edit', compact('settings'));
     }
+
     public function update(Request $r)
     {
         $r->validate([
@@ -34,6 +35,7 @@ class SettingController extends Controller
             'site.phone'   => 'nullable|string|max:100',
             'site.email'   => 'nullable|email|max:150',
             'site.address' => 'nullable|string|max:255',
+            'site.logo_file' => 'nullable|image|max:4096', // NEW
 
             // Social
             'social.facebook'  => 'nullable|url',
@@ -41,6 +43,7 @@ class SettingController extends Controller
             'social.twitter'   => 'nullable|url',
             'social.pinterest' => 'nullable|url',
             'social.whatsapp'  => 'nullable|url',
+            'social.linkedin'  => 'nullable|url',
 
             // Branding
             'logo'    => 'nullable|image|max:4096',
@@ -61,6 +64,21 @@ class SettingController extends Controller
 
             // Video
             'home.video.bg_image_file'       => 'nullable|image|max:8192',
+
+            // Departments
+            'home.departments.kicker'   => 'nullable|string|max:100',
+            'home.departments.title'    => 'nullable|string|max:200',
+            'home.departments.subtitle' => 'nullable|string|max:1000',
+            'home.departments.list'             => 'nullable|array|max:8',
+            'home.departments.list.*.title'     => 'nullable|string|max:150',
+            'home.departments.list.*.icon_file' => 'nullable|mimes:svg,png,jpg,jpeg,webp|max:4096',
+
+            // Hero (NEW)
+            'home.hero.kicker'         => 'nullable|string|max:150',
+            'home.hero.title'          => 'nullable|string|max:500',
+            'home.hero.subtitle'       => 'nullable|string|max:1000',
+            'home.hero.cta.text'       => 'nullable|string|max:120',
+            'home.hero.cta.url'        => 'nullable|string|max:255',
         ]);
 
         // BRANDING
@@ -76,6 +94,11 @@ class SettingController extends Controller
         // SITE & SOCIAL
         foreach (['site.name', 'site.phone', 'site.email', 'site.address', 'social'] as $k) {
             $this->write($k, $r->input($k, setting($k)));
+        }
+        // NEW: site.logo file
+        if ($r->hasFile('site.logo_file')) {
+            $path = $r->file('site.logo_file')->store('settings/site', 'public');
+            $this->write('site.logo', $path);
         }
 
         // HOME.ABOUT
@@ -160,6 +183,39 @@ class SettingController extends Controller
             Arr::set($video, 'bg_image', $r->file('home.video.bg_image_file')->store('settings/home/video', 'public'));
         }
         $this->write('home.video', $video);
+
+        // HOME.DEPARTMENTS (max 8)
+        $departments = setting('home.departments', []);
+        Arr::set($departments, 'kicker',   $r->input('home.departments.kicker',   Arr::get($departments, 'kicker')));
+        Arr::set($departments, 'title',    $r->input('home.departments.title',    Arr::get($departments, 'title')));
+        Arr::set($departments, 'subtitle', $r->input('home.departments.subtitle', Arr::get($departments, 'subtitle')));
+
+        $depInput = $r->input('home.departments.list', []);
+        $depSaved = [];
+        for ($i = 0; $i < 8; $i++) {
+            $row = Arr::get($depInput, $i, []);
+            $saved = [
+                'title' => Arr::get($row, 'title', Arr::get($departments, "list.$i.title")),
+                'icon'  => Arr::get($departments, "list.$i.icon"),
+            ];
+            if ($r->hasFile("home.departments.list.$i.icon_file")) {
+                $saved['icon'] = $r->file("home.departments.list.$i.icon_file")->store('settings/home/departments/icons', 'public');
+            }
+            if (!empty($saved['title']) || !empty($saved['icon'])) {
+                $depSaved[] = $saved;
+            }
+        }
+        Arr::set($departments, 'list', $depSaved);
+        $this->write('home.departments', $departments);
+
+        // HOME.HERO (NEW)
+        $hero = setting('home.hero', []);
+        Arr::set($hero, 'kicker',         $r->input('home.hero.kicker',   Arr::get($hero, 'kicker')));
+        Arr::set($hero, 'title',          $r->input('home.hero.title',    Arr::get($hero, 'title')));
+        Arr::set($hero, 'subtitle',       $r->input('home.hero.subtitle', Arr::get($hero, 'subtitle')));
+        Arr::set($hero, 'cta.text',       $r->input('home.hero.cta.text', Arr::get($hero, 'cta.text')));
+        Arr::set($hero, 'cta.url',        $r->input('home.hero.cta.url',  Arr::get($hero, 'cta.url')));
+        $this->write('home.hero', $hero);
 
         Cache::forget('settings:merged');
         return back()->with('ok', 'Settings updated');

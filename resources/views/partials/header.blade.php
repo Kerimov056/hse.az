@@ -24,7 +24,29 @@
         referrerpolicy="no-referrer" />
 </head>
 
+@php
+    $siteName = setting('site.name', 'Educve');
+    $phone = setting('site.phone'); // "+23 (000) 68 603"
+    $email = setting('site.email'); // "support@educat.com"
+    $address = setting('site.address'); // "66 broklyn golden street, New York, USA"
+    $tagline = setting(
+        'site.tagline',
+        'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
+    );
 
+    // 1) site.logo üstünlük; 2) branding.logo fallback
+    $logoPath = setting('site.logo') ?: setting('branding.logo');
+
+    $logoUrl = null;
+    if ($logoPath) {
+        $logoUrl = \Illuminate\Support\Str::startsWith($logoPath, ['http', '/storage', 'assets/'])
+            ? asset($logoPath)
+            : asset('storage/' . ltrim($logoPath, '/'));
+    }
+
+    // tel: üçün yalnız rəqəm və + saxla
+    $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
+@endphp
 
 
 <body>
@@ -155,13 +177,9 @@
                     <div class="td_main_header_left">
                         <a class="td_site_branding td_accent_color" href="{{ route('home') }}">
                             {{-- LOGO --}}
-                            <svg width="142" height="50" viewBox="0 0 142 50" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" aria-label="Educve">
-                                <path
-                                    d="M59.896 34V16.96H70.504V20.272H63.376V23.776H69.064V27.088H63.376V30.688H70.504V34H59.896Z"
-                                    fill="#00001B" />
-                                <circle cx="25" cy="25" r="25" fill="currentColor" />
-                            </svg>
+                            <a class="td_site_branding" href="{{ route('home') }}">
+                                <img src="{{ $logoUrl }}" alt="Logo">
+                            </a>
                         </a>
 
 

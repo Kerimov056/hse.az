@@ -59,23 +59,34 @@
                 <div class="card-body row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Site name</label>
-                        <input class="form-control" name="site.name" value="{{ data_get($settings, 'site.name') }}"
+                        <input class="form-control" name="site[name]" value="{{ data_get($settings, 'site.name') }}"
                             placeholder="Educve">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Phone</label>
-                        <input class="form-control" name="site.phone" value="{{ data_get($settings, 'site.phone') }}"
+                        <input class="form-control" name="site[phone]" value="{{ data_get($settings, 'site.phone') }}"
                             placeholder="+23 (000) 68 603">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Email</label>
-                        <input class="form-control" name="site.email" value="{{ data_get($settings, 'site.email') }}"
+                        <input class="form-control" name="site[email]" value="{{ data_get($settings, 'site.email') }}"
                             placeholder="support@educat.com">
                     </div>
                     <div class="col-12">
                         <label class="form-label">Address</label>
-                        <input class="form-control" name="site.address" value="{{ data_get($settings, 'site.address') }}"
+                        <input class="form-control" name="site[address]" value="{{ data_get($settings, 'site.address') }}"
                             placeholder="66 broklyn golden street, New York, USA">
+                    </div>
+
+                    {{-- NEW: Site Logo (branding-dən ayrı) --}}
+                    <div class="col-md-6">
+                        <label class="form-label">Site Logo</label>
+                        <input type="file" class="form-control" name="site[logo_file]">
+                        @if ($p = data_get($settings, 'site.logo'))
+                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.ltrim($p,'/')); @endphp
+                            <div class="form-help mt-1">Mövcud:</div>
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Site Logo">
+                        @endif
                     </div>
                 </div>
             </div>
@@ -109,6 +120,12 @@
                         <input class="form-control" name="social[whatsapp]"
                             value="{{ data_get($settings, 'social.whatsapp') }}" placeholder="https://wa.me/...">
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">LinkedIn (opsional)</label>
+                        <input class="form-control" name="social[linkedin]"
+                            value="{{ data_get($settings, 'social.linkedin') }}"
+                            placeholder="https://www.linkedin.com/company/...">
+                    </div>
                 </div>
             </div>
 
@@ -122,7 +139,7 @@
                         @if ($p = data_get($settings, 'branding.logo'))
                             @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                             <div class="form-help mt-1">Mövcud:</div>
-                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Brand Logo">
                         @endif
                     </div>
                     <div class="col-md-6">
@@ -131,8 +148,41 @@
                         @if ($p = data_get($settings, 'branding.favicon'))
                             @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                             <div class="form-help mt-1">Mövcud:</div>
-                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Favicon">
                         @endif
+                    </div>
+                </div>
+            </div>
+
+            {{-- HOME: HERO (NEW) --}}
+            <div class="card">
+                <div class="card-header fw-semibold">Home – Hero</div>
+                <div class="card-body row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Kicker (üst yazı)</label>
+                        <input class="form-control" name="home[hero][kicker]"
+                            value="{{ data_get($settings, 'home.hero.kicker') }}" placeholder="Knowledge is Power">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Title (HTML dəstəkləyir)</label>
+                        <input class="form-control" name="home[hero][title]"
+                            value="{{ data_get($settings, 'home.hero.title') }}"
+                            placeholder="<span>Educve</span> - The Best Place to Invest in your Knowledge">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Subtitle</label>
+                        <textarea class="form-control" rows="3" name="home[hero][subtitle]"
+                            placeholder="A university is a vibrant institution...">{{ data_get($settings, 'home.hero.subtitle') }}</textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">CTA Text</label>
+                        <input class="form-control" name="home[hero][cta][text]"
+                            value="{{ data_get($settings, 'home.hero.cta.text') }}" placeholder="View Our Program">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">CTA URL</label>
+                        <input class="form-control" name="home[hero][cta][url]"
+                            value="{{ data_get($settings, 'home.hero.cta.url') }}" placeholder="courses-grid-view.html">
                     </div>
                 </div>
             </div>
@@ -201,7 +251,7 @@
                             @if ($p = data_get($settings, 'home.about.image_1'))
                                 @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                                 <div class="form-help mt-1">Mövcud:</div>
-                                <img src="{{ $url }}" class="thumb-prev mt-1">
+                                <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Image 1">
                             @endif
                         </div>
                         <div class="col-md-4">
@@ -210,7 +260,7 @@
                             @if ($p = data_get($settings, 'home.about.image_2'))
                                 @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                                 <div class="form-help mt-1">Mövcud:</div>
-                                <img src="{{ $url }}" class="thumb-prev mt-1">
+                                <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Image 2">
                             @endif
                         </div>
                         <div class="col-md-4">
@@ -219,7 +269,7 @@
                             @if ($p = data_get($settings, 'home.about.circle_img'))
                                 @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                                 <div class="form-help mt-1">Mövcud:</div>
-                                <img src="{{ $url }}" class="thumb-prev mt-1">
+                                <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Circle Image">
                             @endif
                         </div>
 
@@ -260,12 +310,11 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Main Image</label>
-                        {{-- FIX: bracket syntax --}}
                         <input type="file" class="form-control" name="home[features][image_file]">
                         @if ($p = data_get($settings, 'home.features.image'))
                             @php $url = Str::startsWith($p, ['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                             <div class="form-help mt-1">Mövcud:</div>
-                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Features Main Image">
                         @endif
                     </div>
 
@@ -293,18 +342,74 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Icon</label>
-                                        {{-- FIX: bracket syntax --}}
                                         <input type="file" class="form-control"
                                             name="home[features][list][{{ $i }}][icon_file]">
                                         @if ($icon = data_get($row, 'icon'))
                                             @php $url = Str::startsWith($icon, ['http','/storage','assets/']) ? asset($icon) : asset('storage/'.$icon); @endphp
-                                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Feature Icon">
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     @endfor
+                </div>
+            </div>
+
+            {{-- HOME: DEPARTMENTS --}}
+            <div class="card">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>Home – Departments (max 8)</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addDepartment">+ Add
+                        department</button>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Kicker</label>
+                            <input class="form-control" name="home[departments][kicker]"
+                                value="{{ data_get($settings, 'home.departments.kicker') }}" placeholder="Departments">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="home[departments][title]"
+                                value="{{ data_get($settings, 'home.departments.title') }}"
+                                placeholder="Popular Departments">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Subtitle (supports HTML)</label>
+                            <textarea class="form-control" rows="2" name="home[departments][subtitle]">{{ data_get($settings, 'home.departments.subtitle') }}</textarea>
+                        </div>
+                    </div>
+
+                    <div id="departmentList">
+                        @php $deps = data_get($settings, 'home.departments.list', []); @endphp
+                        @foreach ($deps as $i => $dep)
+                            <div class="repeater-row" data-index="{{ $i }}">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Title</label>
+                                        <input class="form-control"
+                                            name="home[departments][list][{{ $i }}][title]"
+                                            value="{{ data_get($dep, 'title') }}">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Icon</label>
+                                        <input type="file" class="form-control"
+                                            name="home[departments][list][{{ $i }}][icon_file]">
+                                        @if ($p = data_get($dep, 'icon'))
+                                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                                            <img src="{{ $url }}" class="thumb-prev mt-1"
+                                                alt="Department Icon">
+                                        @endif
+                                    </div>
+                                    <div class="col-md-1 d-grid">
+                                        <button type="button" class="btn btn-outline-danger remove-row">&times;</button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -360,7 +465,8 @@
                                             name="home[campus][cards][{{ $i }}][image_file]">
                                         @if ($p = data_get($card, 'image'))
                                             @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
-                                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                                            <img src="{{ $url }}" class="thumb-prev mt-1"
+                                                alt="Campus Card Image">
                                         @endif
                                     </div>
                                     <div class="col-md-1 d-grid">
@@ -394,7 +500,7 @@
                         @if ($p = data_get($settings, 'home.video.bg_image'))
                             @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
                             <div class="form-help mt-1">Mövcud:</div>
-                            <img src="{{ $url }}" class="thumb-prev mt-1">
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Video Background">
                         @endif
                     </div>
 
@@ -477,6 +583,32 @@
         </div>
       </div>`;
                 campusWrap.appendChild(div);
+            });
+        }
+
+        const depWrap = document.getElementById('departmentList');
+        const addDepBtn = document.getElementById('addDepartment');
+        if (addDepBtn) {
+            addDepBtn.addEventListener('click', () => {
+                const idx = depWrap.children.length;
+                if (idx >= 8) return;
+                const div = document.createElement('div');
+                div.className = 'repeater-row';
+                div.innerHTML = `
+      <div class="row g-2 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label">Title</label>
+          <input class="form-control" name="home[departments][list][${idx}][title]">
+        </div>
+        <div class="col-md-5">
+          <label class="form-label">Icon</label>
+          <input type="file" class="form-control" name="home[departments][list][${idx}][icon_file]">
+        </div>
+        <div class="col-md-1 d-grid">
+          <button type="button" class="btn btn-outline-danger remove-row">&times;</button>
+        </div>
+      </div>`;
+                depWrap.appendChild(div);
             });
         }
 
