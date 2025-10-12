@@ -409,7 +409,44 @@
         </div>
     </div>
     <!-- End Hero Section -->
-    <!-- Start About Section -->
+
+    {{-- About Section (settings-driven) --}}
+    @php
+
+        $est = setting('home.about.est_year', 'EST 1995');
+        $kicker = setting('home.about.kicker', 'About us');
+        $title = setting('home.about.title', 'The largest & Most Diverse Universities in the United Emirates');
+        $subtitle = setting('home.about.subtitle', 'Far far away, behind the word mountains...');
+
+        $items = setting('home.about.items', [
+            ['title' => 'Graduate Program', 'text' => 'Browse the Undergraduate Degrees'],
+            ['title' => 'Undergraduate Program', 'text' => 'Browse the Undergraduate Degrees'],
+        ]);
+
+        $img1 = setting('home.about.image_1');
+        $img2 = setting('home.about.image_2');
+        $circle = setting('home.about.circle_img');
+        $video = setting('home.about.video_url', 'https://www.youtube.com/embed/rRid6GCJtgc');
+
+        $img1Url = $img1
+            ? (Str::startsWith($img1, ['http', '/storage', 'assets/'])
+                ? asset($img1)
+                : asset('storage/' . $img1))
+            : asset('assets/img/home_1/about_img_1.jpg');
+        $img2Url = $img2
+            ? (Str::startsWith($img2, ['http', '/storage', 'assets/'])
+                ? asset($img2)
+                : asset('storage/' . $img2))
+            : asset('assets/img/home_1/about_img_2.jpg');
+        $circleUrl = $circle
+            ? (Str::startsWith($circle, ['http', '/storage', 'assets/'])
+                ? asset($circle)
+                : asset('storage/' . $circle))
+            : asset('assets/img/home_1/about_circle_text.svg');
+
+        $cta = setting('home.about.cta', ['text' => 'More About', 'url' => 'courses-grid-view.html']);
+    @endphp
+
     <section>
         <div class="td_height_120 td_height_lg_80"></div>
         <div class="td_about td_style_1">
@@ -417,54 +454,45 @@
                 <div class="row align-items-center td_gap_y_40">
                     <div class="col-lg-6 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.25s">
                         <div class="td_about_thumb_wrap">
-                            <div class="td_about_year text-uppercase td_fs_64 td_bold">EST 1995</div>
-                            <div class="td_about_thumb_1">
-                                <img src="{{ asset('assets/img/home_1/about_img_1.jpg') }}" alt="">
-                            </div>
-                            <div class="td_about_thumb_2">
-                                <img src="{{ asset('assets/img/home_1/about_img_2.jpg') }}" alt="">
-                            </div>
-                            <a href="https://www.youtube.com/embed/rRid6GCJtgc"
-                                class="td_circle_text td_center td_video_open">
+                            <div class="td_about_year text-uppercase td_fs_64 td_bold">{{ $est }}</div>
+                            <div class="td_about_thumb_1"><img src="{{ $img1Url }}" alt=""></div>
+                            <div class="td_about_thumb_2"><img src="{{ $img2Url }}" alt=""></div>
+                            <a href="{{ $video }}" class="td_circle_text td_center td_video_open">
                                 <svg width="15" height="19" viewBox="0 0 15 19" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M14.086 8.63792C14.6603 9.03557 14.6603 9.88459 14.086 10.2822L2.54766 18.2711C1.88444 18.7303 0.978418 18.2557 0.978418 17.449L0.978418 1.47118C0.978418 0.664496 1.88444 0.189811 2.54767 0.649016L14.086 8.63792Z"
                                         fill="white" />
                                 </svg>
-                                <img src="{{ asset('assets/img/home_1/about_circle_text.svg') }}" alt=""
-                                    class="">
+                                <img src="{{ $circleUrl }}" alt="">
                             </a>
-
                             <div class="td_circle_shape"></div>
                         </div>
                     </div>
+
                     <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.3s">
                         <div class="td_section_heading td_style_1 td_mb_30">
                             <p
                                 class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                                About us</p>
-                            <h2 class="td_section_title td_fs_48 mb-0">The largest & Most Diverse Universities in the
-                                United Emirates</h2>
-                            <p class="td_section_subtitle td_fs_18 mb-0">Far far away, behind the word mountains, far
-                                from the Consonantia, there live the blind texts. Separated they marks grove right at
-                                the coast of the Semantics a large language ocean</p>
+                                {{ $kicker }}</p>
+                            <h2 class="td_section_title td_fs_48 mb-0">{{ $title }}</h2>
+                            <p class="td_section_subtitle td_fs_18 mb-0">{{ $subtitle }}</p>
                         </div>
+
                         <div class="td_mb_40">
                             <ul class="td_list td_style_5 td_mp_0">
-                                <li>
-                                    <h3 class="td_fs_24 td_mb_8">Graduate Program</h3>
-                                    <p class="td_fs_18 mb-0">Browse the Undergraduate Degrees</p>
-                                </li>
-                                <li>
-                                    <h3 class="td_fs_24 td_mb_8">Undergraduate Program</h3>
-                                    <p class="td_fs_18 mb-0">Browse the Undergraduate Degrees</p>
-                                </li>
+                                @foreach ($items as $it)
+                                    <li>
+                                        <h3 class="td_fs_24 td_mb_8">{{ data_get($it, 'title') }}</h3>
+                                        <p class="td_fs_18 mb-0">{{ data_get($it, 'text') }}</p>
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
-                        <a href="courses-grid-view.html" class="td_btn td_style_1 td_radius_10 td_medium">
+
+                        <a href="{{ data_get($cta, 'url', '') }}" class="td_btn td_style_1 td_radius_10 td_medium">
                             <span class="td_btn_in td_white_color td_accent_bg">
-                                <span>More About</span>
+                                <span>{{ data_get($cta, 'text', 'More About') }}</span>
                                 <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path d="M15.1575 4.34302L3.84375 15.6567" stroke="currentColor"
@@ -482,7 +510,10 @@
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
-    <!-- End About Section -->
+
+
+
+
     <!-- Start Popular Courses -->
     <section class="td_gray_bg_3">
         <div class="td_height_112 td_height_lg_75"></div>
@@ -740,65 +771,87 @@
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
     <!-- End Popular Courses -->
-    <!-- Start Feature Section -->
 
+
+    {{-- Start Feature Section (settings-driven) --}}
+    @php
+        $kicker = setting('home.features.kicker', 'CAMPUS');
+        $title = setting('home.features.title', 'Campus is your Dream Lifestyle');
+
+        $img = setting('home.features.image');
+        $imgUrl = $img
+            ? (Str::startsWith($img, ['http', '/storage', 'assets/'])
+                ? asset($img)
+                : asset('storage/' . $img))
+            : asset('assets/img/home_1/feature_img.jpg');
+
+        $list = array_slice(setting('home.features.list', []), 0, 4);
+    @endphp
 
     <section>
         <div class="td_height_120 td_height_lg_80"></div>
         <div class="container">
             <div class="td_features td_style_1 td_hobble">
+
                 <div class="td_features_thumb">
-                    <img src="{{ asset('assets/img/home_1/feature_img.jpg') }}" alt=""
-                        class="td_radius_10 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                    <img src="{{ $imgUrl }}" alt="" class="td_radius_10 wow fadeInUp"
+                        data-wow-duration="1s" data-wow-delay="0.2s">
                 </div>
+
                 <div class="td_features_content td_white_bg td_radius_10 wow fadeInRight" data-wow-duration="1s"
                     data-wow-delay="0.25s">
                     <div class="td_section_heading td_style_1">
                         <p
                             class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                            CAMPUS</p>
-                        <h2 class="td_section_title td_fs_48 mb-0">Campus is your Dream Lifestyle</h2>
+                            {{ $kicker }}</p>
+                        <h2 class="td_section_title td_fs_48 mb-0">{{ $title }}</h2>
                     </div>
+
                     <div class="td_height_50 td_height_lg_50"></div>
+
                     <ul class="td_feature_list td_mp_0">
-                        <li>
-                            <div class="td_feature_icon td_center">
-                                <!-- SVGs qalır, dəyişməyə ehtiyac yoxdur -->
-                                ...
-                            </div>
-                            <div class="td_feature_info">
-                                <h3 class="td_fs_32 td_semibold td_mb_15">Smart Hostel</h3>
-                                <p class="td_fs_14 td_heading_color td_opacity_7 mb-0">Behind the word mountains, far
-                                    from the Conso there live the blind texts</p>
-                            </div>
-                        </li>
-                        <!-- digər li-lər də eyni qalır -->
+                        @foreach ($list as $it)
+                            @php
+                                $icon = data_get($it, 'icon');
+                                $iconUrl = $icon
+                                    ? (Str::startsWith($icon, ['http', '/storage', 'assets/'])
+                                        ? asset($icon)
+                                        : asset('storage/' . $icon))
+                                    : null;
+                            @endphp
+                            <li>
+                                <div class="td_feature_icon td_center">
+                                    @if ($iconUrl)
+                                        <img src="{{ $iconUrl }}" alt=""
+                                            style="width:60px;height:60px;object-fit:contain;">
+                                    @endif
+                                </div>
+                                <div class="td_feature_info">
+                                    <h3 class="td_fs_32 td_semibold td_mb_15">{{ data_get($it, 'title') }}</h3>
+                                    @if (data_get($it, 'text'))
+                                        <p class="td_fs_14 td_heading_color td_opacity_7 mb-0">
+                                            {{ data_get($it, 'text') }}</p>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 
-                <!-- SVG şəkil formaları (shape-lər) -->
+                {{-- shape-lər eyni qalsın --}}
                 <div class="td_features_shape_1 position-absolute td_accent_color td_hover_layer_3">
-                    <svg width="482" height="769" viewBox="0 0 482 769" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        ...
-                    </svg>
-                </div>
+                    <svg><!-- ... --></svg></div>
                 <div class="td_features_shape_2 position-absolute td_accent_color td_hover_layer_5">
-                    <svg width="576" height="726" viewBox="0 0 576 726" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        ...
-                    </svg>
-                </div>
+                    <svg><!-- ... --></svg></div>
             </div>
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
+    {{-- End Feature Section --}}
 
 
-    <!-- End Feature Section -->
+
     <!-- Start Campus Life -->
-
-
     <section class="td_accent_bg td_shape_section_1">
         <div class="td_shape_position_4 td_accent_color position-absolute">
             <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
@@ -1121,7 +1174,6 @@
             </div>
         </div>
     </section>
-
     <!-- End Video Section -->
 
 

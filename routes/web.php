@@ -28,6 +28,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AccreditationController;
 
 
 /**
@@ -45,11 +47,12 @@ Route::middleware(['auth', EnsureUserIsAdmin::class])
         Route::resource('vacancies', AdminVacanciesController::class);
         Route::resource('resources', AdminResourcesController::class);
         Route::resource('resource-types', AdminResourceTypesController::class)->only(['index', 'store', 'destroy', 'show']);
-        Route::resource('accreditations', \App\Http\Controllers\Admin\AccreditationController::class);
+        Route::resource('accreditations', AccreditationController::class);
         Route::resource('faqs', FaqController::class);
         Route::resource('teams', TeamController::class);
-        Route::get('settings',  [\App\Http\Controllers\Admin\SettingController::class, 'edit'])->name('settings.edit');
-        Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+        Route::get('settings',        [SettingController::class, 'index'])->name('settings.index');
+        Route::get('settings/edit',   [SettingController::class, 'edit'])->name('settings.edit');
+        Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
         Route::post('uploads/trix', [UploadController::class, 'trix'])->name('uploads.trix');
     });
 
