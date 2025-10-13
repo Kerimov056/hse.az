@@ -49,7 +49,29 @@
 @endpush
 
 @section('content')
-    @php use Illuminate\Support\Str; @endphp
+    @php
+        use Illuminate\Support\Str;
+
+        /**
+         * DB-də saxlanan dəyəri təhlükəsiz şəkildə göstərilə bilən URL-ə çevirir:
+         * - http/https → eynilə qaytar
+         * - '/storage' və ya 'assets/' → asset($p)
+         * - digər nisbi path-lar → asset('storage/'.$p)
+         */
+        $toUrl = function ($p) {
+            if (!$p) {
+                return null;
+            }
+            if (Str::startsWith($p, ['http://', 'https://'])) {
+                return $p;
+            }
+            if (Str::startsWith($p, ['/storage', 'assets/'])) {
+                return asset($p);
+            }
+            return asset('storage/' . ltrim($p, '/'));
+        };
+    @endphp
+
     <div class="container-fluid py-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h4 mb-0">Edit Settings</h1>
@@ -103,8 +125,11 @@
                     <div class="col-md-6">
                         <label class="form-label">Site Logo</label>
                         <input type="file" class="form-control" name="site[logo_file]">
-                        @if ($p = data_get($settings, 'site.logo'))
-                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.ltrim($p,'/')); @endphp
+                        @php
+                            $p = data_get($settings, 'site.logo');
+                            $url = $toUrl($p);
+                        @endphp
+                        @if ($url)
                             <div class="form-help mt-1">Mövcud:</div>
                             <img src="{{ $url }}" class="thumb-prev mt-1" alt="Site Logo">
                         @endif
@@ -157,8 +182,11 @@
                     <div class="col-md-6">
                         <label class="form-label">Logo</label>
                         <input type="file" class="form-control" name="logo">
-                        @if ($p = data_get($settings, 'branding.logo'))
-                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                        @php
+                            $p = data_get($settings, 'branding.logo');
+                            $url = $toUrl($p);
+                        @endphp
+                        @if ($url)
                             <div class="form-help mt-1">Mövcud:</div>
                             <img src="{{ $url }}" class="thumb-prev mt-1" alt="Brand Logo">
                         @endif
@@ -166,8 +194,11 @@
                     <div class="col-md-6">
                         <label class="form-label">Favicon</label>
                         <input type="file" class="form-control" name="favicon">
-                        @if ($p = data_get($settings, 'branding.favicon'))
-                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                        @php
+                            $p = data_get($settings, 'branding.favicon');
+                            $url = $toUrl($p);
+                        @endphp
+                        @if ($url)
                             <div class="form-help mt-1">Mövcud:</div>
                             <img src="{{ $url }}" class="thumb-prev mt-1" alt="Favicon">
                         @endif
@@ -211,8 +242,9 @@
                     </div>
                     <div class="col-12">
                         <hr>
-                        <label class="form-label d-flex justify-content-between align-items-center"><span>Hero Buttons (max
-                                3)</span></label>
+                        <label class="form-label d-flex justify-content-between align-items-center">
+                            <span>Hero Buttons (max 3)</span>
+                        </label>
                         <div id="heroButtons">
                             @php $btns = data_get($settings,'home.hero.buttons',[]); @endphp
                             @foreach ($btns as $i => $b)
@@ -297,8 +329,11 @@
                         <div class="col-md-4">
                             <label class="form-label">Image 1</label>
                             <input type="file" class="form-control" name="home[about][image_1_file]">
-                            @if ($p = data_get($settings, 'home.about.image_1'))
-                                @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                            @php
+                                $p = data_get($settings, 'home.about.image_1');
+                                $url = $toUrl($p);
+                            @endphp
+                            @if ($url)
                                 <div class="form-help mt-1">Mövcud:</div>
                                 <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Image 1">
                             @endif
@@ -306,8 +341,11 @@
                         <div class="col-md-4">
                             <label class="form-label">Image 2</label>
                             <input type="file" class="form-control" name="home[about][image_2_file]">
-                            @if ($p = data_get($settings, 'home.about.image_2'))
-                                @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                            @php
+                                $p = data_get($settings, 'home.about.image_2');
+                                $url = $toUrl($p);
+                            @endphp
+                            @if ($url)
                                 <div class="form-help mt-1">Mövcud:</div>
                                 <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Image 2">
                             @endif
@@ -315,8 +353,11 @@
                         <div class="col-md-4">
                             <label class="form-label">Circle Image (SVG)</label>
                             <input type="file" class="form-control" name="home[about][circle_img_file]">
-                            @if ($p = data_get($settings, 'home.about.circle_img'))
-                                @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                            @php
+                                $p = data_get($settings, 'home.about.circle_img');
+                                $url = $toUrl($p);
+                            @endphp
+                            @if ($url)
                                 <div class="form-help mt-1">Mövcud:</div>
                                 <img src="{{ $url }}" class="thumb-prev mt-1" alt="About Circle Image">
                             @endif
@@ -346,16 +387,24 @@
             <div class="card shadow-sm">
                 <div class="card-header fw-semibold">Home – Features (max 4)</div>
                 <div class="card-body row g-3">
-                    <div class="col-md-3"><label class="form-label">Kicker</label><input class="form-control"
-                            name="home[features][kicker]" value="{{ data_get($settings, 'home.features.kicker') }}"
-                            placeholder="CAMPUS"></div>
-                    <div class="col-md-9"><label class="form-label">Title</label><input class="form-control"
-                            name="home[features][title]" value="{{ data_get($settings, 'home.features.title') }}"></div>
+                    <div class="col-md-3">
+                        <label class="form-label">Kicker</label>
+                        <input class="form-control" name="home[features][kicker]"
+                            value="{{ data_get($settings, 'home.features.kicker') }}" placeholder="CAMPUS">
+                    </div>
+                    <div class="col-md-9">
+                        <label class="form-label">Title</label>
+                        <input class="form-control" name="home[features][title]"
+                            value="{{ data_get($settings, 'home.features.title') }}">
+                    </div>
                     <div class="col-md-6">
                         <label class="form-label">Main Image</label>
                         <input type="file" class="form-control" name="home[features][image_file]">
-                        @if ($p = data_get($settings, 'home.features.image'))
-                            @php $url = Str::startsWith($p, ['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                        @php
+                            $p = data_get($settings, 'home.features.image');
+                            $url = $toUrl($p);
+                        @endphp
+                        @if ($url)
                             <div class="form-help mt-1">Mövcud:</div>
                             <img src="{{ $url }}" class="thumb-prev mt-1" alt="Features Main Image">
                         @endif
@@ -369,20 +418,28 @@
                         <div class="col-12">
                             <div class="repeater-row">
                                 <div class="row g-2 align-items-end">
-                                    <div class="col-md-4"><label class="form-label">Item {{ $i + 1 }}
-                                            Title</label><input class="form-control"
+                                    <div class="col-md-4">
+                                        <label class="form-label">Item {{ $i + 1 }} Title</label>
+                                        <input class="form-control"
                                             name="home[features][list][{{ $i }}][title]"
-                                            value="{{ data_get($row, 'title') }}"></div>
-                                    <div class="col-md-6"><label class="form-label">Item {{ $i + 1 }} Text
-                                            (optional)</label><input class="form-control"
+                                            value="{{ data_get($row, 'title') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Item {{ $i + 1 }} Text (optional)</label>
+                                        <input class="form-control"
                                             name="home[features][list][{{ $i }}][text]"
-                                            value="{{ data_get($row, 'text') }}"></div>
-                                    <div class="col-md-2"><label class="form-label">Icon</label><input type="file"
-                                            class="form-control"
+                                            value="{{ data_get($row, 'text') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Icon</label>
+                                        <input type="file" class="form-control"
                                             name="home[features][list][{{ $i }}][icon_file]">
-                                        @if ($icon = data_get($row, 'icon'))
-                                            @php $url = Str::startsWith($icon, ['http','/storage','assets/']) ? asset($icon) : asset('storage/'.$icon); @endphp
-                                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Feature Icon">
+                                        @php
+                                            $icon = data_get($row, 'icon');
+                                            $iconUrl = $toUrl($icon);
+                                        @endphp
+                                        @if ($iconUrl)
+                                            <img src="{{ $iconUrl }}" class="thumb-prev mt-1" alt="Feature Icon">
                                         @endif
                                     </div>
                                 </div>
@@ -394,20 +451,26 @@
 
             {{-- HOME: DEPARTMENTS --}}
             <div class="card shadow-sm">
-                <div class="card-header fw-semibold d-flex justify-content-between align-items-center"><span>Home –
-                        Departments (max 8)</span><button type="button" class="btn btn-sm btn-outline-primary"
-                        id="addDepartment">+ Add department</button></div>
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>Home – Departments (max 8)</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addDepartment">+ Add
+                        department</button>
+                </div>
                 <div class="card-body">
                     <div class="row g-3 mb-3">
-                        <div class="col-md-3"><label class="form-label">Kicker</label><input class="form-control"
-                                name="home[departments][kicker]"
+                        <div class="col-md-3">
+                            <label class="form-label">Kicker</label>
+                            <input class="form-control" name="home[departments][kicker]"
                                 value="{{ data_get($settings, 'home.departments.kicker') }}" placeholder="Departments">
                         </div>
-                        <div class="col-md-5"><label class="form-label">Title</label><input class="form-control"
-                                name="home[departments][title]"
+                        <div class="col-md-5">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="home[departments][title]"
                                 value="{{ data_get($settings, 'home.departments.title') }}"
-                                placeholder="Popular Departments"></div>
-                        <div class="col-md-12"><label class="form-label">Subtitle (supports HTML)</label>
+                                placeholder="Popular Departments">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Subtitle (supports HTML)</label>
                             <textarea class="form-control" rows="2" name="home[departments][subtitle]">{{ data_get($settings, 'home.departments.subtitle') }}</textarea>
                         </div>
                     </div>
@@ -416,21 +479,28 @@
                         @foreach ($deps as $i => $dep)
                             <div class="repeater-row" data-index="{{ $i }}">
                                 <div class="row g-2 align-items-end">
-                                    <div class="col-md-6"><label class="form-label">Title</label><input
-                                            class="form-control"
+                                    <div class="col-md-6">
+                                        <label class="form-label">Title</label>
+                                        <input class="form-control"
                                             name="home[departments][list][{{ $i }}][title]"
-                                            value="{{ data_get($dep, 'title') }}"></div>
-                                    <div class="col-md-5"><label class="form-label">Icon</label><input type="file"
-                                            class="form-control"
+                                            value="{{ data_get($dep, 'title') }}">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Icon</label>
+                                        <input type="file" class="form-control"
                                             name="home[departments][list][{{ $i }}][icon_file]">
-                                        @if ($p = data_get($dep, 'icon'))
-                                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                                        @php
+                                            $p = data_get($dep, 'icon');
+                                            $url = $toUrl($p);
+                                        @endphp
+                                        @if ($url)
                                             <img src="{{ $url }}" class="thumb-prev mt-1"
                                                 alt="Department Icon">
                                         @endif
                                     </div>
-                                    <div class="col-md-1 d-grid"><button type="button"
-                                            class="btn btn-outline-danger remove-row">&times;</button></div>
+                                    <div class="col-md-1 d-grid">
+                                        <button type="button" class="btn btn-outline-danger remove-row">&times;</button>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -440,22 +510,31 @@
 
             {{-- HOME: CAMPUS --}}
             <div class="card shadow-sm">
-                <div class="card-header fw-semibold d-flex justify-content-between align-items-center"><span>Home –
-                        Campus</span><button type="button" class="btn btn-sm btn-outline-primary" id="addCampusCard">+
-                        Add card</button></div>
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>Home – Campus</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addCampusCard">+ Add card</button>
+                </div>
                 <div class="card-body">
                     <div class="row g-3 mb-3">
-                        <div class="col-md-4"><label class="form-label">Title</label><input class="form-control"
-                                name="home[campus][title]" value="{{ data_get($settings, 'home.campus.title') }}"
-                                placeholder="Navigate"></div>
-                        <div class="col-md-8"><label class="form-label">Subtitle</label><input class="form-control"
-                                name="home[campus][subtitle]" value="{{ data_get($settings, 'home.campus.subtitle') }}">
+                        <div class="col-md-4">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="home[campus][title]"
+                                value="{{ data_get($settings, 'home.campus.title') }}" placeholder="Navigate">
                         </div>
-                        <div class="col-md-3"><label class="form-label">CTA Text</label><input class="form-control"
-                                name="home[campus][cta][text]" value="{{ data_get($settings, 'home.campus.cta.text') }}"
-                                placeholder="View All Program"></div>
-                        <div class="col-md-9"><label class="form-label">CTA URL</label><input class="form-control"
-                                name="home[campus][cta][url]" value="{{ data_get($settings, 'home.campus.cta.url') }}">
+                        <div class="col-md-8">
+                            <label class="form-label">Subtitle</label>
+                            <input class="form-control" name="home[campus][subtitle]"
+                                value="{{ data_get($settings, 'home.campus.subtitle') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">CTA Text</label>
+                            <input class="form-control" name="home[campus][cta][text]"
+                                value="{{ data_get($settings, 'home.campus.cta.text') }}" placeholder="View All Program">
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label">CTA URL</label>
+                            <input class="form-control" name="home[campus][cta][url]"
+                                value="{{ data_get($settings, 'home.campus.cta.url') }}">
                         </div>
                     </div>
                     <div id="campusCards">
@@ -463,23 +542,33 @@
                         @foreach ($cards as $i => $card)
                             <div class="repeater-row" data-index="{{ $i }}">
                                 <div class="row g-2 align-items-end">
-                                    <div class="col-md-4"><label class="form-label">Title</label><input
-                                            class="form-control" name="home[campus][cards][{{ $i }}][title]"
-                                            value="{{ data_get($card, 'title') }}"></div>
-                                    <div class="col-md-4"><label class="form-label">URL</label><input
-                                            class="form-control" name="home[campus][cards][{{ $i }}][url]"
-                                            value="{{ data_get($card, 'url') }}"></div>
-                                    <div class="col-md-3"><label class="form-label">Image</label><input type="file"
-                                            class="form-control"
+                                    <div class="col-md-4">
+                                        <label class="form-label">Title</label>
+                                        <input class="form-control"
+                                            name="home[campus][cards][{{ $i }}][title]"
+                                            value="{{ data_get($card, 'title') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">URL</label>
+                                        <input class="form-control" name="home[campus][cards][{{ $i }}][url]"
+                                            value="{{ data_get($card, 'url') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Image</label>
+                                        <input type="file" class="form-control"
                                             name="home[campus][cards][{{ $i }}][image_file]">
-                                        @if ($p = data_get($card, 'image'))
-                                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
+                                        @php
+                                            $p = data_get($card, 'image');
+                                            $url = $toUrl($p);
+                                        @endphp
+                                        @if ($url)
                                             <img src="{{ $url }}" class="thumb-prev mt-1"
                                                 alt="Campus Card Image">
                                         @endif
                                     </div>
-                                    <div class="col-md-1 d-grid"><button type="button"
-                                            class="btn btn-outline-danger remove-row">&times;</button></div>
+                                    <div class="col-md-1 d-grid">
+                                        <button type="button" class="btn btn-outline-danger remove-row">&times;</button>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -491,38 +580,56 @@
             <div class="card shadow-sm">
                 <div class="card-header fw-semibold">Home – Video / Contact</div>
                 <div class="card-body row g-3">
-                    <div class="col-md-6"><label class="form-label">Heading</label><input class="form-control"
-                            name="home[video][heading]" value="{{ data_get($settings, 'home.video.heading') }}"></div>
-                    <div class="col-md-6"><label class="form-label">YouTube URL</label><input class="form-control"
-                            name="home[video][youtube_url]" value="{{ data_get($settings, 'home.video.youtube_url') }}">
+                    <div class="col-md-6">
+                        <label class="form-label">Heading</label>
+                        <input class="form-control" name="home[video][heading]"
+                            value="{{ data_get($settings, 'home.video.heading') }}">
                     </div>
-                    <div class="col-md-6"><label class="form-label">Background Image</label><input type="file"
-                            class="form-control" name="home[video][bg_image_file]">
-                        @if ($p = data_get($settings, 'home.video.bg_image'))
-                            @php $url = Str::startsWith($p,['http','/storage','assets/']) ? asset($p) : asset('storage/'.$p); @endphp
-                            <div class="form-help mt-1">Mövcud:</div><img src="{{ $url }}"
-                                class="thumb-prev mt-1" alt="Video Background">
+                    <div class="col-md-6">
+                        <label class="form-label">YouTube URL</label>
+                        <input class="form-control" name="home[video][youtube_url]"
+                            value="{{ data_get($settings, 'home.video.youtube_url') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Background Image</label>
+                        <input type="file" class="form-control" name="home[video][bg_image_file]">
+                        @php
+                            $p = data_get($settings, 'home.video.bg_image');
+                            $url = $toUrl($p);
+                        @endphp
+                        @if ($url)
+                            <div class="form-help mt-1">Mövcud:</div>
+                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Video Background">
                         @endif
                     </div>
-                    <div class="col-md-3"><label class="form-label">Email Label</label><input class="form-control"
-                            name="home[video][contact][email_label]"
-                            value="{{ data_get($settings, 'home.video.contact.email_label') }}"></div>
-                    <div class="col-md-3"><label class="form-label">Email</label><input class="form-control"
-                            name="home[video][contact][email]"
-                            value="{{ data_get($settings, 'home.video.contact.email') }}"></div>
-                    <div class="col-md-3"><label class="form-label">Phone Label</label><input class="form-control"
-                            name="home[video][contact][phone_label]"
-                            value="{{ data_get($settings, 'home.video.contact.phone_label') }}"></div>
-                    <div class="col-md-3"><label class="form-label">Phone</label><input class="form-control"
-                            name="home[video][contact][phone]"
-                            value="{{ data_get($settings, 'home.video.contact.phone') }}"></div>
+                    <div class="col-md-3">
+                        <label class="form-label">Email Label</label>
+                        <input class="form-control" name="home[video][contact][email_label]"
+                            value="{{ data_get($settings, 'home.video.contact.email_label') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" name="home[video][contact][email]"
+                            value="{{ data_get($settings, 'home.video.contact.email') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Phone Label</label>
+                        <input class="form-control" name="home[video][contact][phone_label]"
+                            value="{{ data_get($settings, 'home.video.contact.phone_label') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Phone</label>
+                        <input class="form-control" name="home[video][contact][phone]"
+                            value="{{ data_get($settings, 'home.video.contact.phone') }}">
+                    </div>
                 </div>
             </div>
 
             <div class="sticky-save p-3 mt-3">
                 <div class="d-grid d-md-flex gap-2">
-                    <button class="btn btn-success btn-lg flex-fill flex-md-grow-0"><i
-                            class="bi bi-check2-circle me-1"></i> Save</button>
+                    <button class="btn btn-success btn-lg flex-fill flex-md-grow-0">
+                        <i class="bi bi-check2-circle me-1"></i> Save
+                    </button>
                     <a href="{{ route('admin.settings.index') }}" class="btn btn-outline-secondary">Ləğv et</a>
                 </div>
             </div>
@@ -548,6 +655,7 @@
                     aboutWrap.appendChild(div);
                 });
             }
+
             // CAMPUS cards
             const campusWrap = document.getElementById('campusCards');
             const addCampusBtn = document.getElementById('addCampusCard');
@@ -566,6 +674,7 @@
                     campusWrap.appendChild(div);
                 });
             }
+
             // DEPARTMENTS
             const depWrap = document.getElementById('departmentList');
             const addDepBtn = document.getElementById('addDepartment');
@@ -584,6 +693,7 @@
                     depWrap.appendChild(div);
                 });
             }
+
             // HERO buttons
             const heroBtnWrap = document.getElementById('heroButtons');
             const addHeroBtn = document.getElementById('addHeroButton');
@@ -603,6 +713,7 @@
                     heroBtnWrap.appendChild(div);
                 });
             }
+
             // remove any repeater row
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {

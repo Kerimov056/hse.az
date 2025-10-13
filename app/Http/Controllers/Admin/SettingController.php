@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -79,7 +80,6 @@ class SettingController extends Controller
             'home.hero.subtitle'          => 'nullable|string|max:1000',
             'home.hero.cta.text'          => 'nullable|string|max:120',
             'home.hero.cta.url'           => 'nullable|string|max:255',
-            // NEW: Hero buttons (max 3)
             'home.hero.buttons'           => 'nullable|array|max:3',
             'home.hero.buttons.*.text'    => 'nullable|string|max:120',
             'home.hero.buttons.*.url'     => 'nullable|string|max:255',
@@ -88,10 +88,10 @@ class SettingController extends Controller
         // BRANDING
         $branding = setting('branding', []);
         if ($r->hasFile('logo')) {
-            $branding['logo'] = $r->file('logo')->store('settings/branding', 'public');
+            $branding['logo'] = $this->storeToCdn($r->file('logo'), 'settings/branding');
         }
         if ($r->hasFile('favicon')) {
-            $branding['favicon'] = $r->file('favicon')->store('settings/branding', 'public');
+            $branding['favicon'] = $this->storeToCdn($r->file('favicon'), 'settings/branding');
         }
         $this->write('branding', $branding);
 
@@ -100,7 +100,7 @@ class SettingController extends Controller
             $this->write($k, $r->input($k, setting($k)));
         }
         if ($r->hasFile('site.logo_file')) {
-            $path = $r->file('site.logo_file')->store('settings/site', 'public');
+            $path = $this->storeToCdn($r->file('site.logo_file'), 'settings/site');
             $this->write('site.logo', $path);
         }
 
@@ -116,13 +116,13 @@ class SettingController extends Controller
         Arr::set($about, 'cta.url',    $r->input('home.about.cta.url',    Arr::get($about, 'cta.url')));
 
         if ($r->hasFile('home.about.image_1_file')) {
-            Arr::set($about, 'image_1', $r->file('home.about.image_1_file')->store('settings/home/about', 'public'));
+            Arr::set($about, 'image_1', $this->storeToCdn($r->file('home.about.image_1_file'), 'settings/home/about'));
         }
         if ($r->hasFile('home.about.image_2_file')) {
-            Arr::set($about, 'image_2', $r->file('home.about.image_2_file')->store('settings/home/about', 'public'));
+            Arr::set($about, 'image_2', $this->storeToCdn($r->file('home.about.image_2_file'), 'settings/home/about'));
         }
         if ($r->hasFile('home.about.circle_img_file')) {
-            Arr::set($about, 'circle_img', $r->file('home.about.circle_img_file')->store('settings/home/about', 'public'));
+            Arr::set($about, 'circle_img', $this->storeToCdn($r->file('home.about.circle_img_file'), 'settings/home/about'));
         }
         $this->write('home.about', $about);
 
@@ -132,7 +132,7 @@ class SettingController extends Controller
         Arr::set($features, 'title',  $r->input('home.features.title',  Arr::get($features, 'title')));
 
         if ($r->hasFile('home.features.image_file')) {
-            Arr::set($features, 'image', $r->file('home.features.image_file')->store('settings/home/features', 'public'));
+            Arr::set($features, 'image', $this->storeToCdn($r->file('home.features.image_file'), 'settings/home/features'));
         }
 
         $listInput = $r->input('home.features.list', []);
@@ -145,7 +145,7 @@ class SettingController extends Controller
                 'icon'  => Arr::get($features, "list.$i.icon"),
             ];
             if ($r->hasFile("home.features.list.$i.icon_file")) {
-                $saved['icon'] = $r->file("home.features.list.$i.icon_file")->store('settings/home/features/icons', 'public');
+                $saved['icon'] = $this->storeToCdn($r->file("home.features.list.$i.icon_file"), 'settings/home/features/icons');
             }
             if (!empty($saved['title']) || !empty($saved['text']) || !empty($saved['icon'])) {
                 $listSaved[] = $saved;
@@ -164,7 +164,7 @@ class SettingController extends Controller
         $cards = $r->input('home.campus.cards', Arr::get($campus, 'cards', []));
         foreach ($cards as $i => $card) {
             if ($r->hasFile("home.campus.cards.$i.image_file")) {
-                $card['image'] = $r->file("home.campus.cards.$i.image_file")->store('settings/home/campus', 'public');
+                $card['image'] = $this->storeToCdn($r->file("home.campus.cards.$i.image_file"), 'settings/home/campus');
             } else {
                 $card['image'] = Arr::get($campus, "cards.$i.image", Arr::get($card, 'image'));
             }
@@ -183,7 +183,7 @@ class SettingController extends Controller
         Arr::set($video, 'contact.phone',       $r->input('home.video.contact.phone',       Arr::get($video, 'contact.phone')));
 
         if ($r->hasFile('home.video.bg_image_file')) {
-            Arr::set($video, 'bg_image', $r->file('home.video.bg_image_file')->store('settings/home/video', 'public'));
+            Arr::set($video, 'bg_image', $this->storeToCdn($r->file('home.video.bg_image_file'), 'settings/home/video'));
         }
         $this->write('home.video', $video);
 
@@ -202,7 +202,7 @@ class SettingController extends Controller
                 'icon'  => Arr::get($departments, "list.$i.icon"),
             ];
             if ($r->hasFile("home.departments.list.$i.icon_file")) {
-                $saved['icon'] = $r->file("home.departments.list.$i.icon_file")->store('settings/home/departments/icons', 'public');
+                $saved['icon'] = $this->storeToCdn($r->file("home.departments.list.$i.icon_file"), 'settings/home/departments/icons');
             }
             if (!empty($saved['title']) || !empty($saved['icon'])) {
                 $depSaved[] = $saved;
@@ -232,11 +232,54 @@ class SettingController extends Controller
             }
         }
         Arr::set($hero, 'buttons', $btnSaved);
-
         $this->write('home.hero', $hero);
 
         Cache::forget('settings:merged');
         return back()->with('ok', 'Settings updated');
+    }
+
+    /**
+     * Faylı GCS diskində saxlayıb TAM URL qaytarır.
+     */
+    private function storeToCdn(\Illuminate\Http\UploadedFile $file, string $dir): string
+    {
+        $disk = Storage::disk('gcs');
+
+        // Faylı public ACL ilə yüklə (GCS-də obyekt səviyyəsində public olsun)
+        // Qeyd: bucket-də "Uniform bucket-level access" açıqdırsa, obyektlər default public ola bilməz;
+        // o halda CDN/proxy istifadə edin və ya imzalı URL mexanizminə keçin.
+        $path = $disk->putFile($dir, $file, 'public');  // ex: settings/branding/xxx.png
+
+        return $this->gcsPublicUrl($path);
+    }
+
+    /**
+     * GCS public URL qurur:
+     *  - Əgər .env-də CDN_BASE_URL varsa onu istifadə edir (məs: https://cdn.educve.com)
+     *  - Yoxdursa filesystems.php/disk parametrləri ilə standart GCS URL yığır
+     */
+    private function gcsPublicUrl(string $path): string
+    {
+        $cdn = rtrim(env('CDN_BASE_URL', ''), '/');
+        $diskCfg = config('filesystems.disks.gcs');
+
+        $api    = rtrim($diskCfg['api_url'] ?? 'https://storage.googleapis.com', '/');
+        $bucket = $diskCfg['bucket'] ?? '';
+        $prefix = trim($diskCfg['path_prefix'] ?? '', '/');
+
+        // path_prefix + fayl path-ını birləşdir
+        $full = ltrim($path, '/');
+        if ($prefix !== '') {
+            $full = $prefix . '/' . $full;
+        }
+
+        if ($cdn !== '') {
+            // CDN istifadə edirik: https://cdn.domain.tld/{prefix}/{path}
+            return $cdn . '/' . $full;
+        }
+
+        // Standart GCS public URL: https://storage.googleapis.com/{bucket}/{prefix}/{path}
+        return $api . '/' . $bucket . '/' . $full;
     }
 
     private function write(string $key, $value): void
