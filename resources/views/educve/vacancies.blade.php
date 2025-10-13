@@ -1,190 +1,250 @@
 @extends('layouts.app')
 
 @php
-  use Illuminate\Support\Str;
-  $q = $q ?? request('q');
+    use Illuminate\Support\Str;
 @endphp
 
 @push('styles')
-<style>
-  .vc_card{height:100%; border-radius:14px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.06); background:#fff}
-  .vc_thumb{position:relative; display:block; overflow:hidden}
-  .vc_thumb::before{content:""; display:block; padding-top:62.5%}
-  .vc_thumb>img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .35s ease}
-  .vc_thumb:hover>img{transform:scale(1.04)}
-  .vc_overlay_top{position:absolute; top:10px; left:10px; right:10px; display:flex; justify-content:space-between; gap:8px; z-index:2;}
-  .pill{background:rgba(0,0,0,.65); color:#fff; border-radius:999px; padding:6px 10px; font-weight:700; font-size:12px; line-height:1; display:flex; align-items:center; gap:6px}
-  .pill--light{background:rgba(255,255,255,.92); color:#111}
-  .vc_overlay_gradient{position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%); opacity:0; transition:opacity .25s ease;}
-  .vc_thumb:hover .vc_overlay_gradient{opacity:1}
-  .vc_overlay_actions{position:absolute; left:0; right:0; bottom:12px; display:flex; justify-content:center; gap:10px; z-index:2; transform:translateY(8px); opacity:0; transition:all .25s ease;}
-  .vc_thumb:hover .vc_overlay_actions{transform:translateY(0); opacity:1}
-  .vc_body{display:flex; flex-direction:column; height:100%; padding:16px}
-  .vc_title{font-size:1.1rem; font-weight:800; margin:0 0 6px}
-  .vc_desc{opacity:.8; margin:0 0 10px}
-  .vc_actions{margin-top:auto; display:flex; gap:.5rem}
-  .vc_search_wrap{display:flex; justify-content:center}
-  .vc_search{display:flex; gap:.6rem; width:100%; max-width:760px}
-  .vc_search input[type="text"]{flex:1; min-width:0; border:1px solid var(--td-border,#e8e8e8); border-radius:999px; padding:.85rem 1rem; font-size:1rem;}
-  .vc_search button{border:none; border-radius:999px; padding:.85rem 1rem; font-weight:700;}
-  @media (max-width:575.98px){ .vc_search{flex-direction:column} .vc_search button{width:100%} }
-  .empty-state{max-width:560px; margin:40px auto 0; text-align:center}
-  .empty-title{font-size:1.4rem; font-weight:800; margin-bottom:.25rem}
-  .empty-desc{opacity:.75}
-</style>
+    <style>
+        /* ===== Vacancies — Table View ===== */
+        .jobs-table-wrap {
+            --jt-radius: 12px;
+            --jt-border: #e5e7eb;
+            --jt-bg: #ffffff;
+            --jt-head-bg: #f43f5e;
+            /* qırmızı başlıq (istəsən dəyiş) */
+            --jt-head-color: #fff;
+            --jt-row-hover: #fff7f7;
+            --jt-shadow: 0 10px 28px rgba(2, 6, 23, .08);
+        }
+
+        .jobs-card {
+            background: var(--jt-bg);
+            border: 1px solid var(--jt-border);
+            border-radius: var(--jt-radius);
+            box-shadow: var(--jt-shadow);
+            overflow: hidden;
+        }
+
+        .jobs-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .jobs-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: var(--jt-head-bg);
+            color: var(--jt-head-color);
+            font-weight: 700;
+            letter-spacing: .2px;
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        .jobs-table thead th:first-child {
+            padding-left: 24px;
+        }
+
+        .jobs-table tbody td:first-child {
+            padding-left: 24px;
+        }
+
+        .jobs-table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--jt-border);
+            vertical-align: middle;
+            color: #0f172a;
+        }
+
+        .jobs-table tbody tr {
+            background: #fff;
+            transition: background .15s ease, transform .15s ease;
+        }
+
+        .jobs-table tbody tr:nth-child(odd) {
+            background: #fcfcff;
+        }
+
+        .jobs-table tbody tr:hover {
+            background: var(--jt-row-hover);
+        }
+
+        .job-title {
+            font-weight: 800;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .job-title:hover {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .28rem .55rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: .85rem;
+            border: 1px solid #fecaca;
+            background: #fff1f2;
+            color: #b91c1c;
+            white-space: nowrap;
+        }
+
+        .chip.muted {
+            border-color: #e5e7eb;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .posted {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .posted small {
+            display: block;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* clickable row (a11y) */
+        .jobs-table tbody tr[role="link"] {
+            cursor: pointer;
+        }
+
+        .jobs-table tbody tr[role="link"]:active {
+            transform: translateY(1px);
+        }
+
+        /* ===== Responsive (stack on mobile) ===== */
+        @media (max-width: 640px) {
+            .jobs-table thead {
+                display: none;
+            }
+
+            .jobs-table,
+            .jobs-table tbody,
+            .jobs-table tr,
+            .jobs-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .jobs-table tbody tr {
+                border: 1px solid var(--jt-border);
+                border-radius: 12px;
+                overflow: hidden;
+                margin-bottom: 12px;
+                box-shadow: 0 6px 18px rgba(2, 6, 23, .06);
+            }
+
+            .jobs-table tbody td {
+                border: 0;
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 12px 14px;
+            }
+
+            .jobs-table tbody td::before {
+                content: attr(data-label);
+                color: #6b7280;
+                font-weight: 600;
+            }
+
+            .jobs-table tbody td:first-child {
+                display: block;
+                padding: 14px 14px 6px;
+            }
+        }
+    </style>
 @endpush
 
 @section('content')
-  <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-           data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
-    <div class="container">
-      <div class="td_page_heading_in">
-        <h1 class="td_white_color td_fs_48 td_mb_10">Vacancies</h1>
-        <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-          <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-          <li class="breadcrumb-item active">Vacancies</li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="td_height_120 td_height_lg_80"></div>
-    <div class="container">
-
-      <div class="vc_search_wrap">
-        <form class="vc_search" action="{{ route('vacancies') }}" method="GET" role="search" aria-label="Vacancy search">
-          <input type="text" name="q" value="{{ $q }}" placeholder="Search vacancies by name or description..." autocomplete="off" />
-          <button class="td_btn td_style_1 td_medium" type="submit">
-            <span class="td_btn_in td_white_color td_accent_bg"><span>Search</span></span>
-          </button>
-          @if($q)
-            <a href="{{ route('vacancies') }}" class="td_btn td_style_2 td_medium" title="Clear search">
-              <span class="td_btn_in td_heading_color td_white_bg"><span>Clear</span></span>
-            </a>
-          @endif
-        </form>
-      </div>
-
-      <div class="td_height_40 td_height_lg_30"></div>
-
-      <div class="td_section_head_2">
-        <div class="td_section_head_2_left">
-          <span class="td_heading_color td_medium">
-            @if(method_exists($vacancies,'total'))
-              @if(($q ?? '') !== '')
-                {{ $vacancies->total() }} result(s) for “{{ $q }}”
-              @else
-                Showing {{ $vacancies->count() }} Vacancies of {{ $vacancies->total() }}
-              @endif
-            @else
-              {{ $q ? "Result for “{$q}”: " . count($vacancies) . " vacancy(ies)" : "Showing " . count($vacancies) . " Vacancies" }}
-            @endif
-          </span>
-        </div>
-        <div class="td_section_head_2_right">
-          <div class="td_section_head_select td_fs_20">
-            <b class="td_semibold td_heading_color">Sort By: </b>
-            <select class="td_form_field td_medium" disabled><option value="0">Featured</option></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="td_height_40 td_height_lg_30"></div>
-
-      @if($vacancies->count() > 0)
-        <div class="row td_gap_y_30 td_row_gap_30">
-          @foreach($vacancies as $vc)
-            <div class="col-lg-4 col-md-6">
-              <div class="vc_card">
-                <a href="{{ route('vacancies-details', $vc->id) }}" class="vc_thumb">
-                  @if(!empty($vc->imageUrl))
-                    <img src="{{ $vc->imageUrl }}" alt="{{ $vc->name }}">
-                  @else
-                    <img src="{{ asset('assets/img/placeholder/placeholder-800x500.jpg') }}" alt="{{ $vc->name }}">
-                  @endif
-
-                  <div class="vc_overlay_top">
-                    <span class="pill pill--light">{{ $vc->category->name ?? ($vc->category ?? 'Vacancy') }}</span>
-                    <span class="pill" title="Views">
-                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" />
-                      </svg>
-                      {{ number_format($vc->views ?? 0) }}
-                    </span>
-                  </div>
-
-                  <div class="vc_overlay_gradient"></div>
-
-                  <div class="vc_overlay_actions">
-                    <a href="{{ route('vacancies-details', $vc->id) }}" class="td_btn td_style_1 td_radius_10 td_medium">
-                      <span class="td_btn_in td_white_color td_accent_bg"><span>Details</span></span>
-                    </a>
-                    @if(!empty($vc->courseUrl))
-                      <a href="{{ $vc->courseUrl }}" target="_blank" rel="noopener" class="td_btn td_style_2 td_radius_10 td_medium">
-                        <span class="td_btn_in td_heading_color td_white_bg"><span>Apply</span></span>
-                      </a>
-                    @endif
-                  </div>
-                </a>
-
-                <div class="vc_body">
-                  <h2 class="vc_title">
-                    <a href="{{ route('vacancies-details', $vc->id) }}">{{ $vc->name }}</a>
-                  </h2>
-
-                  @php $desc = strip_tags($vc->description ?? ''); @endphp
-                  @if($desc)
-                    <p class="vc_desc td_heading_color td_opacity_7">{{ Str::limit($desc, 140) }}</p>
-                  @endif
-
-                  <div class="vc_actions">
-                    <a href="{{ route('vacancies-details', $vc->id) }}" class="td_btn td_style_1 td_radius_10 td_medium">
-                      <span class="td_btn_in td_white_color td_accent_bg"><span>Details</span></span>
-                    </a>
-                    @if(!empty($vc->courseUrl))
-                      <a href="{{ $vc->courseUrl }}" target="_blank" rel="noopener"
-                         class="td_btn td_style_2 td_radius_10 td_medium">
-                        <span class="td_btn_in td_heading_color td_white_bg"><span>Apply</span></span>
-                      </a>
-                    @endif
-                  </div>
-                </div>
-
-              </div>
+    <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center"
+        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+        <div class="container">
+            <div class="td_page_heading_in">
+                <h1 class="td_white_color td_fs_48 td_mb_10">Vacancies</h1>
+                <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Vacancies</li>
+                </ol>
             </div>
-          @endforeach
+        </div>
+    </section>
+
+    <div class="td_height_100 td_height_lg_70"></div>
+
+    <div class="container jobs-table-wrap">
+        <div class="jobs-card">
+            <table class="jobs-table">
+                <thead>
+                    <tr>
+                        <th style="width:60%">Vacancy</th>
+                        <th style="width:20%">Salary</th>
+                        <th style="width:20%">Posted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($vacancies as $v)
+                        @php
+                            $href = route('vacancies-details', $v->id);
+                            $title = $v->name;
+                            $salary = trim($v->salary ?? '');
+                            $isNA = $salary === '' || Str::upper($salary) === 'N / A' || Str::upper($salary) === 'N/A';
+                            $date = optional($v->created_at)->format('d F Y'); // 13 October 2025
+                            $diff = optional($v->created_at)->diffForHumans();
+                        @endphp
+                        <tr tabindex="0" role="link" onclick="window.location='{{ $href }}'"
+                            onkeypress="if(event.key==='Enter'){window.location='{{ $href }}'}">
+                            <td data-label="Vacancy">
+                                <a class="job-title" href="{{ $href }}">{{ $title }}</a>
+                                @if (!empty($v->city) || !empty($v->type))
+                                    <div class="mt-1" style="color:#64748b">
+                                        {{ $v->city ?? '' }} @if (!empty($v->city) && !empty($v->type))
+                                            ·
+                                        @endif {{ $v->type ?? '' }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td data-label="Salary">
+                                @if ($isNA)
+                                    <span class="chip muted">N / A</span>
+                                @else
+                                    <span class="chip"><i
+                                            class="fa-solid fa-money-bill-wave"></i>{{ $salary }}</span>
+                                @endif
+                            </td>
+                            <td data-label="Posted">
+                                <div class="posted">{{ $date }}</div>
+                                <small>{{ $diff }}</small>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center py-4" style="color:#64748b">Hələ vakansiya yoxdur.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        @if(method_exists($vacancies, 'links'))
-          <div class="td_height_60 td_height_lg_40"></div>
-          <div class="d-flex justify-content-center">
-            {{ $vacancies->appends(['q' => $q])->links() }}
-          </div>
+        @if (method_exists($vacancies, 'links'))
+            <div class="td_height_40"></div>
+            <div class="d-flex justify-content-center">
+                {{ $vacancies->links() }}
+            </div>
         @endif
-
-      @else
-        <div class="empty-state">
-          <div class="empty-title">{{ ($q ?? '') !== '' ? 'Axtardığınız üzrə nəticə tapılmadı' : 'Hələ vakansiya əlavə edilməyib' }}</div>
-          <div class="empty-desc">
-            @if(($q ?? '') !== '')
-              “{{ $q }}” üçün uyğun vakansiya tapılmadı. Başqa açar sözlə yoxlayın.
-            @else
-              Tezliklə yeni vakansiyalar burada görünəcək.
-            @endif
-          </div>
-          @if(($q ?? '') !== '')
-          <div class="td_height_20"></div>
-          <a href="{{ route('vacancies') }}" class="td_btn td_style_2 td_radius_10 td_medium">
-            <span class="td_btn_in td_heading_color td_white_bg"><span>Hamısını göstər</span></span>
-          </a>
-          @endif
-        </div>
-      @endif
-
-      <div class="td_height_60 td_height_lg_40"></div>
     </div>
+
     <div class="td_height_120 td_height_lg_80"></div>
-  </section>
 @endsection

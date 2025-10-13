@@ -25,7 +25,6 @@ class SettingSeeder extends Seeder
                 'twitter'   => 'https://twitter.com/educve',
                 'pinterest' => 'https://pinterest.com/educve',
                 'whatsapp'  => 'https://wa.me/19999999999',
-                // linkedin opsionaldır; yoxdursa controller Pinterest-i fallback kimi istifadə edə bilər
                 // 'linkedin' => 'https://www.linkedin.com/company/educve',
             ],
 
@@ -44,7 +43,13 @@ class SettingSeeder extends Seeder
                     'text' => 'View Our Program',
                     'url'  => 'courses-grid-view.html',
                 ],
-                // İstəsən sonra bg_image əlavə edərik
+                // Optional: 'bg_image' => 'assets/img/home_1/hero_bg_1.jpg',
+                // NEW: 3-lük düymə qrupu
+                'buttons'  => [
+                    ['text' => 'Apply Now',    'url' => 'courses-grid-view.html'],
+                    ['text' => 'Request Info', 'url' => 'signup.html'],
+                    ['text' => 'Chat With Us', 'url' => '#'],
+                ],
             ],
 
             // — HOME: About
@@ -99,10 +104,10 @@ class SettingSeeder extends Seeder
                 'subtitle' => 'Far far away, behind the word mountains...',
                 'cta'      => ['text' => 'View All Program', 'url' => 'courses-grid-view.html'],
                 'cards'    => [
-                    ['title' => 'Campus Student Life',    'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_1.jpg'],
-                    ['title' => 'Arts & Cultural Program','url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_2.jpg'],
-                    ['title' => 'Recreations & Wellness', 'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_3.jpg'],
-                    ['title' => 'Sports & Fitness',       'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_4.jpg'],
+                    ['title' => 'Campus Student Life',     'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_1.jpg'],
+                    ['title' => 'Arts & Cultural Program', 'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_2.jpg'],
+                    ['title' => 'Recreations & Wellness',  'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_3.jpg'],
+                    ['title' => 'Sports & Fitness',        'url' => 'course-details.html', 'image' => 'assets/img/home_1/campur_life_4.jpg'],
                 ],
             ],
 

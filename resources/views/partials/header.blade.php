@@ -148,7 +148,7 @@
                         @auth
                             @if (auth()->user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" class="td_btn td_style_1 td_medium">
-                                    <span class="td_btn_in td_white_color td_accent_bg"><span>Admin</span></span>
+                                    <span class="td_btn_in td_white_color td_accent_bg"><span>Admin panel</span></span>
                                 </a>
                             @endif
                         @endauth
