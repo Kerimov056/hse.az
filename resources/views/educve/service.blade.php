@@ -25,7 +25,7 @@
             }
         }
 
-        /* ==== SEARCH BAR (şüşə effektli, balanslı ölçü) ==== */
+        /* ==== SEARCH BAR ==== */
         .services-page .ui-search {
             max-width: 860px;
             margin: 0 auto 16px;
@@ -52,12 +52,12 @@
         }
 
         .services-page .ui-search .form-control::placeholder {
-            color: #94a3b8;
+            color: #94a3b8
         }
 
         .services-page .ui-search .form-control:focus {
             box-shadow: none;
-            outline: none;
+            outline: none
         }
 
         .services-page .ui-search .btn {
@@ -67,29 +67,29 @@
             gap: 8px;
             border: 0;
             padding: 0 16px;
-            font-weight: 600;
+            font-weight: 600
         }
 
         .services-page .ui-search .btn.btn-primary {
             background: linear-gradient(135deg, #7c3aed 0%, #2563eb 55%, #22c55e 100%);
-            color: #fff;
+            color: #fff
         }
 
         .services-page .ui-search .btn.btn-primary:hover {
-            filter: brightness(0.98);
+            filter: brightness(.98)
         }
 
         .services-page .ui-search .btn.btn-outline-secondary {
             background: #f8fafc;
             border-left: 1px solid rgba(2, 6, 23, .06);
-            color: #0f172a;
+            color: #0f172a
         }
 
         .services-page .ui-search .btn.btn-outline-secondary:hover {
-            background: #f1f5f9;
+            background: #f1f5f9
         }
 
-        /* ==== CARDS — standart ölçü + daha premium görünüş ==== */
+        /* ==== CARDS ==== */
         .services-page .td_card {
             display: flex;
             flex-direction: column;
@@ -101,7 +101,6 @@
             box-shadow: 0 6px 20px rgba(2, 6, 23, .06);
             transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
             will-change: transform;
-            /* reveal üçün ilkin vəziyyət (animasiya JS ilə) */
             opacity: 0;
             transform: translateY(18px);
         }
@@ -109,15 +108,14 @@
         .services-page .td_card:hover {
             transform: translateY(-3px);
             box-shadow: 0 12px 28px rgba(2, 6, 23, .10);
-            border-color: #dbe3f0;
+            border-color: #dbe3f0
         }
 
-        /* Thumb sabit hündürlük + radius */
         .services-page .td_card .td_card_thumb {
             border-radius: 14px 14px 0 0;
             overflow: hidden;
             display: block;
-            position: relative;
+            position: relative
         }
 
         .services-page .td_card .td_card_thumb img {
@@ -125,11 +123,9 @@
             height: var(--thumb-h);
             object-fit: cover;
             display: block;
-            aspect-ratio: 16 / 10;
-            /* dəstək olduqda daha stabil görünüş */
+            aspect-ratio: 16/10
         }
 
-        /* Şəkil üstü “chip” (kateqoriya) */
         .services-page .td_card .td_card_location {
             position: absolute;
             left: 14px;
@@ -140,7 +136,6 @@
             backdrop-filter: blur(2px);
         }
 
-        /* Sağ altda external ikon */
         .services-page .td_card .td_card_thumb .fa-arrow-up-right-from-square {
             position: absolute;
             right: 14px;
@@ -156,61 +151,58 @@
             opacity: .9;
         }
 
-        /* İç blok yüksəkliyi dolsun */
         .services-page .td_card .td_card_info {
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: var(--card-pad);
+            padding: var(--card-pad)
         }
 
         .services-page .td_card .td_card_info_in {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: 100%
         }
 
-        /* İki sətirlik başlıq, üç sətirlik təsvir */
         .services-page .td_card_title {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.2;
+            line-height: 1.2
         }
 
         .services-page .td_card p {
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
-            overflow: hidden;
+            overflow: hidden
         }
 
-        /* ==== SCROLL REVEAL ANİMASİYA ==== */
+        /* ==== SCROLL REVEAL ==== */
         @keyframes svcRevealIn {
             from {
                 opacity: 0;
-                transform: translateY(18px);
+                transform: translateY(18px)
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0)
             }
         }
 
         .services-page .td_card.revealed {
-            animation: svcRevealIn .6s cubic-bezier(.2, .65, .2, 1) forwards;
+            animation: svcRevealIn .6s cubic-bezier(.2, .65, .2, 1) forwards
         }
 
-        /* Boş vəziyyət */
+        /* Empty state */
         .services-empty {
             border: 1px dashed #cbd5e1;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 2rem
         }
 
-        /* Accessibility: sistemdə "az animasiya" aktivdirsə, animasiyanı söndür */
         @media (prefers-reduced-motion: reduce) {
             .services-page .td_card {
                 opacity: 1 !important;
@@ -225,7 +217,7 @@
 @section('content')
     <div class="services-page" id="services-page">
         <!-- Page Heading -->
-        <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
+        <section id="services-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
             data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
             <div class="container">
                 <div class="td_page_heading_in">
@@ -238,15 +230,12 @@
             </div>
             <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
             <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
-            <div class="td_page_heading_shape_3 position-absolute">
-                <img src="{{ asset('assets/img/others/page_heading_shape_3.svg') }}" alt="">
-            </div>
-            <div class="td_page_heading_shape_4 position-absolute">
-                <img src="{{ asset('assets/img/others/page_heading_shape_4.svg') }}" alt="">
-            </div>
-            <div class="td_page_heading_shape_5 position-absolute">
-                <img src="{{ asset('assets/img/others/page_heading_shape_5.svg') }}" alt="">
-            </div>
+            <div class="td_page_heading_shape_3 position-absolute"><img
+                    src="{{ asset('assets/img/others/page_heading_shape_3.svg') }}" alt=""></div>
+            <div class="td_page_heading_shape_4 position-absolute"><img
+                    src="{{ asset('assets/img/others/page_heading_shape_4.svg') }}" alt=""></div>
+            <div class="td_page_heading_shape_5 position-absolute"><img
+                    src="{{ asset('assets/img/others/page_heading_shape_5.svg') }}" alt=""></div>
             <div class="td_page_heading_shape_6 position-absolute td_hover_layer_3"></div>
         </section>
         <!-- End Page Heading -->
@@ -257,7 +246,7 @@
             <div class="container">
 
                 {{-- Search --}}
-                <div class="td_mb_30 ui-search" role="search" aria-label="Service search wrapper">
+                <div id="services-search" class="td_mb_30 ui-search" role="search" aria-label="Service search wrapper">
                     <form action="{{ route('services') }}" method="GET" role="search" aria-label="Service search">
                         <div class="input-group">
                             <input id="svc-search" type="text" name="q" class="form-control"
@@ -285,11 +274,9 @@
                 </div>
 
                 @if ($services->count() > 0)
-                    <div class="row td_gap_y_30 js-cards">
+                    <div id="services-grid" class="row td_gap_y_30 js-cards">
                         @foreach ($services as $idx => $svc)
-                            @php
-                                $img = $svc->imageUrl ?: asset('assets/img/placeholder/placeholder-800x500.jpg');
-                            @endphp
+                            @php $img = $svc->imageUrl ?: asset('assets/img/placeholder/placeholder-800x500.jpg'); @endphp
                             <div class="col-lg-6 d-flex"><!-- d-flex ki, kart h-100 olsun -->
                                 <div class="td_card td_style_1 td_radius_5 w-100 h-100">
                                     <a href="{{ route('service-details', $svc->id) }}"
@@ -348,9 +335,7 @@
                                             </h2>
 
                                             @php $desc = strip_tags($svc->description ?? ''); @endphp
-                                            <p class="td_mb_30 td_fs_18">
-                                                {{ $desc ? Str::limit($desc, 180) : ' ' }}
-                                            </p>
+                                            <p class="td_mb_30 td_fs_18">{{ $desc ? Str::limit($desc, 180) : ' ' }}</p>
 
                                             <div class="mt-auto d-flex gap-2">
                                                 <a href="{{ route('service-details', $svc->id) }}"
@@ -390,9 +375,7 @@
                     {{-- Pagination --}}
                     @if (method_exists($services, 'links'))
                         <div class="td_height_60 td_height_lg_40"></div>
-                        <div class="text-center">
-                            {{ $services->appends(['q' => $q])->links() }}
-                        </div>
+                        <div class="text-center">{{ $services->appends(['q' => $q])->links() }}</div>
                     @endif
                 @else
                     {{-- Empty state --}}
@@ -414,6 +397,9 @@
         </section>
         <!-- End Services List -->
     </div>
+
+    {{-- Coach-mark komponenti: bu səhifə üçün --}}
+    <x-section-guide page="services" />
 @endsection
 
 @push('scripts')
@@ -431,7 +417,7 @@
             }
         });
 
-        // Scroll reveal: kartlar görünəndə altdan-yuxarı animasiya (yüngül stagger ilə)
+        // Scroll reveal: kartlar görünəndə animasiya (yüngül stagger ilə)
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.services-page .td_card');
             if (!cards.length) return;
@@ -440,7 +426,6 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const idx = [...cards].indexOf(entry.target);
-                        // Eyni sətirdə olan kartlar arası kiçik gecikmə
                         entry.target.style.animationDelay = `${(idx % 6) * 70}ms`;
                         entry.target.classList.add('revealed');
                         io.unobserve(entry.target);

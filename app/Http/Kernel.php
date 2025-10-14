@@ -6,11 +6,6 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-    // Bu köhnədir; istəsən sil:
-    // protected $routeMiddleware = [
-    //     'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-    // ];
-
     protected $middleware = [
         \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
@@ -28,6 +23,9 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
+
+            \App\Http\Middleware\SetLocale::class,   // <<=== BUNU ƏLAVƏ ET
+
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
@@ -37,7 +35,7 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    // >>> Laravel 11/12: ROUTE MIDDLEWARE ALIAS-LARI BURADA OLMALIDIR <<<
+    // Laravel 12: alias-lar burada saxlanılır
     protected $middlewareAliases = [
         // Auth & session
         'auth'             => \App\Http\Middleware\Authenticate::class,
@@ -61,7 +59,10 @@ class Kernel extends HttpKernel
         'jwt.auth'         => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate::class,
         'jwt.refresh'      => \PHPOpenSourceSaver\JWTAuth\Http\Middleware\RefreshToken::class,
 
-        // >>> SƏNİN ADMIN ALIASIN
-        'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class, // <<< BURA MÜTLƏQ DAXİL OLSUN
+        // Admin
+        'admin'            => \App\Http\Middleware\EnsureUserIsAdmin::class,
+
+        // Locale (ehtiyat alias)
+        'localize'         => \App\Http\Middleware\SetLocale::class,
     ];
 }

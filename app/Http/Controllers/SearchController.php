@@ -35,6 +35,8 @@ class SearchController extends Controller
         $topics    = (clone $base)->type(Course::TYPE_TOPIC)->latest()->take(5)->get();
         $vacancies = (clone $base)->type(Course::TYPE_VACANCY)->latest()->take(5)->get();
 
+        
+
         // Resources (resources cədvəli)
         $resources = ResourceItem::query()
             ->with('type:id,name')

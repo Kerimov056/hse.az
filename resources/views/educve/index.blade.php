@@ -139,8 +139,8 @@
                     <div class="td_top_header_right">
                         @guest
                             <span>
-                                <a href="{{ route('auth.show', 'login') }}" class="">Login</a> /
-                                <a href="{{ route('auth.show', 'register') }}" class="">Register</a>
+                                <a href="{{ route('auth.show', 'login') }}" class="">{{ __('Sign in') }}</a> /
+                                <a href="{{ route('auth.show', 'register') }}" class="">{{ __('Sign up') }}</a>
                             </span>
                         @endguest
 
@@ -159,7 +159,7 @@
                                     @csrf
                                     <button type="submit" class="td_btn td_style_1 td_medium">
                                         <span class="td_btn_in td_white_color td_accent_bg">
-                                            <span>Logout</span>
+                                            <span>{{ __('Log out') }}</span>
                                         </span>
                                     </button>
                                 </form>
@@ -175,7 +175,7 @@
                     {{-- Left: Logo + Socials --}}
                     <div class="td_main_header_left">
                         <a class="td_site_branding" href="{{ route('home') }}">
-                            <img src="{{ asset('assets/img/logo.svg') }}" alt="Logo">
+                            <img src="{{ $logoUrl }}" alt="Logo">
                         </a>
                         {{-- Header Social (settings-driven) --}}
                         @php
@@ -227,25 +227,25 @@
                             <div class="td_nav_list_wrap">
                                 <div class="td_nav_list_wrap_in">
                                     <ul class="td_nav_list">
-                                        <li><a href="{{ route('home') }}">Home</a></li>
-                                        <li><a href="{{ route('faqss') }}">Faqs</a></li>
-                                        <li><a href="{{ route('about') }}">About Us</a></li>
-                                        <li><a href="{{ route('resources') }}">Resources</a></li>
+                                        <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                                        <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
+                                        <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
+                                        <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
                                     </ul>
                                     <a class="td_site_branding" href="{{ route('home') }}">
                                         <img src="{{ $logoUrl }}" alt="Logo">
                                     </a>
                                     <ul class="td_nav_list">
                                         <li class="menu-item-has-children">
-                                            <a href="{{ route('courses-grid-view') }}">Courses</a>
+                                            <a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a>
                                             <ul>
-                                                <li><a href="{{ route('services') }}">Services</a></li>
-                                                <li><a href="{{ route('topices') }}">Topices</a></li>
-                                                <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
+                                                <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                                                <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+                                                <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{{ route('team') }}">Team</a></li>
-                                        <li><a href="{{ route('contact') }}">Contact</a></li>
+                                        <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                                        <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -261,9 +261,9 @@
                                     class="td_header_dropdown_btn_icon">
                             </button>
                             <ul class="td_header_dropdown_list td_mp_0">
-                                <li><a href="#">English</a></li>
-                                <li><a href="#">Spanish</a></li>
-                                <li><a href="#">Russian</a></li>
+                                <li><a href="#" class="js-lang" data-locale="en">English</a></li>
+                                <li><a href="#" class="js-lang" data-locale="az">Azerbaijani</a></li>
+                                <li><a href="#" class="js-lang" data-locale="ru">Russian</a></li>
                             </ul>
                         </div>
 
@@ -392,7 +392,7 @@
                 </ul>
             </div>
             <div class="td_side_header_box">
-                <h3 class="td_side_header_title td_heading_color">Subscribe</h3>
+                <h3 class="td_side_header_title td_heading_color">{{ __('Subscribe') }}</h3>
                 <div class="td_newsletter td_style_1">
                     <form class="td_newsletter_form" action="{{ route('subscribe') }}" method="POST"
                         id="newsletterForm">
@@ -400,7 +400,8 @@
                         <input type="email" name="email" class="td_newsletter_input" placeholder="Email address"
                             required>
                         <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
-                            <span class="td_btn_in td_white_color td_accent_bg"><span>Subscribe Now</span></span>
+                            <span
+                                class="td_btn_in td_white_color td_accent_bg"><span>{{ __('Subscribe now') }}</span></span>
                         </button>
                     </form>
 
@@ -485,7 +486,8 @@
             : asset('assets/img/home_1/hero_bg_1.jpg');
     @endphp
 
-    <section class="td_hero td_style_1 td_heading_bg td_center td_bg_filed" data-src="{{ $bgUrl }}">
+    <section id="home-hero" class="td_hero td_style_1 td_heading_bg td_center td_bg_filed"
+        data-src="{{ $bgUrl }}">
         <div class="container">
             <div class="td_hero_text wow fadeInRight" data-wow-duration="0.9s" data-wow-delay="0.35s">
                 @if ($kicker)
@@ -615,7 +617,7 @@
         $cta = setting('home.about.cta', ['text' => 'More About', 'url' => 'courses-grid-view.html']);
     @endphp
 
-    <section>
+    <section id="home-about">
         <div class="td_height_120 td_height_lg_80"></div>
         <div class="td_about td_style_1">
             <div class="container">
@@ -683,7 +685,7 @@
 
 
     <!-- Start Popular Courses -->
-    <section class="td_gray_bg_3">
+    <section id="home-courses" class="td_gray_bg_3">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
@@ -697,10 +699,10 @@
             <div class="td_tabs">
                 <ul class="td_tab_links td_style_1 td_mp_0 td_fs_20 td_medium td_heading_color wow fadeInUp"
                     data-wow-duration="1s" data-wow-delay="0.2s">
-                    <li class="active"><a href="#tab_1">Courses</a></li>
-                    <li><a href="#tab_2">Services</a></li>
-                    <li><a href="#tab_3">Topics</a></li>
-                    <li><a href="#tab_4">Vacancies</a></li>
+                    <li class="active"><a href="#tab_1">{{ __('Courses') }}</a></li>
+                    <li><a href="#tab_2">{{ __('Services') }}</a></li>
+                    <li><a href="#tab_3">{{ __('Topics') }}</a></li>
+                    <li><a href="#tab_4">{{ __('Vacancies') }}</a></li>
                 </ul>
                 <div class="td_height_50 td_height_lg_50"></div>
                 <style>
@@ -956,7 +958,7 @@
         $list = array_slice(setting('home.features.list', []), 0, 4);
     @endphp
 
-    <section>
+    <section id="home-features">
         <div class="td_height_120 td_height_lg_80"></div>
         <div class="container">
             <div class="td_features td_style_1 td_hobble">
@@ -1046,7 +1048,7 @@
         };
     @endphp
 
-    <section class="td_accent_bg td_shape_section_1">
+    <section id="home-campus" class="td_accent_bg td_shape_section_1">
         <div class="td_shape_position_4 td_accent_color position-absolute">
             {{-- dekorativ svg-lər eyni qalır --}}
             <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
@@ -1248,7 +1250,7 @@
         }
     @endphp
 
-    <section>
+    <section id="home-resources">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center">
@@ -1597,7 +1599,7 @@
         $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : '#';
     @endphp
 
-    <section>
+    <section id="home-video-contact">
         <div class="td_video_block td_style_1 td_accent_bg td_bg_filed td_center text-center"
             data-src="{{ $bgUrl }}">
             <div class="container">
@@ -1656,7 +1658,7 @@
 
 
     <!-- Start Accreditation Showcase (replaces Event Schedule) -->
-    <section>
+    <section id="home-accreditations">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
 
@@ -1775,7 +1777,7 @@
 
 
     <!-- Start Team Highlight (replaces Testimonial) -->
-    <section class="td_heading_bg td_hobble">
+    <section id="home-team" class="td_heading_bg td_hobble">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
@@ -1904,7 +1906,7 @@
         };
     @endphp
 
-    <section>
+    <section id="home-departments">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
@@ -2009,29 +2011,31 @@
                     <div class="td_footer_widget">
                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Navigate</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li><a href="{{ route('faqss') }}">Faqs</a></li>
-                            <li><a href="{{ route('about') }}">About Us</a></li>
-                            <li><a href="{{ route('resources') }}">Resources</a></li>
-                            <li><a href="{{ route('team') }}">Team</a></li>
-                            <li><a href="{{ route('contact') }}">Contact</a></li>
+                            <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                            <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
+                            <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
+                            <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
+                            <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                            <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
-                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Courses</h2>
+                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                            {{ __('Courses') }}</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('courses-grid-view') }}">Courses</a></li>
-                            <li><a href="{{ route('services') }}">Services</a></li>
-                            <li><a href="{{ route('topices') }}">Topices</a></li>
-                            <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
+                            <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
+                            <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                            <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+                            <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
-                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Subscribe Now
+                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                            {{ __('Subscribe now') }}
                         </h2>
                         <div class="td_newsletter td_style_1">
                             <p class="td_mb_20 td_opacity_7">Far far away, behind the word mountains, far from the
@@ -2042,8 +2046,8 @@
                                 <input type="email" name="email" class="td_newsletter_input"
                                     placeholder="Email address" required>
                                 <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
-                                    <span class="td_btn_in td_white_color td_accent_bg"><span>Subscribe
-                                            Now</span></span>
+                                    <span
+                                        class="td_btn_in td_white_color td_accent_bg"><span>{{ __('Subscribe now') }}</span></span>
                                 </button>
                             </form>
 
@@ -2105,10 +2109,10 @@
         <div class="td_footer_bottom td_fs_18">
             <div class="container">
                 <div class="td_footer_bottom_in">
-                    <p class="td_copyright mb-0">Copyright ©educve | All Right Reserved</p>
+                    <p class="td_copyright mb-0">{{ __('Copyright') }}</p>
                     <ul class="td_footer_widget_menu">
-                        <li><a href="#"> Terms & Conditions</a></li>
-                        <li><a href="#">Privacy & Policy</a></li>
+                        <li><a href="#">{{ __('Terms & Conditions') }}</a></li>
+                        <li><a href="#">{{ __('Privacy & Policy') }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -2129,6 +2133,273 @@
     <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+
+
+    <script>
+        (function() {
+            function switchLocale(targetLocale) {
+                var locales = ['az', 'en', 'ru'];
+                var path = window.location.pathname;
+                var parts = path.replace(/^\/+/, '').split('/'); // remove leading slash then split
+                if (parts.length && locales.indexOf(parts[0]) !== -1) {
+                    parts[0] = targetLocale; // replace existing locale
+                } else {
+                    parts.unshift(targetLocale); // prepend locale
+                }
+                var newPath = '/' + parts.join('/');
+                var qs = window.location.search || '';
+                var hash = window.location.hash || '';
+                window.location.href = newPath + qs + hash;
+            }
+            document.addEventListener('click', function(e) {
+                var a = e.target.closest('a.js-lang');
+                if (a) {
+                    e.preventDefault();
+                    var loc = a.getAttribute('data-locale');
+                    if (loc) {
+                        switchLocale(loc);
+                    }
+                }
+            }, {
+                passive: false
+            });
+        })();
+    </script>
+
+    {{-- ===== Scroll-driven GUIDE (Settings-based) ===== --}}
+    @php
+        // Settings-dən gələn addımlar
+        $guideSections = collect(setting('ui.guides.index.sections', []))
+            ->map(function ($s) {
+                return [
+                    'sel' => trim((string) ($s['selector'] ?? '')),
+                    'title' => trim((string) ($s['title'] ?? '')),
+                    'text' => trim((string) ($s['text'] ?? '')),
+                ];
+            })
+            ->filter(fn($s) => $s['sel'] && $s['title'] && $s['text'])
+            ->values()
+            ->all();
+
+        // Fallback (əgər settings boşdursa) — 10-luq default
+        $fallbackSteps = [
+            [
+                'sel' => '#home-hero',
+                'title' => 'Başlanğıc paneli',
+                'text' =>
+                    'Ana vitrin: əsas dəyər təklifi, qısa izah və hərəkətə çağırışlar (CTA). Buradan istifadəçi ən qısa marşrutla kurslara və ya müraciətə yönlənir.',
+            ],
+            [
+                'sel' => '#home-about',
+                'title' => 'Haqqımızda (qısa icmal)',
+                'text' =>
+                    'Missiya, yanaşma və əsas üstünlüklər. İki şəkilli kompozisiya və dairəvi video düyməsi vizual etibarı yüksəldir; CTA isə uzun “About” səhifəsinə aparır.',
+            ],
+            [
+                'sel' => '#home-courses',
+                'title' => 'Populyar kurslar',
+                'text' =>
+                    'Tablarla “Courses/Services/Topics/Vacancies” bölmələrinə keçid. Kartlar vahid hündürlükdədir, başlıq və təsvir clamp olunub; “View Details” konversiyanı sadələşdirir.',
+            ],
+            [
+                'sel' => '#home-features',
+                'title' => 'Üstünlüklər (Campus)',
+                'text' =>
+                    'Şəkil + mətn kombinasiyası ilə dəyər təklifi: infrastruktur, mentor dəstəyi, praktik layihələr və ölçülə bilən nəticələr. 4 maddəlik siyahı fokus yaradır.',
+            ],
+            [
+                'sel' => '#home-campus',
+                'title' => 'Naviqasiya kartları',
+                'text' =>
+                    'Dörd istiqamətə sürətli keçid üçün mozaika kartlar. Hər kartda vizual vurğu, başlıq və kliklə dərhal yönləndirmə — “keçid sürəti” əsas prioritetdir.',
+            ],
+            [
+                'sel' => '#home-resources',
+                'title' => 'Resurslar & Yükləmələr',
+                'text' =>
+                    'Materiallar PDF/image/video kimi avtomatik önbaxışla göstərilir (pdf.js dəstəyi). “Featured” resurs solda, sağda isə üç kompakt kart — sürətli seçim üçün.',
+            ],
+            [
+                'sel' => '#home-video-contact',
+                'title' => 'Video təqdimat + əlaqə',
+                'text' =>
+                    'Qısa tanıtım videosu brend tonunu çatdırır; alt hissədə e-poçt və telefon üçün iri CTA qutuları var. Hədəf: sual yaranan kimi minimal sürtünmə ilə əlaqə.',
+            ],
+            [
+                'sel' => '#home-accreditations',
+                'title' => 'Akkreditasiyalar',
+                'text' =>
+                    'Tərəfdaşlıq və tanınmalar: solda “featured” loqo + tarix, sağda kompakt kartlar. Sosial sübut rolunu oynayır və şübhəni azaldır.',
+            ],
+            [
+                'sel' => '#home-team',
+                'title' => 'Komanda hekayəsi',
+                'text' =>
+                    'Ön plana çıxarılan ekspertin foto, qısa bio və bacarıq səviyyələri (progress bar). Yanındakı sürətli əməl düymələri “View Profile / Email / Call” verir.',
+            ],
+            [
+                'sel' => '#home-departments',
+                'title' => 'Fakültələr',
+                'text' =>
+                    '8-lik grid: hər bölmə üçün ikon + başlıq. “Birdən çox maraq nöqtəsi” ssenarisində istifadəçiyə geniş baxış imkanı yaradır.',
+            ],
+        ];
+    @endphp
+
+    <style>
+        .guide-bubble {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 9999;
+            max-width: 360px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 16px 40px rgba(2, 6, 23, .14);
+            padding: 14px 14px 14px 16px;
+        }
+
+        .guide-bubble h4 {
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827
+        }
+
+        .guide-bubble p {
+            margin: 0;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.45
+        }
+
+        .guide-count {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: auto
+        }
+
+        .guide-current {
+            outline: 2px dashed #e31b23;
+            outline-offset: 8px;
+            border-radius: 10px;
+            transition: outline-color .2s ease, outline-offset .2s ease;
+        }
+
+        @media (max-width: 575.98px) {
+            .guide-bubble {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+            }
+        }
+    </style>
+
+    <script>
+        (function() {
+            // Settings-dən gələn addımlar (əgər boşdursa fallback istifadə olunur)
+            const STEPS = @json($guideSections ?: $fallbackSteps, JSON_UNESCAPED_UNICODE);
+
+            // DOM-nu yüklə
+            const els = STEPS.map(s => document.querySelector(s.sel));
+
+            // Bubble UI
+            const bubble = document.createElement('div');
+            bubble.className = 'guide-bubble';
+            bubble.innerHTML = `
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21 11.5a8.5 8.5 0 1 1-3.2-6.6L22 4l-1.8 3.7A8.46 8.46 0 0 1 21 11.5Z" stroke="#e31b23" stroke-width="2"/>
+    </svg>
+    <h4 id="g-title" style="margin-right:auto">Guide</h4>
+    <span class="guide-count" id="g-count"></span>
+    <button id="g-close" type="button" aria-label="Close guide"
+      style="margin-left:8px;display:inline-grid;place-items:center;width:28px;height:28px;
+             border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <p id="g-text"></p>
+`;
+
+// Əvvəlcədən bağlanıbsa, heç nə göstərməyək
+if (localStorage.getItem('guide:about:closed') === '1') {
+  bubble.remove();
+  return;
+}
+
+// X düyməsi: bubble-i bağla və resursları təmizlə
+const closeBtn = bubble.querySelector('#g-close');
+closeBtn?.addEventListener('click', () => {
+  try { io?.disconnect?.(); } catch(_) {}
+  window.removeEventListener('scroll', chooseMostVisible, {passive:true});
+  window.removeEventListener('resize', chooseMostVisible, {passive:true});
+  window.removeEventListener('load',   chooseMostVisible);
+  // yadda saxla (istəməsən bu sətri sil)
+  localStorage.setItem('guide:about:closed', '1');
+  bubble.remove();
+});
+
+            document.body.appendChild(bubble);
+
+            let current = -1;
+
+            function setActive(idx) {
+                if (idx === current) return;
+                if (els[current]) els[current].classList.remove('guide-current');
+                current = idx;
+                const step = STEPS[current],
+                    node = els[current];
+                if (!step || !node) return;
+                node.classList.add('guide-current');
+                document.getElementById('g-title').textContent = step.title;
+                document.getElementById('g-text').textContent = step.text;
+                document.getElementById('g-count').textContent = (current + 1) + ' / ' + STEPS.length;
+            }
+
+            // Ekranda ən çox görünən section-u seç
+            function chooseMostVisible() {
+                const vh = innerHeight || document.documentElement.clientHeight;
+                let bestIdx = 0,
+                    bestScore = -1;
+                els.forEach((el, idx) => {
+                    if (!el) return;
+                    const r = el.getBoundingClientRect();
+                    const vis = Math.max(0, Math.min(vh, r.bottom) - Math.max(0, r.top)); // görünən hündürlük
+                    const score = vis * (r.width || 1);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestIdx = idx;
+                    }
+                });
+                setActive(bestIdx);
+            }
+
+            // Observer + scroll
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver(() => chooseMostVisible(), {
+                    root: null,
+                    rootMargin: '-10% 0px -10% 0px',
+                    threshold: [0, .1, .25, .5, .75, 1]
+                });
+                els.forEach(el => el && io.observe(el));
+            }
+            addEventListener('scroll', chooseMostVisible, {
+                passive: true
+            });
+            addEventListener('resize', chooseMostVisible, {
+                passive: true
+            });
+            addEventListener('load', chooseMostVisible);
+
+            // İlk aktivləşdirmə
+            chooseMostVisible();
+        })();
+    </script>
+
 
 </body>
 

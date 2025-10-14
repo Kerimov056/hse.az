@@ -56,7 +56,7 @@
             font-weight: 700
         }
 
-        /* Type chips (horizontal scroll on mobile) */
+        /* Type chips */
         .res-chips {
             display: flex;
             gap: .5rem;
@@ -211,8 +211,8 @@
         }
     </style>
 
-    {{-- Heading --}}
-    <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
+    {{-- Heading (selector üçün id əlavə olundu) --}}
+    <section id="resources-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
         data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
         <div class="container">
             <div class="td_page_heading_in">
@@ -262,7 +262,6 @@
                     </div>
                 </form>
 
-                {{-- Optional quick chips for type filter --}}
                 @if ($types->count())
                     <div class="mt-3 res-chips">
                         <a class="res-chip {{ $type_id == 0 ? 'active' : '' }}"
@@ -334,9 +333,7 @@
                                     </button>
 
                                     <a href="{{ $downloadUrl }}" class="btn btn-outline-primary rs_btn rs_btn-outline"
-                                        download>
-                                        Yüklə
-                                    </a>
+                                        download>Yüklə</a>
                                 </div>
                             </div>
 
@@ -419,7 +416,7 @@
                 const isVid = (e, m) => VID_EXTS.includes(e) || (m || '').startsWith('video/');
                 const isAud = (e, m) => AUD_EXTS.includes(e) || (m || '').startsWith('audio/');
                 const gviewUrl = (u) => 'https://docs.google.com/gview?embedded=1&url=' + encodeURIComponent(u);
-                const safeUrl = (u) => (u || '').replace(/&amp;/g, '&'); // Blade-dən gələn &amp; düzəlt
+                const safeUrl = (u) => (u || '').replace(/&amp;/g, '&');
 
                 const ICONS = {
                     file: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z"/><path d="M14 2v6h6"/></svg>`,
@@ -427,24 +424,20 @@
                     pdf: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z"/><path d="M14 2v6h6"/><text x="7" y="17" font-size="7" font-weight="800">PDF</text></svg>`
                 };
 
-                /* ---- Thumbnail builder (lazy) ---- */
                 async function buildThumb(el, urlRaw, mime, ext) {
                     const url = safeUrl(urlRaw);
                     el.innerHTML = (ext ? `<span class="rs_ext">${ext}</span>` : '');
 
-                    // Image
                     if (isImg(ext, mime)) {
                         el.insertAdjacentHTML('afterbegin', `<img class="rs_fit" src="${url}" alt="" loading="lazy">`);
                         return;
                     }
 
-                    // Video: autoplay vermirik; ikon
                     if (isVid(ext, mime)) {
                         el.insertAdjacentHTML('afterbegin', `<div class="rs_icon_wrap">${ICONS.play}</div>`);
                         return;
                     }
 
-                    // PDF: pdf.js → alınmasa Google Viewer
                     if (isPdf(ext, mime)) {
                         try {
                             const pdfjs = window['pdfjs-dist/build/pdf'];
@@ -455,7 +448,7 @@
                             }).promise;
                             const page = await pdf.getPage(1);
                             const viewport = page.getViewport({
-                                scale: 0.25
+                                scale: .25
                             });
                             const canvas = document.createElement('canvas');
                             canvas.width = viewport.width;
@@ -481,27 +474,23 @@
                         }
                     }
 
-                    // Audio
                     if (isAud(ext, mime)) {
                         el.insertAdjacentHTML('afterbegin', `<div class="rs_icon_wrap">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M11 5l-6 4H3v6h2l6 4z"/><path d="M19 12a4 4 0 0 0-4-4"/>
-        </svg>
-      </div>`);
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M11 5l-6 4H3v6h2l6 4z"/><path d="M19 12a4 4 0 0 0-4-4"/>
+            </svg>
+          </div>`);
                         return;
                     }
 
-                    // Office → ikon
                     if (isOffice(ext, mime)) {
                         el.insertAdjacentHTML('afterbegin', `<div class="rs_icon_wrap">${ICONS.file}</div>`);
                         return;
                     }
 
-                    // Digər
                     el.insertAdjacentHTML('afterbegin', `<div class="rs_icon_wrap">${ICONS.file}</div>`);
                 }
 
-                // Lazy load
                 const thumbs = document.querySelectorAll('.js-lazy-preview');
                 if ('IntersectionObserver' in window) {
                     const io = new IntersectionObserver((ents) => {
@@ -543,7 +532,6 @@
 
                     stage.innerHTML = '<span class="opacity-75">Yüklənir…</span>';
 
-                    // Image
                     if ((mime || '').startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg']
                         .includes(ext)) {
                         stage.innerHTML =
@@ -551,7 +539,6 @@
                         return;
                     }
 
-                    // PDF → birbaşa aç; problem olarsa viewer
                     if (ext === 'pdf' || mime === 'application/pdf') {
                         stage.innerHTML =
                             `<iframe src="${url}#page=1&view=FitH" style="width:100%;height:100%;border:0"></iframe>`;
@@ -565,27 +552,23 @@
                         return;
                     }
 
-                    // Video
                     if ((mime || '').startsWith('video/') || ['mp4', 'mov', 'webm', 'mkv', 'avi'].includes(ext)) {
                         stage.innerHTML =
                             `<video src="${url}" controls style="width:100%;height:100%;object-fit:contain"></video>`;
                         return;
                     }
 
-                    // Audio
                     if ((mime || '').startsWith('audio/') || ['mp3', 'wav', 'ogg', 'm4a'].includes(ext)) {
                         stage.innerHTML = `<audio src="${url}" controls style="width:90%"></audio>`;
                         return;
                     }
 
-                    // Office
                     if (OFFICE_EXTS.includes(ext) || (mime || '').includes('officedocument')) {
                         stage.innerHTML =
                             `<iframe src="${gviewUrl(url)}" style="width:100%;height:100%;border:0"></iframe>`;
                         return;
                     }
 
-                    // Fallback
                     stage.innerHTML = `<a class="btn btn-primary" href="${url}" download>Faylı yüklə</a>`;
                 });
 
@@ -596,4 +579,6 @@
         </script>
     @endverbatim
 
+    {{-- Coach-mark komponenti: 1 selector kifayətdir --}}
+    <x-section-guide page="resource" />
 @endsection

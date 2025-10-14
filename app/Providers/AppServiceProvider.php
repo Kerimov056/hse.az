@@ -22,35 +22,28 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        /**
-         * Register "gcs" disk for Google Cloud Storage (Flysystem v3)
-         */
+        // Google Cloud Storage disk
         Storage::extend('gcs', function ($app, $config) {
             $keyFilePath = $config['key_file_path'] ?? null;
 
             $client = new StorageClient([
-                'projectId' => $config['project_id'] ?? null,
-                // absolute və ya relative yol ola bilər:
+                'projectId'   => $config['project_id'] ?? null,
                 'keyFilePath' => $keyFilePath && !str_starts_with($keyFilePath, '/')
                     ? base_path($keyFilePath)
                     : $keyFilePath,
             ]);
 
-            $bucketName = $config['bucket'];
-            $bucket = $client->bucket($bucketName);
-
-            // prefix: məsələn "hse"
-            $prefix = $config['path_prefix'] ?? '';
-
-            $adapter = new GoogleCloudStorageAdapter($bucket, $prefix);
-            $filesystem = new Filesystem($adapter, [
+            $bucket      = $client->bucket($config['bucket']);
+            $prefix      = $config['path_prefix'] ?? '';
+            $adapter     = new GoogleCloudStorageAdapter($bucket, $prefix);
+            $filesystem  = new Filesystem($adapter, [
                 'visibility' => $config['visibility'] ?? 'public',
             ]);
 
-            // Laravel FilesystemAdapter qaytarırıq ki, Storage facade işləsin
             return new FilesystemAdapter($filesystem, $adapter, $config);
         });
 
+        // Qeyd: URL::defaults burda lazım deyil; SetLocale middleware-də edilir.
         Course::observe(CourseObserver::class);
         ResourceItem::observe(ResourceItemObserver::class);
     }

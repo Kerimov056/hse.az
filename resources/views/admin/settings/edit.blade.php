@@ -625,6 +625,196 @@
                 </div>
             </div>
 
+
+            {{-- UI: SECTION GUIDES --}}
+            @php
+                // Mövcud dəyərlər
+                $uiGuides = data_get($settings, 'ui.guides', []);
+
+                // Əgər seed edilməyibsə belə, default səhifə açarları göstər
+                $uiPages = [
+                    'index',
+                    'faqs',
+                    'about-us',
+                    'resource',
+                    'course',
+                    'topices',
+                    'vacancy',
+                    'team',
+                    'contact',
+                    'services',
+                ];
+
+                // Tabları göstərmək üçün birləşdir (mövcud + default)
+                $pages = array_values(array_unique(array_merge(array_keys($uiGuides ?: []), $uiPages)));
+            @endphp
+
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>UI – Section Guides (coach-mark)</span>
+                    <span class="section-note">Hər səhifə üçün izah buludlarını idarə et</span>
+                </div>
+
+                <div class="card-body">
+                    {{-- PAGE TABS --}}
+                    <ul class="nav nav-pills mb-3" id="guideTabs" role="tablist">
+                        @foreach ($pages as $i => $page)
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {{ $i === 0 ? 'active' : '' }}" id="tab-{{ $page }}"
+                                    data-bs-toggle="pill" data-bs-target="#pane-{{ $page }}" type="button"
+                                    role="tab" aria-controls="pane-{{ $page }}"
+                                    aria-selected="{{ $i === 0 ? 'true' : 'false' }}">
+                                    {{ $page }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="tab-content" id="guideTabContent">
+                        @foreach ($pages as $i => $page)
+                            @php
+                                $sections = data_get($uiGuides, "$page.sections", []);
+                            @endphp
+                            <div class="tab-pane fade {{ $i === 0 ? 'show active' : '' }}" id="pane-{{ $page }}"
+                                role="tabpanel" aria-labelledby="tab-{{ $page }}">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">Səhifə: <code>{{ $page }}</code></h6>
+                                    <button type="button" class="btn btn-sm btn-outline-primary js-add-guide"
+                                        data-page="{{ $page }}">
+                                        + Bölmə əlavə et
+                                    </button>
+                                </div>
+
+                                <div class="alert alert-light border small">
+                                    <div><b>İpucu:</b> <code>selector</code> CSS seçicisidir (məs:
+                                        <code>#services-hero</code>, <code>.hero .title</code>).
+                                    </div>
+                                    <div><b>trigger</b>: <code>load</code> (səhifə yüklənəndə) və ya <code>enter</code>
+                                        (element görünüşə daxil olanda)
+                                        .</div>
+                                    <div><b>once</b>: aktiv olarsa həmin cihazda yalnız bir dəfə göstəriləcək.</div>
+                                </div>
+
+                                <div class="guide-repeater" data-page="{{ $page }}">
+                                    @forelse($sections as $k => $row)
+                                        <div class="repeater-row" data-index="{{ $k }}">
+                                            <div class="row g-2 align-items-end">
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Selector</label>
+                                                    <input class="form-control"
+                                                        name="ui[guides][{{ $page }}][sections][{{ $k }}][selector]"
+                                                        value="{{ data_get($row, 'selector') }}"
+                                                        placeholder="#id yaxud .class">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Title</label>
+                                                    <input class="form-control"
+                                                        name="ui[guides][{{ $page }}][sections][{{ $k }}][title]"
+                                                        value="{{ data_get($row, 'title') }}" placeholder="Başlıq">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Trigger</label>
+                                                    <select class="form-select"
+                                                        name="ui[guides][{{ $page }}][sections][{{ $k }}][trigger]">
+                                                        @php $tr = data_get($row,'trigger','load'); @endphp
+                                                        <option value="load" @selected($tr === 'load')>load</option>
+                                                        <option value="enter" @selected($tr === 'enter')>enter</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Once?</label>
+                                                    @php $once = (bool) data_get($row,'once', true); @endphp
+                                                    <select class="form-select"
+                                                        name="ui[guides][{{ $page }}][sections][{{ $k }}][once]">
+                                                        <option value="1" @selected($once)>Yes</option>
+                                                        <option value="0" @selected(!$once)>No</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1 d-grid">
+                                                    <button type="button"
+                                                        class="btn btn-outline-danger remove-row">&times;</button>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">Text</label>
+                                                    <textarea class="form-control" rows="2"
+                                                        name="ui[guides][{{ $page }}][sections][{{ $k }}][text]" placeholder="İzah mətni...">{{ data_get($row, 'text') }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="text-muted small">Hələ bölmə əlavə edilməyib. “+ Bölmə əlavə et”
+                                            düyməsi ilə başlayın.</div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+
+            @push('scripts')
+                <script>
+                    /**
+                     * UI – Section Guides repeater
+                     * data-page atributuna görə input adlarını dinamik qurur.
+                     */
+                    document.querySelectorAll('.js-add-guide').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const page = btn.dataset.page;
+                            const wrap = document.querySelector(`.guide-repeater[data-page="${page}"]`);
+                            const idx = wrap.querySelectorAll('.repeater-row').length;
+
+                            const div = document.createElement('div');
+                            div.className = 'repeater-row';
+                            div.dataset.index = idx;
+                            div.innerHTML = `
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Selector</label>
+          <input class="form-control" name="ui[guides][${page}][sections][${idx}][selector]" placeholder="#id yaxud .class">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Title</label>
+          <input class="form-control" name="ui[guides][${page}][sections][${idx}][title]" placeholder="Başlıq">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Trigger</label>
+          <select class="form-select" name="ui[guides][${page}][sections][${idx}][trigger]">
+            <option value="load" selected>load</option>
+            <option value="enter">enter</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Once?</label>
+          <select class="form-select" name="ui[guides][${page}][sections][${idx}][once]">
+            <option value="1" selected>Yes</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="col-md-1 d-grid">
+          <button type="button" class="btn btn-outline-danger remove-row">&times;</button>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Text</label>
+          <textarea class="form-control" rows="2" name="ui[guides][${page}][sections][${idx}][text]" placeholder="İzah mətni..."></textarea>
+        </div>
+      </div>`;
+                            wrap.appendChild(div);
+                        });
+                    });
+
+                    // Silmə
+                    document.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('remove-row')) {
+                            e.target.closest('.repeater-row')?.remove();
+                        }
+                    });
+                </script>
+            @endpush
+
+
+
             <div class="sticky-save p-3 mt-3">
                 <div class="d-grid d-md-flex gap-2">
                     <button class="btn btn-success btn-lg flex-fill flex-md-grow-0">

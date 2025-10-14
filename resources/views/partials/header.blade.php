@@ -1,5 +1,28 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
+@php
+    $siteName = setting('site.name', 'Educve');
+    $phone = setting('site.phone'); // "+23 (000) 68 603"
+    $email = setting('site.email'); // "support@educat.com"
+    $address = setting('site.address'); // "66 broklyn golden street, New York, USA"
+    $tagline = setting(
+        'site.tagline',
+        'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
+    );
+
+    // 1) site.logo üstünlük; 2) branding.logo fallback
+    $logoPath = setting('site.logo') ?: setting('branding.logo');
+
+    $logoUrl = null;
+    if ($logoPath) {
+        $logoUrl = \Illuminate\Support\Str::startsWith($logoPath, ['http', '/storage', 'assets/'])
+            ? asset($logoPath)
+            : asset('storage/' . ltrim($logoPath, '/'));
+    }
+
+    // tel: üçün yalnız rəqəm və + saxla
+    $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
+@endphp
 
 <head>
     <!-- Meta Tags -->
@@ -140,8 +163,8 @@
                     <div class="td_top_header_right">
                         @guest
                             <span>
-                                <a href="{{ route('auth.show', 'login') }}" class="">Login</a> /
-                                <a href="{{ route('auth.show', 'register') }}" class="">Register</a>
+                                <a href="{{ route('auth.show', 'login') }}" class="">{{ __('Sign in') }}</a> /
+                                <a href="{{ route('auth.show', 'register') }}" class="">{{ __('Sign up') }}</a>
                             </span>
                         @endguest
 
@@ -160,7 +183,7 @@
                                     @csrf
                                     <button type="submit" class="td_btn td_style_1 td_medium">
                                         <span class="td_btn_in td_white_color td_accent_bg">
-                                            <span>Logout</span>
+                                            <span>{{ __('Log out') }}</span>
                                         </span>
                                     </button>
                                 </form>
@@ -190,20 +213,21 @@
                             <div class="td_nav_list_wrap">
                                 <div class="td_nav_list_wrap_in">
                                     <ul class="td_nav_list">
-                                        <li><a href="{{ route('home') }}">Home</a></li>
-                                        <li><a href="{{ route('faqss') }}">Faqs</a></li>
-                                        <li><a href="{{ route('about') }}">About Us</a></li>
-                                        <li><a href="{{ route('resources') }}">Resources</a></li>
+                                        <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                                        <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
+                                        <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
+                                        <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
                                         <li class="menu-item-has-children">
-                                            <a href="{{ route('courses-grid-view') }}">Courses</a>
+                                            <a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a>
                                             <ul>
-                                                <li><a href="{{ route('services') }}">Services</a></li>
-                                                <li><a href="{{ route('topices') }}">Topices</a></li>
-                                                <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
+                                                <a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a>
+                                                <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                                                <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+                                                <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{{ route('team') }}">Team</a></li>
-                                        <li><a href="{{ route('contact') }}">Contact</a></li>
+                                        <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                                        <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
                                     </ul>
                                 </div>
                             </div>

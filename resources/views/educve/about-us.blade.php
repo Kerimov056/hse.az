@@ -3,8 +3,8 @@
 @section('title', 'About Us')
 
 @section('content')
-    <!-- Page heading -->
-    <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
+    <!-- Page heading (Selector #1) -->
+    <section id="about-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
         data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
         <div class="container">
             <div class="td_page_heading_in">
@@ -26,8 +26,9 @@
         <div class="td_page_heading_shape_6 position-absolute td_hover_layer_3"></div>
     </section>
 
-    {{-- About Section (settings-driven) --}}
+    {{-- About Section (settings-driven) — Selector #2 --}}
     @php
+        use Illuminate\Support\Str;
 
         $est = setting('home.about.est_year', 'EST 1995');
         $kicker = setting('home.about.kicker', 'About us');
@@ -63,7 +64,7 @@
         $cta = setting('home.about.cta', ['text' => 'More About', 'url' => 'courses-grid-view.html']);
     @endphp
 
-    <section>
+    <section id="about-overview">
         <div class="td_height_120 td_height_lg_80"></div>
         <div class="td_about td_style_1">
             <div class="container">
@@ -127,30 +128,25 @@
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
 
-    <!-- ACCREDITATIONS — Mosaic + Table Accordion (SYNC) -->
-    <section style="padding:100px 0;background:linear-gradient(180deg,#890c25 0%,#6e081e 100%);">
+    <!-- ACCREDITATIONS — Selector #3 -->
+    <section id="about-accreditations" style="padding:100px 0;background:linear-gradient(180deg,#890c25 0%,#6e081e 100%);">
         <div class="container">
-
-            <!-- Head -->
             <div style="margin-bottom:24px;">
                 <p
                     style="margin:0 0 6px;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#fff;font-weight:600;">
                     Accreditation</p>
-                <h2 style="margin:0 0 6px;font-size:40px;line-height:1.2;color:#fff;font-weight:800;">
-                    Recognitions &amp; Partnerships
-                </h2>
-                <p style="margin:0;color:#fff;opacity:.85;font-size:18px;">
-                    Our international recognitions and training partners.
-                </p>
+                <h2 style="margin:0 0 6px;font-size:40px;line-height:1.2;color:#fff;font-weight:800;">Recognitions &amp;
+                    Partnerships</h2>
+                <p style="margin:0;color:#fff;opacity:.85;font-size:18px;">Our international recognitions and training
+                    partners.</p>
             </div>
 
             <div class="row g-4 align-items-stretch">
-                <!-- LEFT: logo mosaic -->
                 <div class="col-lg-6">
                     @if ($accreditations->count())
                         <div style="display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr));">
                             @foreach ($accreditations->take(6) as $lg)
-                                <div data-acc-go="{{ $lg->id }}" {{-- ← sağdakı sətirə bağlayan ID --}}
+                                <div data-acc-go="{{ $lg->id }}"
                                     style="min-height:110px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.12);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s,background .2s;cursor:pointer;">
                                     <img src="{{ $lg->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
                                         alt="{{ $lg->name ?? 'Accreditation' }}"
@@ -163,13 +159,11 @@
                     @endif
                 </div>
 
-                <!-- RIGHT: compact table accordion -->
                 <div class="col-lg-6">
                     @if ($accreditations->count())
                         <div id="accTable"
                             style="background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(17,24,39,.12);">
 
-                            <!-- table head -->
                             <div
                                 style="display:grid;grid-template-columns:72px 1fr 120px 46px;align-items:center;background:#f8fafc;border-bottom:1px solid #e5e7eb;font-weight:700;color:#111;">
                                 <div style="padding:12px 14px;">Logo</div>
@@ -181,7 +175,6 @@
                             @foreach ($accreditations as $i => $a)
                                 <div data-acc-row data-id="{{ $a->id }}" {{ $i === 0 ? 'data-open=1' : '' }}
                                     style="display:grid;grid-template-columns:72px 1fr 120px 46px;align-items:center;border-bottom:1px solid #f1f5f9;background:#fff;cursor:pointer;">
-                                    <!-- logo -->
                                     <div style="padding:12px 14px;">
                                         <div
                                             style="width:44px;height:44px;border-radius:10px;border:1px solid #ececec;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -190,15 +183,12 @@
                                                 style="max-width:100%;max-height:100%;object-fit:contain;">
                                         </div>
                                     </div>
-                                    <!-- title -->
                                     <div style="padding:12px 14px;">
                                         <div style="font-weight:700;color:#111">{{ $a->name ?? 'Accreditation' }}</div>
                                     </div>
-                                    <!-- date -->
                                     <div style="padding:12px 14px;color:#6b7280;font-size:14px;">
                                         {{ optional($a->created_at)->format('M d, Y') }}
                                     </div>
-                                    <!-- toggle -->
                                     <div style="padding:12px 14px;">
                                         <button type="button" data-acc-toggle
                                             style="width:32px;height:32px;border:0;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;cursor:pointer;">
@@ -210,7 +200,6 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <!-- description -->
                                     <div data-acc-desc
                                         style="grid-column:1 / -1;border-top:1px dashed #e5e7eb;max-height:{{ $i === 0 ? '400px' : '0' }};overflow:hidden;transition:max-height .25s ease;">
                                         <div data-acc-inner
@@ -234,93 +223,66 @@
         </div>
     </section>
 
-    {{-- ===== JS: accordion + mosaic sync ===== --}}
+    {{-- JS for accordion sync (unchanged) --}}
     <script>
         (function() {
             const rows = Array.from(document.querySelectorAll('[data-acc-row]'));
 
             function setHeight(row) {
-                const desc = row.querySelector('[data-acc-desc]');
-                const inner = row.querySelector('[data-acc-inner]');
-                if (!desc || !inner) return;
-                if (row.dataset.open === '1') {
-                    // real content height
-                    desc.style.maxHeight = inner.scrollHeight + 'px';
-                } else {
-                    desc.style.maxHeight = '0px';
-                }
+                const d = row.querySelector('[data-acc-desc]');
+                const i = row.querySelector('[data-acc-inner]');
+                if (!d || !i) return;
+                d.style.maxHeight = row.dataset.open === '1' ? i.scrollHeight + 'px' : '0px';
             }
 
             function openRow(row) {
                 rows.forEach(r => {
-                    const isTarget = r === row;
-                    r.dataset.open = isTarget ? '1' : '0';
-                    const icon = r.querySelector('[data-acc-icon]');
-                    if (icon) icon.style.transform = isTarget ? 'rotate(90deg)' : 'rotate(0deg)';
+                    const on = r === row;
+                    r.dataset.open = on ? '1' : '0';
+                    const ic = r.querySelector('[data-acc-icon]');
+                    if (ic) ic.style.transform = on ? 'rotate(90deg)' : 'rotate(0deg)';
                     setHeight(r);
                 });
             }
-
-            // Row click (anywhere on row except the toggle button which also lives here)
             rows.forEach(r => {
-                r.addEventListener('click', (e) => {
-                    // stop double handling when clicking the button
+                r.addEventListener('click', e => {
                     if (e.target.closest('[data-acc-toggle]')) return;
                     openRow(r);
                 });
-                // Explicit toggle button also supported
-                const btn = r.querySelector('[data-acc-toggle]');
-                if (btn) {
-                    btn.addEventListener('click', (e) => {
+                const b = r.querySelector('[data-acc-toggle]');
+                if (b) {
+                    b.addEventListener('click', e => {
                         e.stopPropagation();
                         openRow(r);
                     });
                 }
             });
-
-            // Initial heights
             rows.forEach(setHeight);
-
-            // Resize: recompute open row heights
-            window.addEventListener('resize', () => {
-                rows.forEach(r => {
-                    if (r.dataset.open === '1') setHeight(r);
-                });
-            }, {
+            addEventListener('resize', () => rows.forEach(r => r.dataset.open === '1' && setHeight(r)), {
                 passive: true
             });
-
-            // ===== Left mosaic -> open matching row on click
-            document.querySelectorAll('[data-acc-go]').forEach(tile => {
-                tile.addEventListener('click', () => {
-                    const id = tile.getAttribute('data-acc-go');
-                    const target = document.querySelector(`[data-acc-row][data-id="${id}"]`);
-                    if (!target) return;
-                    openRow(target);
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'nearest'
-                    });
+            document.querySelectorAll('[data-acc-go]').forEach(t => t.addEventListener('click', () => {
+                const id = t.getAttribute('data-acc-go');
+                const target = document.querySelector(`[data-acc-row][data-id="${id}"]`);
+                if (!target) return;
+                openRow(target);
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
                 });
-            });
+            }));
         })();
     </script>
 
-
-    <!-- WHO WE ARE + MISSION / VISION (animated + Times New Roman) -->
-    <section class="who-section" style="padding:100px 0;">
+    <!-- WHO WE ARE + MISSION / VISION — Selector #4 -->
+    <section id="about-who" class="who-section" style="padding:100px 0;">
         <div class="container">
-
             <style>
-                /* ===== FONT (Times New Roman) — yalnız bu bölməyə tətbiq ===== */
                 .who-section,
                 .who-section * {
                     font-family: "Times New Roman", Times, serif !important;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
                 }
 
-                /* ===== Cards ===== */
                 .who-card {
                     --scale: 1;
                     --shadow: 0 4px 14px rgba(0, 0, 0, .04);
@@ -332,11 +294,7 @@
                     padding: var(--pad);
                     box-shadow: var(--shadow);
                     transform: scale(var(--scale));
-                    transition:
-                        transform .30s cubic-bezier(.2, .8, .2, 1),
-                        box-shadow .30s ease,
-                        border-color .30s ease;
-                    will-change: transform;
+                    transition: transform .30s cubic-bezier(.2, .8, .2, 1), box-shadow .30s, border-color .30s;
                 }
 
                 .who-card:hover {
@@ -361,7 +319,6 @@
                     --font-mult: 1.06
                 }
 
-                /* ===== Scroll-in animations ===== */
                 .fly {
                     opacity: 0;
                     will-change: transform, opacity;
@@ -385,7 +342,6 @@
                     transform: translateX(0) translateY(0)
                 }
 
-                /* stagger (tiny delay per element) */
                 .stagger-1 {
                     transition-delay: .05s
                 }
@@ -398,7 +354,6 @@
                     transition-delay: .18s
                 }
 
-                /* Accessibility */
                 @media (prefers-reduced-motion: reduce) {
 
                     .who-card,
@@ -413,8 +368,7 @@
             <div class="td_section_heading td_style_1 text-center fly fly-up stagger-1">
                 <p
                     class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    Who we are?
-                </p>
+                    Who we are?</p>
                 <h2 class="td_section_title td_fs_40 mb-0">HSE.AZ LLC</h2>
             </div>
 
@@ -443,24 +397,18 @@
             </div>
         </div>
 
-        <!-- Scroll-in JS (robust) -->
         <script>
             (function() {
                 const els = document.querySelectorAll('.who-section .fly');
-                if (!els.length) {
-                    return;
-                }
+                if (!els.length) return;
 
-                function revealVisibleNow() { // initial check for elements already in viewport
-                    const vh = window.innerHeight || document.documentElement.clientHeight;
+                function revealVisibleNow() {
+                    const vh = innerHeight || document.documentElement.clientHeight;
                     els.forEach(el => {
                         const r = el.getBoundingClientRect();
-                        if (r.top < vh * 0.9) {
-                            el.classList.add('in-view');
-                        }
+                        if (r.top < vh * 0.9) el.classList.add('in-view');
                     });
                 }
-
                 if ('IntersectionObserver' in window) {
                     const io = new IntersectionObserver((entries) => {
                         entries.forEach(en => {
@@ -474,20 +422,17 @@
                         rootMargin: '-5% 0px -5% 0px',
                         threshold: 0.12
                     });
-
                     els.forEach(el => io.observe(el));
-                    // In case some were already visible before observer fires:
                     requestAnimationFrame(revealVisibleNow);
                 } else {
-                    // Fallback — show immediately
                     els.forEach(el => el.classList.add('in-view'));
                 }
             })();
         </script>
     </section>
 
-    <!-- Services – titles only -->
-    <section class="td_accent_bg td_shape_section_1" style="padding:100px 0;">
+    <!-- Services – titles only — Selector #5 -->
+    <section id="about-services" class="td_accent_bg td_shape_section_1" style="padding:100px 0;">
         <div class="container">
             <div class="row td_gap_y_20">
                 <div class="col-lg-5">
@@ -516,7 +461,7 @@
         </div>
     </section>
 
-    <!-- Blog & Articles – Courses -->
+    <!-- Blog (unchanged) -->
     <section>
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
@@ -563,4 +508,195 @@
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
+
+    {{-- ===== Scroll-driven GUIDE (Settings-based for About) ===== --}}
+    @php
+        $guideSections = collect(setting('ui.guides.about-us.sections', []))
+            ->map(
+                fn($s) => [
+                    'sel' => trim((string) ($s['selector'] ?? '')),
+                    'title' => trim((string) ($s['title'] ?? '')),
+                    'text' => trim((string) ($s['text'] ?? '')),
+                ],
+            )
+            ->filter(fn($s) => $s['sel'] && $s['title'] && $s['text'])
+            ->values()
+            ->all();
+
+        // Fallback (settings boşdursa)
+        $fallbackSteps = [
+            [
+                'sel' => '#about-hero',
+                'title' => 'Başlanğıc',
+                'text' => 'Səhifənin hero hissəsi. Buradan ümumi başlıq və breadcrumb görünür.',
+            ],
+            [
+                'sel' => '#about-overview',
+                'title' => 'İcmal',
+                'text' => 'Haqqımızda bölməsinin əsas məzmunu, şəkillər və CTA düyməsi.',
+            ],
+            [
+                'sel' => '#about-accreditations',
+                'title' => 'Akkreditasiya',
+                'text' => 'Tərəfdaşlarımızın loqoları və cədvəl-akkordeon təsviri.',
+            ],
+            [
+                'sel' => '#about-who',
+                'title' => 'Kimik?',
+                'text' => 'Who we are mətni, Vision və Mission kartları (scroll animasiya ilə).',
+            ],
+            [
+                'sel' => '#about-services',
+                'title' => 'Xidmətlər',
+                'text' => 'Xidmətlərin qısa siyahısı, hər biri detal səhifəsinə açılır.',
+            ],
+        ];
+    @endphp
+
+    <style>
+        .guide-bubble {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 9999;
+            max-width: 360px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 16px 40px rgba(2, 6, 23, .14);
+            padding: 14px 14px 14px 16px;
+        }
+
+        .guide-bubble h4 {
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827
+        }
+
+        .guide-bubble p {
+            margin: 0;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.45
+        }
+
+        .guide-count {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: auto
+        }
+
+        .guide-current {
+            outline: 2px dashed #e31b23;
+            outline-offset: 8px;
+            border-radius: 10px;
+            transition: outline-color .2s ease, outline-offset .2s ease;
+        }
+
+        @media (max-width:575.98px) {
+            .guide-bubble {
+                left: 12px;
+                right: 12px;
+                bottom: 12px
+            }
+        }
+    </style>
+
+    <script>
+        (function() {
+            const STEPS = @json($guideSections ?: $fallbackSteps, JSON_UNESCAPED_UNICODE);
+            const els = STEPS.map(s => document.querySelector(s.sel));
+
+            const bubble = document.createElement('div');
+            bubble.className = 'guide-bubble';
+                  bubble.innerHTML = `
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M21 11.5a8.5 8.5 0 1 1-3.2-6.6L22 4l-1.8 3.7A8.46 8.46 0 0 1 21 11.5Z" stroke="#e31b23" stroke-width="2"/>
+    </svg>
+    <h4 id="g-title" style="margin-right:auto">Guide</h4>
+    <span class="guide-count" id="g-count"></span>
+    <button id="g-close" type="button" aria-label="Close guide"
+      style="margin-left:8px;display:inline-grid;place-items:center;width:28px;height:28px;
+             border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <p id="g-text"></p>
+`;
+
+
+    // Əvvəlcədən bağlanıbsa, heç nə göstərməyək
+if (localStorage.getItem('guide:about:closed') === '1') {
+  bubble.remove();
+  return;
+}
+
+// X düyməsi: bubble-i bağla və resursları təmizlə
+const closeBtn = bubble.querySelector('#g-close');
+closeBtn?.addEventListener('click', () => {
+  try { io?.disconnect?.(); } catch(_) {}
+  window.removeEventListener('scroll', chooseMostVisible, {passive:true});
+  window.removeEventListener('resize', chooseMostVisible, {passive:true});
+  window.removeEventListener('load',   chooseMostVisible);
+  // yadda saxla (istəməsən bu sətri sil)
+  localStorage.setItem('guide:about:closed', '1');
+  bubble.remove();
+});
+            document.body.appendChild(bubble);
+
+            let current = -1;
+
+            function setActive(idx) {
+                if (idx === current) return;
+                if (els[current]) els[current].classList.remove('guide-current');
+                current = idx;
+                const step = STEPS[current],
+                    node = els[current];
+                if (!step || !node) return;
+                node.classList.add('guide-current');
+                document.getElementById('g-title').textContent = step.title;
+                document.getElementById('g-text').textContent = step.text;
+                document.getElementById('g-count').textContent = (current + 1) + ' / ' + STEPS.length;
+            }
+
+            function chooseMostVisible() {
+                const vh = innerHeight || document.documentElement.clientHeight;
+                let bestIdx = 0,
+                    bestScore = -1;
+                els.forEach((el, idx) => {
+                    if (!el) return;
+                    const r = el.getBoundingClientRect();
+                    const vis = Math.max(0, Math.min(vh, r.bottom) - Math.max(0, r.top));
+                    const score = vis * (r.width || 1);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestIdx = idx;
+                    }
+                });
+                setActive(bestIdx);
+            }
+
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver(() => chooseMostVisible(), {
+                    root: null,
+                    rootMargin: '-10% 0px -10% 0px',
+                    threshold: [0, .1, .25, .5, .75, 1]
+                });
+                els.forEach(el => el && io.observe(el));
+            }
+            addEventListener('scroll', chooseMostVisible, {
+                passive: true
+            });
+            addEventListener('resize', chooseMostVisible, {
+                passive: true
+            });
+            addEventListener('load', chooseMostVisible);
+            chooseMostVisible();
+        })();
+    </script>
+
 @endsection

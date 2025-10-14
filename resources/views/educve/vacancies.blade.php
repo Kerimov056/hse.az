@@ -12,7 +12,7 @@
             --jt-border: #e5e7eb;
             --jt-bg: #ffffff;
             --jt-head-bg: #f43f5e;
-            /* qırmızı başlıq (istəsən dəyiş) */
+            /* qırmızı başlıq */
             --jt-head-color: #fff;
             --jt-row-hover: #fff7f7;
             --jt-shadow: 0 10px 28px rgba(2, 6, 23, .08);
@@ -23,13 +23,13 @@
             border: 1px solid var(--jt-border);
             border-radius: var(--jt-radius);
             box-shadow: var(--jt-shadow);
-            overflow: hidden;
+            overflow: hidden
         }
 
         .jobs-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0;
+            border-spacing: 0
         }
 
         .jobs-table thead th {
@@ -41,46 +41,46 @@
             font-weight: 700;
             letter-spacing: .2px;
             padding: 14px 16px;
-            text-align: left;
+            text-align: left
         }
 
         .jobs-table thead th:first-child {
-            padding-left: 24px;
+            padding-left: 24px
         }
 
         .jobs-table tbody td:first-child {
-            padding-left: 24px;
+            padding-left: 24px
         }
 
         .jobs-table tbody td {
             padding: 14px 16px;
             border-bottom: 1px solid var(--jt-border);
             vertical-align: middle;
-            color: #0f172a;
+            color: #0f172a
         }
 
         .jobs-table tbody tr {
             background: #fff;
-            transition: background .15s ease, transform .15s ease;
+            transition: background .15s ease, transform .15s ease
         }
 
         .jobs-table tbody tr:nth-child(odd) {
-            background: #fcfcff;
+            background: #fcfcff
         }
 
         .jobs-table tbody tr:hover {
-            background: var(--jt-row-hover);
+            background: var(--jt-row-hover)
         }
 
         .job-title {
             font-weight: 800;
             color: #111827;
-            text-decoration: none;
+            text-decoration: none
         }
 
         .job-title:hover {
             text-decoration: underline;
-            text-underline-offset: 2px;
+            text-underline-offset: 2px
         }
 
         .chip {
@@ -94,40 +94,38 @@
             border: 1px solid #fecaca;
             background: #fff1f2;
             color: #b91c1c;
-            white-space: nowrap;
+            white-space: nowrap
         }
 
         .chip.muted {
             border-color: #e5e7eb;
             background: #f8fafc;
             color: #475569;
-            font-weight: 600;
+            font-weight: 600
         }
 
         .posted {
             color: #0f172a;
-            font-weight: 600;
+            font-weight: 600
         }
 
         .posted small {
             display: block;
             color: #64748b;
-            font-weight: 500;
+            font-weight: 500
         }
 
-        /* clickable row (a11y) */
         .jobs-table tbody tr[role="link"] {
-            cursor: pointer;
+            cursor: pointer
         }
 
         .jobs-table tbody tr[role="link"]:active {
-            transform: translateY(1px);
+            transform: translateY(1px)
         }
 
-        /* ===== Responsive (stack on mobile) ===== */
-        @media (max-width: 640px) {
+        @media (max-width:640px) {
             .jobs-table thead {
-                display: none;
+                display: none
             }
 
             .jobs-table,
@@ -135,7 +133,7 @@
             .jobs-table tr,
             .jobs-table td {
                 display: block;
-                width: 100%;
+                width: 100%
             }
 
             .jobs-table tbody tr {
@@ -143,7 +141,7 @@
                 border-radius: 12px;
                 overflow: hidden;
                 margin-bottom: 12px;
-                box-shadow: 0 6px 18px rgba(2, 6, 23, .06);
+                box-shadow: 0 6px 18px rgba(2, 6, 23, .06)
             }
 
             .jobs-table tbody td {
@@ -151,25 +149,26 @@
                 display: flex;
                 justify-content: space-between;
                 gap: 12px;
-                padding: 12px 14px;
+                padding: 12px 14px
             }
 
             .jobs-table tbody td::before {
                 content: attr(data-label);
                 color: #6b7280;
-                font-weight: 600;
+                font-weight: 600
             }
 
             .jobs-table tbody td:first-child {
                 display: block;
-                padding: 14px 14px 6px;
+                padding: 14px 14px 6px
             }
         }
     </style>
 @endpush
 
 @section('content')
-    <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center"
+    {{-- Coach-mark üçün 1 dənə selector kifayətdir: #vacancy-hero --}}
+    <section id="vacancy-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center"
         data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
         <div class="container">
             <div class="td_page_heading_in">
@@ -201,7 +200,7 @@
                             $title = $v->name;
                             $salary = trim($v->salary ?? '');
                             $isNA = $salary === '' || Str::upper($salary) === 'N / A' || Str::upper($salary) === 'N/A';
-                            $date = optional($v->created_at)->format('d F Y'); // 13 October 2025
+                            $date = optional($v->created_at)->format('d F Y');
                             $diff = optional($v->created_at)->diffForHumans();
                         @endphp
                         <tr tabindex="0" role="link" onclick="window.location='{{ $href }}'"
@@ -247,4 +246,7 @@
     </div>
 
     <div class="td_height_120 td_height_lg_80"></div>
+
+    {{-- Coach-mark komponenti --}}
+    <x-section-guide page="vacancy" />
 @endsection

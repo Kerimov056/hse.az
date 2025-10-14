@@ -83,6 +83,16 @@ class SettingController extends Controller
             'home.hero.buttons'           => 'nullable|array|max:3',
             'home.hero.buttons.*.text'    => 'nullable|string|max:120',
             'home.hero.buttons.*.url'     => 'nullable|string|max:255',
+
+
+            // VALIDATION daxilinə əlavə et:
+            'ui.guides'                         => 'nullable|array',
+            'ui.guides.*.sections'              => 'nullable|array|max:12',
+            'ui.guides.*.sections.*.selector'   => 'nullable|string|max:120',
+            'ui.guides.*.sections.*.title'      => 'nullable|string|max:120',
+            'ui.guides.*.sections.*.text'       => 'nullable|string|max:1000',
+            'ui.guides.*.sections.*.trigger'    => 'nullable|in:load,enter',
+            'ui.guides.*.sections.*.once'       => 'nullable|in:0,1',
         ]);
 
         // BRANDING
@@ -233,6 +243,31 @@ class SettingController extends Controller
         }
         Arr::set($hero, 'buttons', $btnSaved);
         $this->write('home.hero', $hero);
+
+
+        // ===== UI.GUIDES =====
+        // Köhnəni götür, yeni ilə birləşdir (selektor boşdursa at)
+        $guidesInput = $r->input('ui.guides', []);
+        $normalized  = [];
+        foreach ($guidesInput as $pageKey => $cfg) {
+            $sectionsIn  = $cfg['sections'] ?? [];
+            $sectionsOut = [];
+            foreach ($sectionsIn as $row) {
+                $sel = trim((string)($row['selector'] ?? ''));
+                if ($sel === '') {
+                    continue;
+                }
+                $sectionsOut[] = [
+                    'selector' => $sel,
+                    'title'    => $row['title']   ?? null,
+                    'text'     => $row['text']    ?? null,
+                    'trigger'  => in_array(($row['trigger'] ?? 'enter'), ['load', 'enter']) ? $row['trigger'] : 'enter',
+                    'once'     => (bool)($row['once'] ?? true),
+                ];
+            }
+            $normalized[$pageKey] = ['sections' => $sectionsOut];
+        }
+        $this->write('ui.guides', $normalized ?: setting('ui.guides', []));
 
         Cache::forget('settings:merged');
         return back()->with('ok', 'Settings updated');

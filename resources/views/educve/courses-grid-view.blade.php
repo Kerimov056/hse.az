@@ -182,15 +182,14 @@
     }
 
     .btn-wide {
-        min-width: 100px;
+        min-width: 100px
     }
 
     .btn-wide .td_btn_in {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: .9rem 1.15rem;
-        /* daha qalın görünüş */
+        padding: .9rem 1.15rem
     }
 
     /* actions */
@@ -244,13 +243,12 @@
 
 <!-- Header -->
 <header class="td_site_header td_style_1 td_type_2 td_sticky_header td_medium td_heading_color">
-    {{-- ... sənin mövcud header-in eynilə qalır ... --}}
-    {{-- (Heç nəyi dəyişmədim ki, nav strukturun pozulmasın) --}}
+    {{-- mövcud header olduğu kimi qalır --}}
 </header>
 <!-- End Header -->
 
 <!-- Page Heading -->
-<section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
+<section id="courses-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
     data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
     <div class="container">
         <div class="td_page_heading_in">
@@ -282,8 +280,8 @@
 
         {{-- Search --}}
         <div class="courses-search-wrap">
-            <form class="courses-search" action="{{ route('courses-grid-view') }}" method="GET" role="search"
-                aria-label="Course search">
+            <form id="courses-search" class="courses-search" action="{{ route('courses-grid-view') }}" method="GET"
+                role="search" aria-label="Course search">
                 <input type="text" name="q" value="{{ $q }}"
                     placeholder="Search by name or description..." autocomplete="off" />
                 <button class="td_btn td_style_1 td_medium" type="submit">
@@ -331,7 +329,7 @@
 
         {{-- GRID --}}
         @if ($courses->count() > 0)
-            <div class="row td_gap_y_30 td_row_gap_30">
+            <div id="courses-grid" class="row td_gap_y_30 td_row_gap_30">
                 @foreach ($courses as $course)
                     <div class="col-lg-4 col-md-6">
                         <article class="course-card">
@@ -344,7 +342,7 @@
                                 @else
                                     <img src="{{ asset('assets/img/placeholder/placeholder-800x500.jpg') }}"
                                         alt="{{ $course->name }}">
-                                @endif>
+                                @endif
 
                                 <div class="media-grad"></div>
 
@@ -405,7 +403,6 @@
                                                 class="td_btn_in td_heading_color td_white_bg"><span>Visit</span></span>
                                         </a>
                                     @endif
-
                                 </div>
                             </div>
 
@@ -451,3 +448,6 @@
     </div>
     <div class="td_height_120 td_height_lg_80"></div>
 </section>
+
+{{-- Coach-mark komponenti: bu səhifə üçün --}}
+<x-section-guide page="course" />

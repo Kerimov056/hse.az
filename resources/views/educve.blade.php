@@ -58,7 +58,7 @@
 <div class="td_nav_list_wrap_in">
 <ul class="td_nav_list">
 <li class="menu-item-has-children">
-<a href="/educve/index.html">Home</a>
+<a href="/educve/index.html">{{ __("Home") }}</a>
 <ul>
 <li><a href="/educve/index.html">University</a></li>
 <li><a href="/educve/home-v2.html">Online Educations</a></li>
@@ -71,7 +71,7 @@
 </ul>
 </li>
 <li class="menu-item-has-children">
-<a href="/educve/products.html">Courses</a>
+<a href="/educve/products.html">{{ __("Courses") }}</a>
 <ul>
 <li><a href="/educve/courses-grid-view.html">Courses Grid View</a></li>
 <li><a href="/educve/courses-list-view.html">Courses List View</a></li>
@@ -109,7 +109,7 @@
 <li class="menu-item-has-children">
 <h4>Shop Pages</h4>
 <ul>
-<li><a href="/educve/faqs.html">Faqs</a></li>
+<li><a href="/educve/faqs.html">{{ __("Faqs") }}</a></li>
 <li><a href="/educve/cart.html">Cart</a></li>
 <li><a href="/educve/checkout.html">Checkout</a></li>
 <li><a href="/educve/error.html">Error</a></li>
@@ -125,7 +125,7 @@
 <li><a href="/educve/blog-details.html">Blog Details</a></li>
 </ul>
 </li>
-<li><a href="/educve/contact.html">Contact</a></li>
+<li><a href="/educve/contact.html">{{ __("Contact") }}</a></li>
 </ul>
 </div>
 </div>
@@ -138,10 +138,10 @@
 <img alt="" class="td_header_dropdown_btn_icon" src="/educve/assets/img/icons/world.svg"/>
 </button>
 <ul class="td_header_dropdown_list td_mp_0">
-<li><a href="#">English</a></li>
-<li><a href="#">Spanish</a></li>
-<li><a href="#">Russian</a></li>
-</ul>
+                                <li><a href="#" class="js-lang" data-locale="en">English</a></li>
+                                <li><a href="#" class="js-lang" data-locale="az">Azerbaijani</a></li>
+                                <li><a href="#" class="js-lang" data-locale="ru">Russian</a></li>
+                            </ul>
 </div>
 <div class="position-relative">
 <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
@@ -2333,9 +2333,9 @@
 <div class="td_footer_widget">
 <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Navigate</h2>
 <ul class="td_footer_widget_menu">
-<li><a href="/educve/index.html">Home</a></li>
+<li><a href="/educve/index.html">{{ __("Home") }}</a></li>
 <li><a href="/educve/about.html">About</a></li>
-<li><a href="/educve/contact.html">Contact</a></li>
+<li><a href="/educve/contact.html">{{ __("Contact") }}</a></li>
 <li><a href="/educve/contact.html">Refund</a></li>
 <li><a href="#">Help Center</a></li>
 <li><a href="#">Privacy Policy</a></li>
@@ -2344,7 +2344,7 @@
 </div>
 <div class="td_footer_col">
 <div class="td_footer_widget">
-<h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Courses</h2>
+<h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">{{ __("Courses") }}</h2>
 <ul class="td_footer_widget_menu">
 <li><a href="/educve/course-details.html">Business Coach</a></li>
 <li><a href="/educve/course-details.html">Development Coach</a></li>
@@ -2413,5 +2413,33 @@
 <script src="/educve/assets/js/jquery-ui.min.js"></script>
 <script src="/educve/assets/js/wow.min.js"></script>
 <script src="/educve/assets/js/main.js"></script>
+
+    <script>
+    (function(){
+      function switchLocale(targetLocale){
+        var locales = ['az','en','ru'];
+        var path = window.location.pathname;
+        var parts = path.replace(/^\/+/, '').split('/'); // remove leading slash then split
+        if (parts.length && locales.indexOf(parts[0]) !== -1){
+          parts[0] = targetLocale; // replace existing locale
+        } else {
+          parts.unshift(targetLocale); // prepend locale
+        }
+        var newPath = '/' + parts.join('/');
+        var qs = window.location.search || '';
+        var hash = window.location.hash || '';
+        window.location.href = newPath + qs + hash;
+      }
+      document.addEventListener('click', function(e){
+        var a = e.target.closest('a.js-lang');
+        if (a){
+          e.preventDefault();
+          var loc = a.getAttribute('data-locale');
+          if (loc){ switchLocale(loc); }
+        }
+      }, {passive:false});
+    })();
+    </script>
+    
 </body>
 </html>
