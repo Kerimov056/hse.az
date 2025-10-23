@@ -63,84 +63,283 @@
     {{-- resources/views/partials/header.blade.php --}}
     <header class="td_site_header td_style_1 td_type_3 td_sticky_header td_medium td_heading_color">
         <style>
-            /* TOP BAR layout: sol daha geniş, sağ kompakt */
+            .container {
+                max-width: 100%;
+                padding-left: 100px;
+                padding-right: 100px;
+            }
+
             .td_top_header_in {
                 display: flex;
                 align-items: center;
                 gap: 16px;
+                width: 100%;
             }
 
             .td_top_header_left {
                 flex: 1 1 auto;
-                /* SOL: genişlənsin */
+                max-width: calc(100% - 220px);
                 overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .typed-text {
+                font-weight: 950;
+                font-size: 14px;
+                color: #fff;
+                white-space: pre;
+                display: inline-block;
             }
 
             .td_top_header_right {
                 flex: 0 0 auto;
-                /* SAĞ: məzmun qədər */
                 display: flex;
                 align-items: center;
                 gap: 12px;
                 white-space: nowrap;
             }
 
-            /* Marquee (soldan sağa, dərhal başlasın) */
-            .ticker {
-                position: relative;
-                overflow: hidden;
-                height: 28px;
+            /* MAIN HEADER */
+            .td_main_header_in {
                 display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+            }
+
+            /* Left block now holds logo + primary nav in a single row */
+            .td_header_bar_left {
+                display: flex;
+                align-items: center;
+                gap: 28px;
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .td_site_branding {
+                display: inline-flex;
                 align-items: center;
             }
 
-            .ticker__inner {
-                --speed: 18s;
-                /* sürət (istəyə görə dəyiş) */
-                display: inline-block;
+            .td_site_branding img {
+                height: 48px;
+                width: auto;
+                display: block;
+            }
+
+            /* Nav sits directly to the right of the logo */
+            .td_nav {
+                flex: 1 1 auto;
+            }
+
+            .td_nav_list_wrap {
+                overflow: visible;
+            }
+
+            .td_nav_list_wrap_in {
+                display: block;
+            }
+
+            .td_nav_list {
+                display: inline-flex;
+                align-items: center;
+                gap: 20px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
                 white-space: nowrap;
-                padding-inline-end: 60%;
-                /* döngüdə soldan təmiz başlasın */
-                animation: ticker-ltr var(--speed) linear infinite;
-                will-change: transform;
-                animation-delay: 0s;
+            }
+
+            .td_nav_list>li {
+                position: relative;
+            }
+
+            .td_nav_list>li>a {
+                display: inline-block;
+                padding: 12px 6px;
+            }
+
+            /* Dropdowns */
+            .td_nav_list>li.menu-item-has-children>ul {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: #fff;
+                min-width: 220px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+                padding: 8px 0;
+                margin: 0;
+                list-style: none;
+                display: none;
+                z-index: 50;
+            }
+
+            .td_nav_list>li.menu-item-has-children:hover>ul {
+                display: block;
+            }
+
+            .td_nav_list>li.menu-item-has-children>ul>li>a {
+                display: block;
+                padding: 10px 14px;
+            }
+
+            /* Right controls area */
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 0 0 auto;
+            }
+
+            /* Optional: collapse nav spacing a bit on narrower widths */
+            @media (max-width: 1200px) {
+                .td_nav_list {
+                    gap: 14px;
+                }
+
+                .container {
+                    padding-left: 24px;
+                    padding-right: 24px;
+                }
+            }
+
+            /* Very small screens—let your theme’s hamburger takeover */
+            @media (max-width: 992px) {
+                .td_nav {
+                    display: none;
+                }
+            }
+
+
+            /* --- Right cluster layout tweaks --- */
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            /* Language & Search keep their spacing consistent */
+            .td_language_wrap {
+                margin-right: 4px;
+            }
+
+            /* --- Social buttons --- */
+            .td_header_social_btns {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .td_social_btn {
+                --btn-bg: rgba(15, 23, 42, .06);
+                /* default soft bg */
+                --btn-icon: #0f172a;
+                /* default icon */
+                --btn-ring: rgba(15, 23, 42, .25);
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: var(--btn-bg);
+                color: var(--btn-icon);
+                border: 1px solid rgba(15, 23, 42, .06);
+                box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
+                transition: background .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+            }
+
+            .td_social_btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(15, 23, 42, .10);
+                border-color: rgba(15, 23, 42, .10);
+            }
+
+            /* Focus for keyboard users */
+            .td_social_btn:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px var(--btn-ring);
+            }
+
+            /* Brand hover accents (icon turns white, bg turns brand) */
+            .td_social_btn--fb:hover {
+                background: #1877F2;
                 color: #fff;
-                font-weight: 600;
             }
 
-            /* Hover-da pauza (istəməsən sil) */
-            .ticker:hover .ticker__inner {
-                animation-play-state: paused;
+            .td_social_btn--tw:hover {
+                background: #111;
+                color: #fff;
             }
 
-            /* 0%-dan sol kənardan başlasın, sağa getsin; bitəndə yenə sola sıçrayır */
-            @keyframes ticker-ltr {
-                0% {
-                    transform: translateX(0);
-                }
+            /* X */
+            .td_social_btn--ig:hover {
+                background: radial-gradient(120% 120% at 0% 100%, #feda75, #d62976 50%, #962fbf 75%, #4f5bd5);
+                color: #fff;
+            }
 
-                100% {
-                    transform: translateX(100%);
+            .td_social_btn--li:hover {
+                background: #0A66C2;
+                color: #fff;
+            }
+
+            .td_social_btn--wa:hover {
+                background: #25D366;
+                color: #fff;
+            }
+
+            /* Dark mode friendly defaults */
+            @media (prefers-color-scheme: dark) {
+                .td_social_btn {
+                    --btn-bg: rgba(255, 255, 255, .06);
+                    --btn-icon: #e5e7eb;
+                    --btn-ring: rgba(255, 255, 255, .35);
+                    border-color: rgba(255, 255, 255, .08);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
                 }
+            }
+
+            /* Reduce motion support */
+            @media (prefers-reduced-motion: reduce) {
+
+                .td_social_btn,
+                .td_social_btn:hover {
+                    transition: none;
+                    transform: none;
+                }
+            }
+
+            /* Optional: make the search button visually match pills */
+            .td_circle_btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: rgba(15, 23, 42, .06);
+                border: 1px solid rgba(15, 23, 42, .06);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .td_circle_btn:hover {
+                background: rgba(15, 23, 42, .10);
             }
         </style>
+
+        <!-- TOP STRIP -->
         <div class="td_top_header td_heading_bg td_white_color">
             <div class="container">
                 <div class="td_top_header_in">
                     <div class="td_top_header_left">
-                        <div class="ticker" role="marquee" aria-label="Site notice">
-                            <div class="ticker__inner">
-                                Welcome to the first occupational health, safety, environmental web portal!
-                            </div>
-                        </div>
+                        <div class="typed-text" id="typedText"></div>
                     </div>
-
 
                     <div class="td_top_header_right">
                         @guest
                             <span>
-                                <a href="{{ route('auth.show', 'login') }}" class="">{{ __('Sign in') }}</a> /
-                                <a href="{{ route('auth.show', 'register') }}" class="">{{ __('Sign up') }}</a>
+                                <a href="{{ route('auth.show', 'login') }}">{{ __('Sign in') }}</a> /
+                                <a href="{{ route('auth.show', 'register') }}">{{ __('Sign up') }}</a>
                             </span>
                         @endguest
 
@@ -150,9 +349,7 @@
                                     <span class="td_btn_in td_white_color td_accent_bg"><span>Admin Panel</span></span>
                                 </a>
                             @endif
-                        @endauth
 
-                        @auth
                             <div class="d-inline-flex align-items-center gap-3">
                                 <span class="td_medium">{{ Auth::user()->name }}</span>
                                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
@@ -169,103 +366,153 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            (function() {
+                const text =
+                    "The Constitution of the Republic of Azerbaijan, Article 35/VI Everyone has right to work in safe and healthy workplace.... Welcome to the first health, safety, environmental web portal of Azerbaijan.";
+                const typedText = document.getElementById('typedText');
+                if (!typedText) return;
+                let i = 0;
+
+                function tick() {
+                    if (i < text.length) {
+                        typedText.innerHTML += text.charAt(i++);
+                        setTimeout(tick, 50);
+                    }
+                }
+                window.addEventListener('load', tick);
+            })();
+        </script>
+
+        <!-- MAIN HEADER -->
         <div class="td_main_header">
             <div class="container-fluid">
                 <div class="td_main_header_in">
-                    {{-- Left: Logo + Socials --}}
-                    <div class="td_main_header_left">
-                        <a class="td_site_branding" href="{{ route('home') }}">
+
+                    <!-- LEFT: Logo + Main Nav (side-by-side) -->
+                    <div class="td_header_bar_left">
+                        <a class="td_site_branding" href="{{ route('home') }}" aria-label="Logo">
                             <img src="{{ $logoUrl }}" alt="Logo">
                         </a>
-                        {{-- Header Social (settings-driven) --}}
-                        @php
-                            $fb = setting('social.facebook');
-                            $tw = setting('social.twitter');
-                            $ig = setting('social.instagram');
-                            $pin = setting('social.pinterest'); // fallback üçün saxlayırıq
-                            $wa = setting('social.whatsapp'); // tercihen wa.me/…
-                            // LinkedIn: varsa onu götür, yoxdursa Pinterest URL-ni istifadə et
-                            $li = setting('social.linkedin', $pin);
 
-                            // Linkləri təhlükəsiz açmaq üçün atributlar
-                            $attrs = 'target="_blank" rel="noopener noreferrer"';
-                        @endphp
-
-                        <div class="td_header_social_btns">
-                            @if ($fb)
-                                <a href="{{ $fb }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-facebook-f"></i></a>
-                            @endif
-
-                            @if ($tw)
-                                <a href="{{ $tw }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-x-twitter"></i></a>
-                            @endif
-
-                            @if ($ig)
-                                <a href="{{ $ig }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-instagram"></i></a>
-                            @endif
-
-                            {{-- Pinterest göstərilmir. Onun yerinə LinkedIn gəlir (Pinterest URL fallback kimi) --}}
-                            @if ($li)
-                                <a href="{{ $li }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                            @endif
-
-                            @if ($wa)
-                                <a href="{{ $wa }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-whatsapp"></i></a>
-                            @endif
-                        </div>
-
-                    </div>
-
-                    {{-- Center: Nav + center-logo --}}
-                    <div class="td_main_header_center">
-                        <nav class="td_nav">
+                        <!-- PRIMARY NAVIGATION -->
+                        <nav class="td_nav" aria-label="Primary">
                             <div class="td_nav_list_wrap">
                                 <div class="td_nav_list_wrap_in">
                                     <ul class="td_nav_list">
+                                        <!-- 1) Home -->
                                         <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
-                                        <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
-                                        <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
-                                        <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
-                                    </ul>
-                                    <a class="td_site_branding" href="{{ route('home') }}">
-                                        <img src="{{ $logoUrl }}" alt="Logo">
-                                    </a>
-                                    <ul class="td_nav_list">
+
+                                        <!-- 2) About Us (dropdown) -->
                                         <li class="menu-item-has-children">
-                                            <a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a>
+                                            <a href="{{ route('about') }}">{{ __('About Us') }}</a>
                                             <ul>
-                                                <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
-                                                <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
-                                                <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
+                                                <li><a href="{{ route('about') }}">{{ __('Who we are') }}</a>
+                                                </li>
+                                                <li><a href="{{ route('about') }}">{{ __('Vision & Mission') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('about') }}">{{ __('Licenses & Accreditations') }}</a>
+                                                </li>
+                                                <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                                                <li><a href="{{ route('faqss') }}">{{ __('FAQ') }}</a></li>
                                             </ul>
                                         </li>
-                                        <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+
+                                        <!-- 3) Contact -->
                                         <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
+                                        <!-- 4) Services (dropdown) -->
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('services') }}">{{ __('Services') }}</a>
+                                            <ul>
+                                                <li><a
+                                                        href="{{ route('services') }}?q=Training">{{ __('Training') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('services') }}?q=Consultancy">{{ __('Consultancy') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('services') }}?q=Evacuation%20Map">{{ __('Evacuation Map') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('services') }}?q=Instruction%20Books">{{ __('Instruction Books') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('services') }}?q=Safety%20Signs">{{ __('Safety Signs') }}</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+
+                                        <!-- 5) Training (dropdown) -->
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('courses-grid-view') }}">{{ __('Training') }}</a>
+                                            <ul>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=IOSH">{{ __('IOSH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=NEBOSH">{{ __('NEBOSH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=CIEH">{{ __('CIEH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=IIRSM">{{ __('IIRSM') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=NSC">{{ __('NSC') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=Local%20Training">{{ __('Local Training') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=E-learning">{{ __('E-learning') }}</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+
+                                        <!-- 6) Resources -->
+                                        <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
+
+                                        <!-- 7) Topics -->
+                                        <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+
+                                        <!-- 8) Vacancies -->
+                                        <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </nav>
                     </div>
 
-                    {{-- Right: Language + Search + Auth quick controls + Hamburger --}}
+                    <!-- RIGHT: Language + Search + Socials + Hamburger -->
                     <div class="td_main_header_right">
+                        @php
+                            $labels = ['en' => __('English'), 'az' => __('Azerbaijani'), 'ru' => __('Russian')];
+                            $currentLocale = app()->getLocale();
+                        @endphp
+
                         <div class="position-relative td_language_wrap">
-                            <button class="td_header_dropdown_btn td_medium td_heading_color">
-                                <span>English</span>
+                            <button class="td_header_dropdown_btn td_medium td_heading_color" type="button">
+                                <span
+                                    data-current-lang-label>{{ $labels[$currentLocale] ?? strtoupper($currentLocale) }}</span>
                                 <img src="{{ asset('assets/img/icons/world.svg') }}" alt=""
                                     class="td_header_dropdown_btn_icon">
                             </button>
                             <ul class="td_header_dropdown_list td_mp_0">
-                                <li><a href="#" class="js-lang" data-locale="en">English</a></li>
-                                <li><a href="#" class="js-lang" data-locale="az">Azerbaijani</a></li>
-                                <li><a href="#" class="js-lang" data-locale="ru">Russian</a></li>
+                                @foreach ($labels as $code => $label)
+                                    <li>
+                                        {{-- data-lang → JS instant switch; href → istəsən URL-lə də keçid etsin --}}
+                                        <a href="{{ url($code) }}" data-lang="{{ $code }}"
+                                            hreflang="{{ $code }}" rel="alternate">{{ $label }}</a>
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
+
 
                         <div class="position-relative" id="globalSearch">
                             <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
@@ -279,65 +526,110 @@
                                         <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt="">
                                     </button>
                                 </form>
-
-                                <!-- AJAX nəticələr burada çıxacaq -->
                                 <div id="globalSearchResults" style="display:none;"></div>
                             </div>
                         </div>
-                        <script>
-                            (function() {
-                                const root = document.getElementById('globalSearch');
-                                if (!root) return;
 
-                                const input = document.getElementById('globalSearchInput');
-                                const box = document.getElementById('globalSearchResults');
+                        @php
+                            $fb = setting('social.facebook');
+                            $tw = setting('social.twitter');
+                            $ig = setting('social.instagram');
+                            $pin = setting('social.pinterest');
+                            $wa = setting('social.whatsapp');
+                            $li = setting('social.linkedin', $pin);
+                            $attrs = 'target="_blank" rel="noopener noreferrer"';
+                        @endphp
 
-                                let timer = null;
+                        <div class="td_header_social_btns" aria-label="Social links">
+                            @if ($fb)
+                                <a href="{{ $fb }}" class="td_social_btn td_social_btn--fb"
+                                    {!! $attrs !!} aria-label="Facebook" title="Facebook">
+                                    <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                                </a>
+                            @endif
 
-                                function render(html) {
-                                    box.innerHTML = html || '';
-                                    box.style.display = html ? 'block' : 'none';
-                                }
+                            @if ($tw)
+                                <a href="{{ $tw }}" class="td_social_btn td_social_btn--tw"
+                                    {!! $attrs !!} aria-label="X (Twitter)" title="X (Twitter)">
+                                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                                </a>
+                            @endif
 
-                                function search(q) {
-                                    if (!q || q.trim() === '') {
-                                        render('');
-                                        return;
-                                    }
-                                    fetch(`{{ route('search') }}?q=${encodeURIComponent(q)}`, {
-                                            headers: {
-                                                'X-Requested-With': 'XMLHttpRequest'
-                                            }
-                                        })
-                                        .then(r => r.json())
-                                        .then(({
-                                            html
-                                        }) => render(html))
-                                        .catch(() => render('<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
-                                }
+                            @if ($ig)
+                                <a href="{{ $ig }}" class="td_social_btn td_social_btn--ig"
+                                    {!! $attrs !!} aria-label="Instagram" title="Instagram">
+                                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                                </a>
+                            @endif
 
-                                input.addEventListener('input', function() {
-                                    clearTimeout(timer);
-                                    timer = setTimeout(() => search(this.value), 280);
-                                });
+                            @if ($li)
+                                <a href="{{ $li }}" class="td_social_btn td_social_btn--li"
+                                    {!! $attrs !!} aria-label="LinkedIn" title="LinkedIn">
+                                    <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+                                </a>
+                            @endif
 
-                                // submit enter -> axtarış işə düşsün
-                                root.querySelector('form').addEventListener('submit', (e) => {
-                                    e.preventDefault();
-                                    search(input.value);
-                                });
+                            @if ($wa)
+                                <a href="{{ $wa }}" class="td_social_btn td_social_btn--wa"
+                                    {!! $attrs !!} aria-label="WhatsApp" title="WhatsApp">
+                                    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
 
-                                // çöldə klik -> bağla
-                                document.addEventListener('click', (e) => {
-                                    if (!root.contains(e.target)) render('');
-                                });
-                            })();
-                        </script>
-                        <button class="td_hamburger_btn"></button>
+
+                        <button class="td_hamburger_btn" type="button"></button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            (function() {
+                const root = document.getElementById('globalSearch');
+                if (!root) return;
+
+                const input = document.getElementById('globalSearchInput');
+                const box = document.getElementById('globalSearchResults');
+                let timer = null;
+
+                function render(html) {
+                    box.innerHTML = html || '';
+                    box.style.display = html ? 'block' : 'none';
+                }
+
+                function search(q) {
+                    if (!q || q.trim() === '') {
+                        render('');
+                        return;
+                    }
+                    fetch(`{{ route('search') }}?q=${encodeURIComponent(q)}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(r => r.json())
+                        .then(({
+                            html
+                        }) => render(html))
+                        .catch(() => render('<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
+                }
+
+                input.addEventListener('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => search(this.value), 280);
+                });
+
+                root.querySelector('form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    search(input.value);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!root.contains(e.target)) render('');
+                });
+            })();
+        </script>
     </header>
 
 
@@ -466,6 +758,8 @@
     <!-- Start Hero Section -->
     {{-- Home – Hero (settings-driven) --}}
     @php
+
+        // Mövcud hero mətnləri (dəyişmir)
         $hero = setting('home.hero', []);
         $kicker = data_get($hero, 'kicker', 'Knowledge is Power');
         $titleHtml = data_get($hero, 'title', '<span>Educve</span> - The Best Place to Invest in your Knowledge');
@@ -475,19 +769,81 @@
             'A university is a vibrant institution that serves as a hub for higher education and research. It provides a dynamic environment.',
         );
         $ctaText = data_get($hero, 'cta.text', 'View Our Program');
-        $ctaUrl = data_get($hero, 'cta.url', 'courses-grid-view.html');
+        $ctaUrl = data_get($hero, 'cta.url', '/');
 
-        // BG image: settings → fallback asset
-        $bg = setting('home.hero.bg_image'); // opsional açar; yoxdursa default asset
+        // Köhnə tək BG məntiqini saxlayırıq (fallback üçün)
+        $bg = setting('home.hero.bg_image');
         $bgUrl = $bg
             ? (Str::startsWith($bg, ['http', '/storage', 'assets/'])
                 ? asset($bg)
                 : asset('storage/' . ltrim($bg, '/')))
             : asset('assets/img/home_1/hero_bg_1.jpg');
+
+        // YENİ: Home hero slider şəkilləri (0–12, opsional)
+        $homeSlides = (array) setting('pages.heroes.home.images', []);
+        $homeSlides = array_values(array_filter($homeSlides, fn($v) => is_string($v) && trim($v) !== ''));
+
+        // Heç şəkil verilməyibsə: köhnə $bgUrl-i slayt kimi istifadə et
+        if (count($homeSlides) === 0) {
+            $homeSlides = [$bgUrl];
+        }
     @endphp
 
-    <section id="home-hero" class="td_hero td_style_1 td_heading_bg td_center td_bg_filed"
-        data-src="{{ $bgUrl }}">
+    <section id="home-hero" class="td_hero td_style_1 td_heading_bg td_center">
+        <style>
+            /* ===== HOME HERO SLIDER ===== */
+            #home-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #home-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #home-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #home-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #home-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .55) 100%);
+            }
+
+            #home-hero .td_hero_text {
+                position: relative;
+                z-index: 2;
+            }
+
+            #home-hero .td_lines {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Arxa fon slaytları --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($homeSlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}"
+                    style="background-image:url('{{ $src }}')"></div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="td_hero_text wow fadeInRight" data-wow-duration="0.9s" data-wow-delay="0.35s">
                 @if ($kicker)
@@ -497,18 +853,14 @@
                     </p>
                 @endif
 
-                <h1 class="td_hero_title td_fs_64 td_white_color td_mb_12">
-                    {!! $titleHtml !!}
-                </h1>
+                <h1 class="td_hero_title td_fs_64 td_white_color td_mb_12">{!! $titleHtml !!}</h1>
 
                 @if ($subtitle)
-                    <p class="td_hero_subtitle td_fs_18 td_white_color td_opacity_7 td_mb_30">
-                        {{ $subtitle }}
-                    </p>
+                    <p class="td_hero_subtitle td_fs_18 td_white_color td_opacity_7 td_mb_30">{{ $subtitle }}</p>
                 @endif
 
                 @if ($ctaText && $ctaUrl)
-                    <a href="{{ $ctaUrl }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                    <a href="{{ "en/courses" }}" class="td_btn td_style_1 td_radius_10 td_medium">
                         <span class="td_btn_in td_white_color td_accent_bg">
                             <span>{{ $ctaText }}</span>
                             <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
@@ -531,6 +883,53 @@
         </div>
     </section>
 
+    {{-- Slider JS: 2s interval; hover/tab gizlənəndə pauza --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#home-hero .hero-slider');
+            if (!root) return;
+
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return;
+
+            let idx = 0,
+                timer = null;
+            const INTERVAL = 2000;
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const sec = document.getElementById('home-hero');
+            sec.addEventListener('mouseenter', stop);
+            sec.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
+
+
 
     <div class="container">
         <div class="td_hero_btn_group">
@@ -541,7 +940,7 @@
                     $url = data_get($btn, 'url', '#');
                 @endphp
                 @if ($text && $url)
-                    <a href="{{ $url }}"
+                    <a href="{{ "/" }}"
                         class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
                         data-wow-duration="0.9s" data-wow-delay="0.35s">
                         <span class="td_btn_in td_white_color td_accent_bg">
@@ -614,7 +1013,7 @@
                 : asset('storage/' . $circle))
             : asset('assets/img/home_1/about_circle_text.svg');
 
-        $cta = setting('home.about.cta', ['text' => 'More About', 'url' => 'courses-grid-view.html']);
+        $cta = setting('home.about.cta', ['text' => 'More About', 'url' => '/']);
     @endphp
 
     <section id="home-about">
@@ -692,35 +1091,40 @@
                 data-wow-delay="0.15s">
                 <p
                     class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    Popular Courses</p>
-                <h2 class="td_section_title td_fs_48 mb-0">Academic Courses</h2>
+                    {{ __('Popular Courses') }}
+                </p>
+                <h2 class="td_section_title td_fs_48 mb-0">{{ __('Academic Courses') }}</h2>
             </div>
+
             <div class="td_height_30 td_height_lg_30"></div>
+
             <div class="td_tabs">
                 <ul class="td_tab_links td_style_1 td_mp_0 td_fs_20 td_medium td_heading_color wow fadeInUp"
                     data-wow-duration="1s" data-wow-delay="0.2s">
-                    <li class="active"><a href="#tab_1">{{ __('Courses') }}</a></li>
+                    {{-- NOTE: clicking Courses opens the modal (see JS). It is not the active tab. --}}
+                    <li><a href="#tab_1" id="openCoursesModal">{{ __('Courses') }}</a></li>
                     <li><a href="#tab_2">{{ __('Services') }}</a></li>
-                    <li><a href="#tab_3">{{ __('Topics') }}</a></li>
+                    <li class="active"><a href="#tab_3" id="topicsTabLink">{{ __('Topics') }}</a></li>
                     <li><a href="#tab_4">{{ __('Vacancies') }}</a></li>
                 </ul>
+
                 <div class="td_height_50 td_height_lg_50"></div>
+
                 <style>
-                    /* --- Uniform card/grid fixes --- */
+                    /* --- Uniform card/grid fixes (used by Services/Topics/Vacancies) --- */
                     .td_card.td_style_3 {
                         display: flex;
                         flex-direction: column;
-                        height: 100%;
+                        height: 100%
                     }
 
                     .td_card.td_style_3 .td_card_thumb {
                         position: relative;
                         width: 100%;
-                        /* 16:9 sabit nisbət (istəsən 4:3/3:2 edə bilərsən) */
-                        aspect-ratio: 16 / 9;
+                        aspect-ratio: 16/9;
                         overflow: hidden;
                         border-top-left-radius: 10px;
-                        border-top-right-radius: 10px;
+                        border-top-right-radius: 10px
                     }
 
                     .td_card.td_style_3 .td_card_thumb img {
@@ -728,91 +1132,179 @@
                         inset: 0;
                         width: 100%;
                         height: 100%;
-                        object-fit: cover;
+                        object-fit: cover
                     }
 
-                    /* Məlumat hissəsi bütün qalan hündürlüyü tutsun */
                     .td_card.td_style_3 .td_card_info {
                         flex: 1;
-                        display: flex;
+                        display: flex
                     }
 
                     .td_card.td_style_3 .td_card_info_in {
                         display: flex;
                         flex-direction: column;
-                        width: 100%;
+                        width: 100%
                     }
 
-                    /* Başlıq və təsvir üçün səliqəli clamp – kart boyları eyni qalsın */
                     .td_card.td_style_3 .td_card_title {
-                        display: -webkit-box;
                         -webkit-line-clamp: 2;
+                        display: -webkit-box;
                         -webkit-box-orient: vertical;
                         overflow: hidden;
-                        min-height: 3.2em;
-                        /* 2 sətirlik yer */
+                        min-height: 3.2em
                     }
 
                     .td_card.td_style_3 .td_card_subtitle {
-                        display: -webkit-box;
                         -webkit-line-clamp: 3;
+                        display: -webkit-box;
                         -webkit-box-orient: vertical;
                         overflow: hidden;
-                        min-height: 3.9em;
-                        /* 3 sətirlik yer */
+                        min-height: 3.9em
                     }
 
-                    /* Düymə həmişə altda qalsın */
                     .td_card.td_style_3 .td_card_btn {
-                        margin-top: auto;
+                        margin-top: auto
+                    }
+
+                    /* --- Courses Modal (slide-up drawer) --- */
+                    .courses-modal_backdrop {
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(2, 6, 23, .45);
+                        backdrop-filter: saturate(1.2) blur(2px);
+                        display: none;
+                        z-index: 9998;
+                    }
+
+                    .courses-modal {
+                        position: fixed;
+                        left: 50%;
+                        bottom: -100%;
+                        transform: translateX(-50%);
+                        width: min(920px, 94vw);
+                        background: #fff;
+                        border-radius: 20px 20px 0 0;
+                        box-shadow: 0 30px 60px rgba(2, 6, 23, .25);
+                        z-index: 9999;
+                        transition: bottom .28s ease;
+                    }
+
+                    .courses-modal_header {
+                        padding: 18px 20px;
+                        border-bottom: 1px solid #e5e7eb;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between
+                    }
+
+                    .courses-modal_title {
+                        font-size: 22px;
+                        font-weight: 800;
+                        margin: 0
+                    }
+
+                    .courses-modal_close {
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 10px;
+                        border: 1px solid #e5e7eb;
+                        background: #fff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .courses-modal_body {
+                        padding: 18px 18px 2px
+                    }
+
+                    .chip-grid {
+                        display: grid;
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: 10px
+                    }
+
+                    @media (min-width:576px) {
+                        .chip-grid {
+                            grid-template-columns: repeat(3, minmax(0, 1fr))
+                        }
+                    }
+
+                    @media (min-width:768px) {
+                        .chip-grid {
+                            grid-template-columns: repeat(4, minmax(0, 1fr))
+                        }
+                    }
+
+                    .chip {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 12px 14px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 12px;
+                        background: #fff;
+                        transition: transform .05s ease, box-shadow .15s ease, border-color .15s ease;
+                        text-decoration: none;
+                        color: #0f172a;
+                        font-weight: 700
+                    }
+
+                    .chip:hover {
+                        border-color: #fecaca;
+                        box-shadow: 0 8px 22px rgba(2, 6, 23, .06)
+                    }
+
+                    .chip:active {
+                        transform: translateY(1px)
+                    }
+
+                    .chip .dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 9999px;
+                        background: #e31b23;
+                        box-shadow: 0 0 0 4px rgba(227, 27, 35, .08)
+                    }
+
+                    .courses-modal_footer {
+                        padding: 14px 18px 18px;
+                        display: flex;
+                        gap: 10px;
+                        justify-content: flex-end
+                    }
+
+                    .btn-outline {
+                        border: 1px solid #e5e7eb;
+                        background: #fff;
+                        border-radius: 10px;
+                        padding: 10px 14px;
+                        font-weight: 700
+                    }
+
+                    .btn-primary {
+                        border: 1px solid #e31b23;
+                        background: #e31b23;
+                        color: #fff;
+                        border-radius: 10px;
+                        padding: 10px 14px;
+                        font-weight: 700
+                    }
+
+                    .courses-modal_backdrop.show {
+                        display: block
+                    }
+
+                    .courses-modal.show {
+                        bottom: 0
                     }
                 </style>
 
                 <div class="td_tab_body">
-                    <!-- tab_1: COURSES -->
-                    <div class="td_tab active" id="tab_1">
-                        <div class="row td_gap_y_24">
-                            @forelse($courses as $it)
-                                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-duration="1s"
-                                    data-wow-delay="0.1s">
-                                    <div class="td_card td_style_3 d-block td_radius_10">
-                                        <a href="{{ route('course-details', $it) }}" class="td_card_thumb">
-                                            <img src="{{ $it->imageUrl ?: asset('assets/img/home_1/course_thumb_1.jpg') }}"
-                                                alt="{{ $it->name }}">
-                                        </a>
-                                        <div class="td_card_info td_white_bg">
-                                            <div class="td_card_info_in">
-                                                <a href="{{ route('courses-grid-view') }}"
-                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14">
-                                                    <span>Course</span>
-                                                </a>
-                                                <h2 class="td_card_title td_fs_24 td_mb_16">
-                                                    <a
-                                                        href="{{ route('course-details', $it) }}">{{ $it->name }}</a>
-                                                </h2>
-                                                <p class="td_card_subtitle td_heading_color td_opacity_7 td_mb_20">
-                                                    {{ Str::limit(strip_tags($it->description), 110) }}
-                                                </p>
-                                                <div class="td_card_btn">
-                                                    <a href="{{ route('course-details', $it) }}"
-                                                        class="td_btn td_style_1 td_radius_10 td_medium">
-                                                        <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                                                Details</span></span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="col-12 text-center text-muted">No courses yet.</div>
-                            @endforelse
-                        </div>
-                    </div>
+                    {{-- tab_1 is intentionally empty; clicking its tab opens the modal --}}
+                    <div class="td_tab" id="tab_1" aria-hidden="true"></div>
 
-
-
-                    <!-- tab_2: SERVICES -->
+                    {{-- tab_2: SERVICES --}}
                     <div class="td_tab" id="tab_2">
                         <div class="row td_gap_y_24">
                             @forelse($services as $it)
@@ -826,21 +1318,17 @@
                                         <div class="td_card_info td_white_bg">
                                             <div class="td_card_info_in">
                                                 <a href="{{ route('services') }}"
-                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14">
-                                                    <span>Service</span>
-                                                </a>
-                                                <h2 class="td_card_title td_fs_24 td_mb_16">
-                                                    <a
+                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14"><span>{{ __('Service') }}</span></a>
+                                                <h2 class="td_card_title td_fs_24 td_mb_16"><a
                                                         href="{{ route('service-details', $it->id) }}">{{ $it->name }}</a>
                                                 </h2>
                                                 <p class="td_card_subtitle td_heading_color td_opacity_7 td_mb_20">
-                                                    {{ Str::limit(strip_tags($it->description), 110) }}
-                                                </p>
+                                                    {{ Str::limit(strip_tags($it->description), 110) }}</p>
                                                 <div class="td_card_btn">
                                                     <a href="{{ route('service-details', $it->id) }}"
                                                         class="td_btn td_style_1 td_radius_10 td_medium">
-                                                        <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                                                Details</span></span>
+                                                        <span
+                                                            class="td_btn_in td_white_color td_accent_bg"><span>{{ __('View Details') }}</span></span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -848,13 +1336,13 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-12 text-center text-muted">No services yet.</div>
+                                <div class="col-12 text-center text-muted">{{ __('No services yet.') }}</div>
                             @endforelse
                         </div>
                     </div>
 
-                    <!-- tab_3: TOPICS -->
-                    <div class="td_tab" id="tab_3">
+                    {{-- tab_3: TOPICS (DEFAULT ACTIVE ON LOAD) --}}
+                    <div class="td_tab active" id="tab_3">
                         <div class="row td_gap_y_24">
                             @forelse($topics as $it)
                                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-duration="1s"
@@ -867,21 +1355,17 @@
                                         <div class="td_card_info td_white_bg">
                                             <div class="td_card_info_in">
                                                 <a href="{{ route('topices') }}"
-                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14">
-                                                    <span>Topic</span>
-                                                </a>
-                                                <h2 class="td_card_title td_fs_24 td_mb_16">
-                                                    <a
+                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14"><span>{{ __('Topic') }}</span></a>
+                                                <h2 class="td_card_title td_fs_24 td_mb_16"><a
                                                         href="{{ route('topices-details', $it->id) }}">{{ $it->name }}</a>
                                                 </h2>
                                                 <p class="td_card_subtitle td_heading_color td_opacity_7 td_mb_20">
-                                                    {{ Str::limit(strip_tags($it->description), 110) }}
-                                                </p>
+                                                    {{ Str::limit(strip_tags($it->description), 110) }}</p>
                                                 <div class="td_card_btn">
                                                     <a href="{{ route('topices-details', $it->id) }}"
                                                         class="td_btn td_style_1 td_radius_10 td_medium">
-                                                        <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                                                Details</span></span>
+                                                        <span
+                                                            class="td_btn_in td_white_color td_accent_bg"><span>{{ __('View Details') }}</span></span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -889,12 +1373,12 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-12 text-center text-muted">No topics yet.</div>
+                                <div class="col-12 text-center text-muted">{{ __('No topics yet.') }}</div>
                             @endforelse
                         </div>
                     </div>
 
-                    <!-- tab_4: VACANCIES -->
+                    {{-- tab_4: VACANCIES --}}
                     <div class="td_tab" id="tab_4">
                         <div class="row td_gap_y_24">
                             @forelse($vacancies as $it)
@@ -908,21 +1392,17 @@
                                         <div class="td_card_info td_white_bg">
                                             <div class="td_card_info_in">
                                                 <a href="{{ route('vacancies') }}"
-                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14">
-                                                    <span>Vacancy</span>
-                                                </a>
-                                                <h2 class="td_card_title td_fs_24 td_mb_16">
-                                                    <a
+                                                    class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14"><span>{{ __('Vacancy') }}</span></a>
+                                                <h2 class="td_card_title td_fs_24 td_mb_16"><a
                                                         href="{{ route('vacancies-details', $it->id) }}">{{ $it->name }}</a>
                                                 </h2>
                                                 <p class="td_card_subtitle td_heading_color td_opacity_7 td_mb_20">
-                                                    {{ Str::limit(strip_tags($it->description), 110) }}
-                                                </p>
+                                                    {{ Str::limit(strip_tags($it->description), 110) }}</p>
                                                 <div class="td_card_btn">
                                                     <a href="{{ route('vacancies-details', $it->id) }}"
                                                         class="td_btn td_style_1 td_radius_10 td_medium">
-                                                        <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                                                Details</span></span>
+                                                        <span
+                                                            class="td_btn_in td_white_color td_accent_bg"><span>{{ __('View Details') }}</span></span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -930,17 +1410,94 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-12 text-center text-muted">No vacancies yet.</div>
+                                <div class="col-12 text-center text-muted">{{ __('No vacancies yet.') }}</div>
                             @endforelse
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
+
+        {{-- COURSES SLIDE-UP MODAL --}}
+        @php
+            $courseNames = ['IOSH', 'NEBOSH', 'CIEH', 'IIRSM', 'NSC', 'Local Training', 'E-learning'];
+        @endphp
+        <div class="courses-modal_backdrop" id="coursesBackdrop" aria-hidden="true"></div>
+        <div class="courses-modal" id="coursesModal" role="dialog" aria-modal="true"
+            aria-labelledby="coursesModalTitle" aria-describedby="coursesModalDesc">
+            <div class="courses-modal_header">
+                <h3 id="coursesModalTitle" class="courses-modal_title">{{ __('Academic Courses') }}</h3>
+                <button type="button" class="courses-modal_close" id="closeCoursesModal"
+                    aria-label="{{ __('Close') }}">✕</button>
+            </div>
+            <div class="courses-modal_body">
+                <p id="coursesModalDesc" class="mb-3" style="color:#64748b">
+                    {{ __('Choose a course brand/category to filter:') }}</p>
+                <div class="chip-grid">
+                    @foreach ($courseNames as $name)
+                        <a class="chip" href="{{ route('courses-grid-view', ['q' => $name]) }}">
+                            <span class="dot" aria-hidden="true"></span>
+                            <span>{{ $name }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+            <div class="courses-modal_footer">
+                <a class="btn-outline" href="{{ route('courses-grid-view') }}">{{ __('View all courses') }}</a>
+                <button type="button" class="btn-primary" id="closeCoursesModal2">{{ __('Close') }}</button>
+            </div>
+        </div>
+
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
     <!-- End Popular Courses -->
+
+    <script>
+        (function() {
+            const openBtn = document.getElementById('openCoursesModal');
+            const modal = document.getElementById('coursesModal');
+            const backdrop = document.getElementById('coursesBackdrop');
+            const closeBtns = [document.getElementById('closeCoursesModal'), document.getElementById(
+                'closeCoursesModal2')];
+
+            function openModal(e) {
+                if (e) e.preventDefault(); // stop tab switch
+                backdrop.classList.add('show');
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => closeBtns[0]?.focus(), 60);
+            }
+
+            function closeModal() {
+                backdrop.classList.remove('show');
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            openBtn?.addEventListener('click', openModal);
+            backdrop?.addEventListener('click', closeModal);
+            closeBtns.forEach(btn => btn?.addEventListener('click', closeModal));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // ------- Ensure Topics tab content is visible on initial load -------
+            // Some tab scripts require syncing "active" on both tab link and content.
+            // We set it in HTML, but also enforce here in case theme JS overwrites.
+            const topicsLinkLi = document.querySelector('ul.td_tab_links li.active');
+            const topicsTab = document.getElementById('tab_3');
+            if (topicsLinkLi && topicsTab) {
+                topicsTab.classList.add('active');
+            } else {
+                // fallback: if nothing active, make topics active
+                document.querySelectorAll('.td_tab').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab_3')?.classList.add('active');
+                const links = document.querySelectorAll('ul.td_tab_links li');
+                links.forEach(li => li.classList.remove('active'));
+                document.querySelector('ul.td_tab_links li:nth-child(3)')?.classList.add('active');
+            }
+        })();
+    </script>
 
 
     {{-- Start Feature Section (settings-driven) --}}
@@ -1097,7 +1654,7 @@
                             </svg>
 
                             <div class="td_btn_box_in">
-                                <a href="{{ $ctaUrl ?: '#' }}"
+                                <a href="{{ "en/courses" }}"
                                     class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
                                     <span class="td_btn_in td_heading_color td_white_bg">
                                         <span>{{ $ctaText }}</span>
@@ -1956,14 +2513,36 @@
 
 
 
+    <x-chat-widget label="Mesaj göndərin" title="Bizə yazın" />
 
-    <!-- Start Footer Section -->
     <footer class="td_footer td_style_1">
         <div class="container">
             <div class="td_footer_row">
                 <div class="td_footer_col">
                     {{-- Footer – Site (settings-driven, with site.logo + fallback to branding.logo) --}}
+                    @php
+                        $siteName = setting('site.name', 'Educve');
+                        $phone = setting('site.phone'); // "+23 (000) 68 603"
+                        $email = setting('site.email'); // "support@educat.com"
+                        $address = setting('site.address'); // "66 broklyn golden street, New York, USA"
+                        $tagline = setting(
+                            'site.tagline',
+                            'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
+                        );
 
+                        // 1) site.logo üstünlük; 2) branding.logo fallback
+                        $logoPath = setting('site.logo') ?: setting('branding.logo');
+
+                        $logoUrl = null;
+                        if ($logoPath) {
+                            $logoUrl = \Illuminate\Support\Str::startsWith($logoPath, ['http', '/storage', 'assets/'])
+                                ? asset($logoPath)
+                                : asset('storage/' . ltrim($logoPath, '/'));
+                        }
+
+                        // tel: üçün yalnız rəqəm və + saxla
+                        $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
+                    @endphp
 
                     <div class="td_footer_widget">
                         <div class="td_footer_text_widget td_fs_18">
@@ -1988,6 +2567,10 @@
                                     <i class="fa-solid fa-phone-volume"></i>
                                     <a href="{{ $telHref }}">{{ $phone }}</a>
                                 </li>
+                                <li>
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                    <a href="{{ $telHref }}">(+994) 10 253 23 88</a>
+                                </li>
                             @endif
 
                             @if ($email)
@@ -2011,24 +2594,23 @@
                     <div class="td_footer_widget">
                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Navigate</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
-                            <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
-                            <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
-                            <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
-                            <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
-                            <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
+                            <li><a href="{{ route('home') }}">Home</a></li>
+                            <li><a href="{{ route('faqss') }}">Faqs</a></li>
+                            <li><a href="{{ route('about') }}">About Us</a></li>
+                            <li><a href="{{ route('resources') }}">Resources</a></li>
+                            <li><a href="{{ route('team') }}">Team</a></li>
+                            <li><a href="{{ route('contact') }}">Contact</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
-                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
-                            {{ __('Courses') }}</h2>
+                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Courses</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
-                            <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
-                            <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
-                            <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
+                            <li><a href="{{ route('courses-grid-view') }}">Courses</a></li>
+                            <li><a href="{{ route('services') }}">Services</a></li>
+                            <li><a href="{{ route('topices') }}">Topices</a></li>
+                            <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
                         </ul>
                     </div>
                 </div>
@@ -2250,7 +2832,7 @@
         .guide-bubble {
             position: fixed;
             right: 18px;
-            bottom: 18px;
+            bottom: 78px;
             z-index: 9999;
             max-width: 360px;
             background: #fff;
@@ -2325,23 +2907,29 @@
   <p id="g-text"></p>
 `;
 
-// Əvvəlcədən bağlanıbsa, heç nə göstərməyək
-if (localStorage.getItem('guide:about:closed') === '1') {
-  bubble.remove();
-  return;
-}
+            // Əvvəlcədən bağlanıbsa, heç nə göstərməyək
+            if (localStorage.getItem('guide:about:closed') === '1') {
+                bubble.remove();
+                return;
+            }
 
-// X düyməsi: bubble-i bağla və resursları təmizlə
-const closeBtn = bubble.querySelector('#g-close');
-closeBtn?.addEventListener('click', () => {
-  try { io?.disconnect?.(); } catch(_) {}
-  window.removeEventListener('scroll', chooseMostVisible, {passive:true});
-  window.removeEventListener('resize', chooseMostVisible, {passive:true});
-  window.removeEventListener('load',   chooseMostVisible);
-  // yadda saxla (istəməsən bu sətri sil)
-  localStorage.setItem('guide:about:closed', '1');
-  bubble.remove();
-});
+            // X düyməsi: bubble-i bağla və resursları təmizlə
+            const closeBtn = bubble.querySelector('#g-close');
+            closeBtn?.addEventListener('click', () => {
+                try {
+                    io?.disconnect?.();
+                } catch (_) {}
+                window.removeEventListener('scroll', chooseMostVisible, {
+                    passive: true
+                });
+                window.removeEventListener('resize', chooseMostVisible, {
+                    passive: true
+                });
+                window.removeEventListener('load', chooseMostVisible);
+                // yadda saxla (istəməsən bu sətri sil)
+                localStorage.setItem('guide:about:closed', '1');
+                bubble.remove();
+            });
 
             document.body.appendChild(bubble);
 

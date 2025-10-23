@@ -63,6 +63,10 @@
                                      <i class="fa-solid fa-phone-volume"></i>
                                      <a href="{{ $telHref }}">{{ $phone }}</a>
                                  </li>
+                                 <li>
+                                     <i class="fa-solid fa-phone-volume"></i>
+                                     <a href="{{ $telHref }}">(+994) 10 253 23 88</a>
+                                 </li>
                              @endif
 
                              @if ($email)
@@ -108,7 +112,8 @@
                  </div>
                  <div class="td_footer_col">
                      <div class="td_footer_widget">
-                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">{{ __("Subscribe now") }}
+                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                             {{ __('Subscribe now') }}
                          </h2>
                          <div class="td_newsletter td_style_1">
                              <p class="td_mb_20 td_opacity_7">Far far away, behind the word mountains, far from the
@@ -119,7 +124,8 @@
                                  <input type="email" name="email" class="td_newsletter_input"
                                      placeholder="Email address" required>
                                  <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
-                                     <span class="td_btn_in td_white_color td_accent_bg"><span>{{ __("Subscribe now") }}</span></span>
+                                     <span
+                                         class="td_btn_in td_white_color td_accent_bg"><span>{{ __('Subscribe now') }}</span></span>
                                  </button>
                              </form>
 
@@ -181,10 +187,10 @@
          <div class="td_footer_bottom td_fs_18">
              <div class="container">
                  <div class="td_footer_bottom_in">
-                     <p class="td_copyright mb-0">{{ __("Copyright") }}</p>
+                     <p class="td_copyright mb-0">{{ __('Copyright') }}</p>
                      <ul class="td_footer_widget_menu">
-                         <li><a href="#">{{ __("Terms & Conditions") }}</a></li>
-                         <li><a href="#">{{ __("Privacy & Policy") }}</a></li>
+                         <li><a href="#">{{ __('Terms & Conditions') }}</a></li>
+                         <li><a href="#">{{ __('Privacy & Policy') }}</a></li>
                      </ul>
                  </div>
              </div>

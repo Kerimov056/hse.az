@@ -1,18 +1,80 @@
 @extends('layouts.app')
 
+@php
+    // Admin paneldən gələn hero şəkilləri (max 12). Boşdursa default 1 şəkil göstər.
+    $contactSlides = (array) setting('pages.heroes.contact.images', []);
+    $contactSlides = array_values(array_filter($contactSlides, fn($v) => is_string($v) && trim($v) !== ''));
+    if (count($contactSlides) === 0) {
+        $contactSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+    }
+@endphp
 
-<!-- Start Page Heading Section -->
-<section id="contact-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-    data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+<!-- Start Page Heading Section (Hero Slider) -->
+<section id="contact-hero" class="td_page_heading td_center td_heading_bg text-center td_hobble">
+    <style>
+        /* ===== HERO SLIDER (contact) ===== */
+        #contact-hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slider {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity .8s ease-in-out;
+            will-change: opacity;
+        }
+
+        .hero-slide.is-active {
+            opacity: 1;
+        }
+
+        /* Yüngül tünd overlay ki, yazılar oxunaqlı olsun */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .45) 100%);
+            z-index: 1;
+        }
+
+        /* İç kontent üst qatda qalsın */
+        #contact-hero .td_page_heading_in {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Şəkil/form bölməsinin qalan CSS-ləri aşağıdadır (verilənlərlə eyni saxlanılıb) */
+    </style>
+
+    {{-- Slides --}}
+    <div class="hero-slider" aria-hidden="true">
+        @foreach ($contactSlides as $i => $src)
+            <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+            </div>
+        @endforeach
+        <div class="hero-overlay"></div>
+    </div>
+
     <div class="container">
         <div class="td_page_heading_in">
             <h1 class="td_white_color td_fs_48 td_mb_10">Contact</h1>
             <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item active">Contact</li>
             </ol>
         </div>
     </div>
+
+    {{-- Dekorativ formalar (mövcud dizaynla eyni saxlanılıb) --}}
     <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
     <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
     <div class="td_page_heading_shape_3 position-absolute">
@@ -28,6 +90,54 @@
 </section>
 <!-- End Page Heading Section -->
 
+{{-- HERO slider JS: 2s interval, infinite, hover-da pause --}}
+<script>
+    (function() {
+        const root = document.querySelector('#contact-hero .hero-slider');
+        if (!root) return;
+
+        const slides = Array.from(root.querySelectorAll('.hero-slide'));
+        if (slides.length <= 1) return; // tək şəkil üçün slider lazım deyil
+
+        let idx = 0;
+        let timer = null;
+        const INTERVAL = 2000; // 2s
+
+        function show(i) {
+            slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+        }
+
+        function next() {
+            idx = (idx + 1) % slides.length;
+            show(idx);
+        }
+
+        function start() {
+            if (timer) return;
+            timer = setInterval(next, INTERVAL);
+        }
+
+        function stop() {
+            if (!timer) return;
+            clearInterval(timer);
+            timer = null;
+        }
+
+        // Autoplay
+        start();
+
+        // Hover-da dayandır, çıxanda davam et
+        const hero = document.getElementById('contact-hero');
+        hero.addEventListener('mouseenter', stop);
+        hero.addEventListener('mouseleave', start);
+
+        // Tab gizlənəndə dayandır, qayıdanda davam et
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop();
+            else start();
+        });
+    })();
+</script>
 
 <!-- Start Contact Section -->
 <section>
@@ -232,7 +342,8 @@
                         <span class="icon" aria-hidden="true"></span>
                         <div>
                             <strong>Telephone:</strong>
-                            <a href="tel:+994512067288">(+994) 51-206-72-88</a>
+                            <a href="tel:+994512067288">(+994) 51-206-72-88</a><br />
+                            <a href="tel:+994102532388">(+994) 10-253-23-88</a>
                         </div>
                     </li>
                     <li class="row">
@@ -254,13 +365,6 @@
                         <div>
                             <strong>For exam / assessment results of courses:</strong>
                             <a href="mailto:customerservice@hse.az">customerservice@hse.az</a>
-                        </div>
-                    </li>
-                    <li class="row">
-                        <span class="icon" aria-hidden="true"></span>
-                        <div>
-                            <strong>Shopping for other products:</strong>
-                            <a href="mailto:shopping@hse.az">shopping@hse.az</a>
                         </div>
                     </li>
                     <li class="row">
@@ -319,8 +423,10 @@
 
     <div class="td_map">
         <iframe id="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96652.27317354927!2d-74.33557928194516!3d40.79756494697628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c3a82f1352d0dd%3A0x81d4f72c4435aab5!2sTroy+Meadows+Wetlands!5e0!3m2!1sen!2sbd!4v1563075599994!5m2!1sen!2sbd"
-            allowfullscreen=""></iframe>
+            src="https://www.google.com/maps?q=Tbilisi+Avenue+22,+Europe+Hotel,+2nd+Floor,+Room+106,+Baku,+Azerbaijan,+AZ1078&output=embed"
+            width="100%" height="420" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
     </div>
 </section>
 <!-- End Contact Section -->

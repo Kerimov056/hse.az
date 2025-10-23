@@ -12,21 +12,78 @@
         'trigger' => 'load',
         'once' => true,
     ]);
+
+    // Hero slider şəkilləri: settings → pages.heroes.faqs.images (max 12, optional)
+    $faqSlides = (array) setting('pages.heroes.faqs.images', []);
+    $faqSlides = array_values(array_filter($faqSlides, fn($v) => is_string($v) && trim($v) !== ''));
+    if (count($faqSlides) === 0) {
+        $faqSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+    }
 @endphp
 
 @section('content')
-    <!-- Start Page Heading Section -->
-    <section class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+    <!-- Start Page Heading Section (Hero Slider) -->
+    <section id="faqs-hero" class="td_page_heading td_center td_heading_bg text-center td_hobble">
+        <style>
+            /* ===== HERO SLIDER (faqs) ===== */
+            #faqs-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #faqs-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #faqs-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #faqs-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #faqs-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .45) 100%);
+                z-index: 1;
+            }
+
+            #faqs-hero .td_page_heading_in {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Slides --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($faqSlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+                </div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="td_page_heading_in">
                 <h1 class="td_white_color td_fs_48 td_mb_10">Faqs</h1>
                 <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                     <li class="breadcrumb-item active">Faqs</li>
                 </ol>
             </div>
         </div>
+
+        {{-- Mövcud dekorativ formaları saxlayırıq --}}
         <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
         <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
         <div class="td_page_heading_shape_3 position-absolute">
@@ -42,9 +99,53 @@
     </section>
     <!-- End Page Heading Section -->
 
-    <!-- Start Accordion Section -->
-    {{-- Yuxarı boşluğu verən spacer silindi --}}
+    {{-- HERO slider JS: 2s interval, infinite, hover-da pause --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#faqs-hero .hero-slider');
+            if (!root) return;
 
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return; // tək şəkil üçün slider lazım deyil
+
+            let idx = 0;
+            let timer = null;
+            const INTERVAL = 2000; // 2s
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const hero = document.getElementById('faqs-hero');
+            hero.addEventListener('mouseenter', stop);
+            hero.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
+
+    <!-- Start Accordion Section -->
     {{-- BÜTÜN FAQ BLOKLARINI BİR KONTEYNERƏ YIĞIRIQ → #faqs-list (selector) --}}
     <section id="faqs-list">
 
@@ -256,13 +357,11 @@
             }
 
             window.addEventListener('load', () => {
-                // once=true və artiq baxılıbsa göstərmə
                 if (GUIDE.once && seen()) return;
 
                 const target = document.querySelector(GUIDE.sel);
                 if (!target) return;
 
-                // Balon
                 const box = document.createElement('div');
                 box.className = 'guide-bubble';
                 box.innerHTML = `
@@ -276,19 +375,15 @@
       <div class="guide-actions">
         <button type="button" class="btn-sm btn-primary" data-guide-close="1">Başa düşdüm</button>
         <button type="button" class="btn-sm" data-guide-hide="1">Sonra</button>
-      </div>
-    `;
+      </div>`;
                 document.body.appendChild(box);
 
-                // Outline əlavə et
                 target.classList.add('guide-outline');
 
-                // Göstər
                 requestAnimationFrame(() => {
                     box.style.display = 'block';
                 });
 
-                // Bağlama düymələri
                 box.addEventListener('click', (e) => {
                     if (e.target.matches('[data-guide-close]')) {
                         if (GUIDE.once) markSeen();

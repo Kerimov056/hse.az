@@ -169,4 +169,5 @@ Route::group([
 
     Route::get('/unsubscribe/{token}', [SubscribeController::class, 'unsubscribe'])
         ->name('unsubscribe');
+        
 });

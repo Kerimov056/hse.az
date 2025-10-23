@@ -2,15 +2,72 @@
 
 @php
     $q = $q ?? request('q');
+
+    // Team hero slider şəkilləri (settings → pages.heroes.team.images)
+    $teamSlides = (array) setting('pages.heroes.team.images', []);
+    $teamSlides = array_values(array_filter($teamSlides, fn($v) => is_string($v) && trim($v) !== ''));
+    if (count($teamSlides) === 0) {
+        $teamSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+    }
+
     $female =
         'https://img.freepik.com/premium-vector/portrait-business-woman_505024-2793.jpg?semt=ais_hybrid&w=740&q=80';
     $male = 'https://t4.ftcdn.net/jpg/14/05/81/37/360_F_1405813706_e7f6ONwQ8KD8bRbinELfD1jazaXGB5q3.jpg';
 @endphp
 
 @section('content')
-    {{-- PAGE HERO --}}
-    <section id="team-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+    {{-- PAGE HERO (Slider) --}}
+    <section id="team-hero" class="td_page_heading td_center td_heading_bg text-center td_hobble">
+        <style>
+            /* ===== HERO SLIDER (team) ===== */
+            #team-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #team-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #team-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #team-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #team-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .45) 100%);
+                z-index: 1;
+            }
+
+            #team-hero .td_page_heading_in {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Slides --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($teamSlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+                </div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
+        {{-- Heading --}}
         <div class="container">
             <div class="td_page_heading_in">
                 <h1 class="td_white_color td_fs_48 td_mb_10">Team Members</h1>
@@ -20,6 +77,8 @@
                 </ol>
             </div>
         </div>
+
+        {{-- Mövcud dekorativ formalar --}}
         <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
         <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
         <div class="td_page_heading_shape_3 position-absolute">
@@ -33,6 +92,52 @@
         </div>
         <div class="td_page_heading_shape_6 position-absolute td_hover_layer_3"></div>
     </section>
+
+    {{-- HERO slider JS: 2s interval, infinite, hover-da pause --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#team-hero .hero-slider');
+            if (!root) return;
+
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return; // tək şəkil üçün slider lazım deyil
+
+            let idx = 0;
+            let timer = null;
+            const INTERVAL = 2000; // 2 saniyə
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const hero = document.getElementById('team-hero');
+            hero.addEventListener('mouseenter', stop);
+            hero.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
 
     {{-- CONTENT --}}
     <section>

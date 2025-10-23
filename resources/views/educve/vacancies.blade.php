@@ -168,8 +168,66 @@
 
 @section('content')
     {{-- Coach-mark üçün 1 dənə selector kifayətdir: #vacancy-hero --}}
-    <section id="vacancy-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center"
-        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+    <!-- Page Heading (Vacancies) with settings-driven slider -->
+    <section id="vacancy-hero" class="td_page_heading td_center td_heading_bg text-center">
+        @php
+            // Vacancies hero slider şəkilləri (settings → pages.heroes.vacancies.images)
+            $vacancySlides = (array) setting('pages.heroes.vacancies.images', []);
+            $vacancySlides = array_values(array_filter($vacancySlides, fn($v) => is_string($v) && trim($v) !== ''));
+            if (count($vacancySlides) === 0) {
+                $vacancySlides = [asset('assets/img/others/page_heading_bg.jpg')];
+            }
+        @endphp
+
+        <style>
+            /* ===== HERO SLIDER (vacancies) ===== */
+            #vacancy-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #vacancy-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #vacancy-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #vacancy-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #vacancy-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .45) 100%);
+            }
+
+            #vacancy-hero .td_page_heading_in {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Background slides --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($vacancySlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+                </div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="td_page_heading_in">
                 <h1 class="td_white_color td_fs_48 td_mb_10">Vacancies</h1>
@@ -180,6 +238,52 @@
             </div>
         </div>
     </section>
+
+    {{-- Slider JS (2s interval, hover-da dayandır, tab gizlənəndə pauza et) --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#vacancy-hero .hero-slider');
+            if (!root) return;
+
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return;
+
+            let idx = 0,
+                timer = null;
+            const INTERVAL = 1900; // 2s
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const sec = document.getElementById('vacancy-hero');
+            sec.addEventListener('mouseenter', stop);
+            sec.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
 
     <div class="td_height_100 td_height_lg_70"></div>
 

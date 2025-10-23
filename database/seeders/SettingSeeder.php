@@ -116,13 +116,6 @@ class SettingSeeder extends Seeder
 
             /**
              * ————— UI SECTION GUIDES —————
-             * Səhifə açarları: index, faqs, about-us, resource, course, topices, vacancy, team, contact
-             * Hər element:
-             *  - selector: DOM selektor (mütləq unikal)
-             *  - title: başlıq
-             *  - text: mətn (qısa)
-             *  - trigger: 'load' | 'enter' (ilkini dərhal göstər, qalanları scroll-da)
-             *  - once: true/false (göstərildikdən sonra təkrar göstərmə)
              */
             'ui.guides' => [
                 'index' => [
@@ -145,48 +138,17 @@ class SettingSeeder extends Seeder
                 ]],
                 'about-us' => [
                     'sections' => [
-                        [
-                            'selector' => '#about-hero',
-                            'title'    => 'Başlanğıc',
-                            'text'     => 'Səhifənin hero hissəsi. Buradan ümumi başlıq və breadcrumb görünür.',
-                            'trigger'  => 'load',
-                            'once' => true
-                        ],
-                        [
-                            'selector' => '#about-overview',
-                            'title'    => 'İcmal',
-                            'text'     => 'Haqqımızda bölməsinin əsas məzmunu: iki şəkilli kompozisiya, video düyməsi və CTA.',
-                            'trigger'  => 'enter',
-                            'once' => true
-                        ],
-                        [
-                            'selector' => '#about-accreditations',
-                            'title'    => 'Akkreditasiya',
-                            'text'     => 'Tərəfdaş loqoları və cədvəl-akkordeon; sosial sübut və etibar.',
-                            'trigger'  => 'enter',
-                            'once' => true
-                        ],
-                        [
-                            'selector' => '#about-who',
-                            'title'    => 'Kimik?',
-                            'text'     => 'Who we are mətni, Vision/Mission kartları və yumşaq scroll animasiyalar.',
-                            'trigger'  => 'enter',
-                            'once' => true
-                        ],
-                        [
-                            'selector' => '#about-services',
-                            'title'    => 'Xidmətlər',
-                            'text'     => 'Xidmətlərin qısa siyahısı; kliklə detallı səhifəyə yönləndirmə.',
-                            'trigger'  => 'enter',
-                            'once' => true
-                        ],
+                        ['selector' => '#about-hero',       'title' => 'Başlanğıc',     'text' => 'Səhifənin hero hissəsi. Buradan ümumi başlıq və breadcrumb görünür.', 'trigger' => 'load',  'once' => true],
+                        ['selector' => '#about-overview',   'title' => 'İcmal',         'text' => 'Haqqımızda bölməsinin əsas məzmunu: iki şəkilli kompozisiya, video düyməsi və CTA.', 'trigger' => 'enter', 'once' => true],
+                        ['selector' => '#about-accreditations','title'=>'Akkreditasiya','text'=>'Tərəfdaş loqoları və cədvəl-akkordeon; sosial sübut və etibar.','trigger'=>'enter','once'=>true],
+                        ['selector' => '#about-who',        'title' => 'Kimik?',        'text' => 'Who we are mətni, Vision/Mission kartları və yumşaq scroll animasiyalar.', 'trigger' => 'enter', 'once' => true],
+                        ['selector' => '#about-services',   'title' => 'Xidmətlər',     'text' => 'Xidmətlərin qısa siyahısı; kliklə detallı səhifəyə yönləndirmə.', 'trigger' => 'enter', 'once' => true],
                     ],
                 ],
                 'resource' => ['sections' => [
                     ['selector' => '#resource',    'title' => 'Resurslar',   'text' => 'Materialları buradan tap.', 'trigger' => 'load', 'once' => true],
                 ]],
 
-                // COURSES GRID VIEW (əvvəl “course” kimi istifadə edirdik) 
                 'course'   => ['sections' => [
                     ['selector' => '#courses-hero',   'title' => 'Kurslar',     'text' => 'Bütün kursları burada görürsən. Axtarışla dəqiqləşdir.', 'trigger' => 'load',  'once' => true],
                     ['selector' => '#courses-search', 'title' => 'Axtarış',     'text' => 'Ad və ya təsvirə görə axtar. “Clear” ilə sıfırla.',      'trigger' => 'enter', 'once' => true],
@@ -200,7 +162,6 @@ class SettingSeeder extends Seeder
                     ['selector' => '#vacancy',     'title' => 'Vakansiyalar', 'text' => 'Açıq yerlər.',             'trigger' => 'load',  'once' => true],
                 ]],
 
-                // TEAM (real id-lərlə)
                 'team'     => ['sections' => [
                     ['selector' => '#team-hero',   'title' => 'Komandamız',  'text' => 'Müəllim və ekspert heyətini tanı.',   'trigger' => 'load',  'once' => true],
                     ['selector' => '#team-search', 'title' => 'Axtarış/Filter', 'text' => 'Ad/vəzifə ilə axtar, cinsə görə süzgəc.', 'trigger' => 'enter', 'once' => true],
@@ -209,16 +170,34 @@ class SettingSeeder extends Seeder
 
                 'contact'  => ['sections' => [
                     ['selector' => '#contact-hero', 'title' => 'Əlaqə',       'text' => 'Bizimlə əlaqə qur.',       'trigger' => 'load',  'once' => true],
-                    ['selector' => '#map',         'title' => 'Xəritə',      'text' => 'Ofisimizin yeri.',          'trigger' => 'enter', 'once' => true],
+                    ['selector' => '#map',          'title' => 'Xəritə',      'text' => 'Ofisimizin yeri.',          'trigger' => 'enter', 'once' => true],
                 ]],
 
                 // ⬇️ YENİ: SERVICES
                 'services' => ['sections' => [
-                    ['selector' => '#services-hero',  'title' => 'Xidmətlər',    'text' => 'Təklif etdiyimiz bütün xidmətlər.',            'trigger' => 'load',  'once' => true],
+                    ['selector' => '#services-hero',   'title' => 'Xidmətlər',     'text' => 'Təklif etdiyimiz bütün xidmətlər.',            'trigger' => 'load',  'once' => true],
                     ['selector' => '#services-search', 'title' => 'Axtarış paneli', 'text' => 'Ad / təsvir üzrə axtar, “Clear” ilə sıfırla.', 'trigger' => 'enter', 'once' => true],
-                    ['selector' => '#services-grid',  'title' => 'Kartlar',      'text' => '“Learn More” detal, “Visit” xarici keçiddir.', 'trigger' => 'enter', 'once' => true],
+                    ['selector' => '#services-grid',   'title' => 'Kartlar',       'text' => '“Learn More” detal, “Visit” xarici keçiddir.', 'trigger' => 'enter', 'once' => true],
                 ]],
-            ]
+            ],
+
+            /**
+             * ============== YENİ: SƏHİFƏ HERO ŞƏKİLLƏRİ (MAX 12) ==============
+             * Açar: pages.heroes.{page}.images => string[] (URL-lər), max 12
+             * Səhifələr: home, faqs, about, resources, courses, services, topics, vacancies, team, contact
+             */
+            'pages.heroes' => [
+                'home'      => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'faqs'      => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'about'     => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'resources' => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'courses'   => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'services'  => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'topics'    => ['images' => ['assets/img/others/page_heading_bg.jpg']], // (projektdə route "topices" olsa belə, burada "topics" kimi saxlayırıq)
+                'vacancies' => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'team'      => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+                'contact'   => ['images' => ['assets/img/others/page_heading_bg.jpg']],
+            ],
         ];
 
         foreach ($defaults as $key => $value) {

@@ -45,6 +45,43 @@
         details>summary {
             cursor: pointer
         }
+
+        /* Pages → Hero Images */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px
+        }
+
+        .hero-item {
+            border: 1px solid #e5e7eb;
+            border-radius: .5rem;
+            padding: 8px;
+            background: #fff;
+            position: relative
+        }
+
+        .hero-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: .35rem
+        }
+
+        .hero-item .small {
+            font-size: .8rem
+        }
+
+        .hero-item .rm {
+            position: absolute;
+            top: 6px;
+            right: 6px
+        }
+
+        .hero-limit {
+            font-size: .8rem;
+            color: #64748b
+        }
     </style>
 @endpush
 
@@ -625,7 +662,6 @@
                 </div>
             </div>
 
-
             {{-- UI: SECTION GUIDES --}}
             @php
                 // Mövcud dəyərlər
@@ -752,23 +788,129 @@
                 </div>
             </div>
 
+            {{-- =================== YENİ: PAGES → HERO IMAGES (max 12) =================== --}}
+            @php
+                $heroPages = [
+                    'home' => 'Home',
+                    'faqs' => 'Faqs',
+                    'about' => 'About',
+                    'resources' => 'Resources',
+                    'courses' => 'Courses',
+                    'services' => 'Services',
+                    'topics' => 'Topics',
+                    'vacancies' => 'Vacancies',
+                    'team' => 'Team',
+                    'contact' => 'Contact',
+                ];
+            @endphp
 
-            @push('scripts')
-                <script>
-                    /**
-                     * UI – Section Guides repeater
-                     * data-page atributuna görə input adlarını dinamik qurur.
-                     */
-                    document.querySelectorAll('.js-add-guide').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const page = btn.dataset.page;
-                            const wrap = document.querySelector(`.guide-repeater[data-page="${page}"]`);
-                            const idx = wrap.querySelectorAll('.repeater-row').length;
+            <div class="card shadow-sm">
+                <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                    <span>Pages – Hero Images</span>
+                    <span class="section-note">Hər səhifə üçün hero şəkilləri (maks. 12 şəkil)</span>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        @foreach ($heroPages as $key => $label)
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"
+                                    data-bs-target="#heroes-{{ $key }}" type="button" role="tab"
+                                    aria-controls="heroes-{{ $key }}"
+                                    aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                    {{ $label }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
 
-                            const div = document.createElement('div');
-                            div.className = 'repeater-row';
-                            div.dataset.index = idx;
-                            div.innerHTML = `
+                    <div class="tab-content">
+                        @foreach ($heroPages as $key => $label)
+                            @php
+                                $imgs = (array) data_get($settings, "pages.heroes.$key.images", []);
+                            @endphp
+                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                id="heroes-{{ $key }}" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="hero-limit">
+                                        Cari say: <b class="js-count"
+                                            data-page="{{ $key }}">{{ count($imgs) }}</b> / 12
+                                    </div>
+                                    <div class="text-end">
+                                        <label class="btn btn-sm btn-outline-primary mb-0">
+                                            Fayl əlavə et (multiple)
+                                            <input type="file"
+                                                name="pages[heroes][{{ $key }}][images_files][]"
+                                                class="d-none js-files" multiple accept="image/*">
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="hero-grid js-grid" data-page="{{ $key }}">
+                                    @foreach ($imgs as $i => $url)
+                                        @php $full = $toUrl($url); @endphp
+                                        <div class="hero-item">
+                                            <button type="button" class="btn btn-sm btn-danger rm"
+                                                title="Sil">&times;</button>
+                                            <img src="{{ $full }}" alt="Hero">
+                                            <input type="hidden" name="pages[heroes][{{ $key }}][images][]"
+                                                value="{{ $url }}">
+                                            <div class="small text-truncate mt-1" title="{{ $url }}">
+                                                {{ $url }}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <div class="row g-2 mt-2">
+                                    <div class="col-md-9">
+                                        <input type="url" class="form-control js-url"
+                                            placeholder="Yeni şəkil URL-i (http/https)">
+                                    </div>
+                                    <div class="col-md-3 d-grid">
+                                        <button type="button" class="btn btn-outline-secondary js-add-url"
+                                            data-page="{{ $key }}">
+                                            URL ilə əlavə et
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-help mt-2">
+                                    Qeyd: Silmək üçün kartın üzərindəki <b>×</b> düyməsinə klik et. Maksimum 12 şəkil.
+                                </div>
+
+                                <hr class="my-4">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky-save p-3 mt-3">
+                <div class="d-grid d-md-flex gap-2">
+                    <button class="btn btn-success btn-lg flex-fill flex-md-grow-0">
+                        <i class="bi bi-check2-circle me-1"></i> Save
+                    </button>
+                    <a href="{{ route('admin.settings.index') }}" class="btn btn-outline-secondary">Ləğv et</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @push('scripts')
+        <script>
+            /**
+             * UI – Section Guides repeater
+             * data-page atributuna görə input adlarını dinamik qurur.
+             */
+            document.querySelectorAll('.js-add-guide').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = btn.dataset.page;
+                    const wrap = document.querySelector(`.guide-repeater[data-page="${page}"]`);
+                    const idx = wrap.querySelectorAll('.repeater-row').length;
+
+                    const div = document.createElement('div');
+                    div.className = 'repeater-row';
+                    div.dataset.index = idx;
+                    div.innerHTML = `
       <div class="row g-2 align-items-end">
         <div class="col-md-3">
           <label class="form-label">Selector</label>
@@ -800,31 +942,18 @@
           <textarea class="form-control" rows="2" name="ui[guides][${page}][sections][${idx}][text]" placeholder="İzah mətni..."></textarea>
         </div>
       </div>`;
-                            wrap.appendChild(div);
-                        });
-                    });
+                    wrap.appendChild(div);
+                });
+            });
 
-                    // Silmə
-                    document.addEventListener('click', function(e) {
-                        if (e.target.classList.contains('remove-row')) {
-                            e.target.closest('.repeater-row')?.remove();
-                        }
-                    });
-                </script>
-            @endpush
-
-
-
-            <div class="sticky-save p-3 mt-3">
-                <div class="d-grid d-md-flex gap-2">
-                    <button class="btn btn-success btn-lg flex-fill flex-md-grow-0">
-                        <i class="bi bi-check2-circle me-1"></i> Save
-                    </button>
-                    <a href="{{ route('admin.settings.index') }}" class="btn btn-outline-secondary">Ləğv et</a>
-                </div>
-            </div>
-        </form>
-    </div>
+            // Silmə (guides + ümumi repeater)
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-row')) {
+                    e.target.closest('.repeater-row')?.remove();
+                }
+            });
+        </script>
+    @endpush
 
     @push('scripts')
         <script>
@@ -904,12 +1033,72 @@
                 });
             }
 
-            // remove any repeater row
+            // remove any repeater row (generic)
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {
                     e.target.closest('.repeater-row')?.remove();
                 }
             });
+        </script>
+    @endpush
+
+    @push('scripts')
+        <script>
+            /* ====== PAGES → HERO IMAGES ====== */
+            const MAX = 12;
+
+            function updateCount(page) {
+                const wrap = document.querySelector(`.js-grid[data-page="${page}"]`);
+                const cnt = wrap ? wrap.querySelectorAll('.hero-item').length : 0;
+                const badge = document.querySelector(`.js-count[data-page="${page}"]`);
+                if (badge) badge.textContent = String(cnt);
+            }
+
+            function addCard(page, url) {
+                if (!url) return;
+                const grid = document.querySelector(`.js-grid[data-page="${page}"]`);
+                if (!grid) return;
+                const current = grid.querySelectorAll('.hero-item').length;
+                if (current >= MAX) {
+                    alert('Maksimum 12 şəkil ola bilər.');
+                    return;
+                }
+
+                const div = document.createElement('div');
+                div.className = 'hero-item';
+                div.innerHTML = `
+                <button type="button" class="btn btn-sm btn-danger rm" title="Sil">&times;</button>
+                <img src="${url}" alt="Hero">
+                <input type="hidden" name="pages[heroes][${page}][images][]" value="${url}">
+                <div class="small text-truncate mt-1" title="${url}">${url}</div>
+              `;
+                grid.appendChild(div);
+                updateCount(page);
+            }
+
+            document.addEventListener('click', (e) => {
+                const rm = e.target.closest('.rm');
+                if (rm) {
+                    const page = rm.closest('.js-grid').dataset.page;
+                    rm.closest('.hero-item')?.remove();
+                    updateCount(page);
+                }
+            });
+
+            document.querySelectorAll('.js-add-url').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = btn.dataset.page;
+                    const input = btn.closest('.row').querySelector('.js-url');
+                    const url = (input.value || '').trim();
+                    if (!/^https?:\/\//i.test(url)) {
+                        alert('Düzgün URL daxil edin (http/https).');
+                        return;
+                    }
+                    addCard(page, url);
+                    input.value = '';
+                });
+            });
+            // Multiple file inputs serverdə emal olunur (controller-də)
         </script>
     @endpush
 @endsection

@@ -84,8 +84,7 @@ class SettingController extends Controller
             'home.hero.buttons.*.text'    => 'nullable|string|max:120',
             'home.hero.buttons.*.url'     => 'nullable|string|max:255',
 
-
-            // VALIDATION daxilinə əlavə et:
+            // UI guides
             'ui.guides'                         => 'nullable|array',
             'ui.guides.*.sections'              => 'nullable|array|max:12',
             'ui.guides.*.sections.*.selector'   => 'nullable|string|max:120',
@@ -93,6 +92,15 @@ class SettingController extends Controller
             'ui.guides.*.sections.*.text'       => 'nullable|string|max:1000',
             'ui.guides.*.sections.*.trigger'    => 'nullable|in:load,enter',
             'ui.guides.*.sections.*.once'       => 'nullable|in:0,1',
+
+            // ========= NEW: Pages → Hero Images (OPTIONAL) =========
+            'pages.heroes'                       => 'nullable|array',
+            'pages.heroes.*.images'              => 'nullable|array|max:12',
+            // mövcud dəyərlər URL olmalı deyil – string kifayətdir (relative və ya absolute)
+            'pages.heroes.*.images.*'            => 'nullable|string|max:2048',
+            // yeni fayllar (multiple upload)
+            'pages.heroes.*.images_files'        => 'nullable|array',
+            'pages.heroes.*.images_files.*'      => 'nullable|image|max:8192',
         ]);
 
         // BRANDING
@@ -244,9 +252,7 @@ class SettingController extends Controller
         Arr::set($hero, 'buttons', $btnSaved);
         $this->write('home.hero', $hero);
 
-
         // ===== UI.GUIDES =====
-        // Köhnəni götür, yeni ilə birləşdir (selektor boşdursa at)
         $guidesInput = $r->input('ui.guides', []);
         $normalized  = [];
         foreach ($guidesInput as $pageKey => $cfg) {
@@ -269,6 +275,41 @@ class SettingController extends Controller
         }
         $this->write('ui.guides', $normalized ?: setting('ui.guides', []));
 
+        // ====== NEW: Pages → Hero Images ======
+        $incoming = $r->input('pages.heroes', []);          // mövcud string dəyərlər
+        $saved    = setting('pages.heroes', []);            // DB-dəkini götür
+        $out      = [];
+
+        foreach (($incoming ?? []) as $pageKey => $cfg) {
+            // 1) Mövcud dəyərlər (hidden inputs) – boşları at, təkrarı sil
+            $images = Arr::get($cfg, 'images', Arr::get($saved, "$pageKey.images", []));
+            $images = array_values(array_unique(array_filter(array_map('trim', (array) $images), fn($v) => $v !== '')));
+
+            // 2) Yüklənən fayllar (multiple)
+            if ($r->hasFile("pages.heroes.$pageKey.images_files")) {
+                foreach ($r->file("pages.heroes.$pageKey.images_files") as $file) {
+                    if ($file && $file->isValid()) {
+                        $images[] = $this->storeToCdn($file, "settings/pages/$pageKey/heroes");
+                    }
+                }
+            }
+
+            // 3) Limit 12 + index sıfırla
+            $images = array_values(array_unique($images));
+            if (count($images) > 12) {
+                $images = array_slice($images, 0, 12);
+            }
+
+            $out[$pageKey] = ['images' => $images];
+        }
+
+        // Heç nə gəlməyibsə, əvvəlkini saxla
+        if (empty($out)) {
+            $out = $saved;
+        }
+
+        $this->write('pages.heroes', $out);
+
         Cache::forget('settings:merged');
         return back()->with('ok', 'Settings updated');
     }
@@ -279,12 +320,7 @@ class SettingController extends Controller
     private function storeToCdn(\Illuminate\Http\UploadedFile $file, string $dir): string
     {
         $disk = Storage::disk('gcs');
-
-        // Faylı public ACL ilə yüklə (GCS-də obyekt səviyyəsində public olsun)
-        // Qeyd: bucket-də "Uniform bucket-level access" açıqdırsa, obyektlər default public ola bilməz;
-        // o halda CDN/proxy istifadə edin və ya imzalı URL mexanizminə keçin.
-        $path = $disk->putFile($dir, $file, 'public');  // ex: settings/branding/xxx.png
-
+        $path = $disk->putFile($dir, $file, 'public');  // ex: settings/pages/home/heroes/xxx.jpg
         return $this->gcsPublicUrl($path);
     }
 
@@ -302,18 +338,15 @@ class SettingController extends Controller
         $bucket = $diskCfg['bucket'] ?? '';
         $prefix = trim($diskCfg['path_prefix'] ?? '', '/');
 
-        // path_prefix + fayl path-ını birləşdir
         $full = ltrim($path, '/');
         if ($prefix !== '') {
             $full = $prefix . '/' . $full;
         }
 
         if ($cdn !== '') {
-            // CDN istifadə edirik: https://cdn.domain.tld/{prefix}/{path}
             return $cdn . '/' . $full;
         }
 
-        // Standart GCS public URL: https://storage.googleapis.com/{bucket}/{prefix}/{path}
         return $api . '/' . $bucket . '/' . $full;
     }
 

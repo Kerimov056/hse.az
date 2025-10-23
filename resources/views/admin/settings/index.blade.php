@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Settings – Overview')
 
-
 @push('styles')
     <style>
         .table-sticky thead th {
@@ -45,8 +44,8 @@
     </style>
 @endpush
 
-
 @section('content')
+    @php($q = request('q'))
     <div class="container-fluid py-3">
         <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center gap-2">
@@ -55,10 +54,10 @@
                     <span class="badge text-bg-success">{{ $settings->count() }}</span>
                 @endif
             </div>
-            <a href="{{ route('admin.settings.edit') }}" class="btn btn-primary"><i class="bi bi-sliders me-1"></i> Edit
-                Settings</a>
+            <a href="{{ route('admin.settings.edit') }}" class="btn btn-primary">
+                <i class="bi bi-sliders me-1"></i> Edit Settings
+            </a>
         </div>
-
 
         <div class="card shadow-sm">
             <div class="card-body border-bottom">
@@ -71,17 +70,19 @@
                         </div>
                     </div>
                     <div class="col-md-2 d-grid d-md-block">
-                        <button class="btn btn-outline-secondary w-100"><i class="bi bi-funnel me-1"></i>Axtar</button>
+                        <button class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-funnel me-1"></i>Axtar
+                        </button>
                     </div>
                     @if (!empty($q))
                         <div class="col-md-2 d-grid d-md-block">
-                            <a class="btn btn-outline-dark w-100" href="{{ route('admin.settings.index') }}"><i
-                                    class="bi bi-x-lg me-1"></i>Təmizlə</a>
+                            <a class="btn btn-outline-dark w-100" href="{{ route('admin.settings.index') }}">
+                                <i class="bi bi-x-lg me-1"></i>Təmizlə
+                            </a>
                         </div>
                     @endif
                 </form>
             </div>
-
 
             <div class="table-responsive">
                 <table class="table table-striped align-middle mb-0 table-sticky">
@@ -115,7 +116,7 @@
                                 </td>
                                 <td class="text-end">
                                     <button class="btn btn-sm btn-outline-secondary copy-btn"
-                                        data-copy="{{ e($isArray ? $pretty : $pretty) }}" title="Kopyala">
+                                        data-copy="{{ e($pretty) }}" title="Kopyala">
                                         <i class="bi bi-clipboard"></i>
                                     </button>
                                 </td>
@@ -126,4 +127,22 @@
                             </tr>
                         @endforelse
                     </tbody>
-                @endsection
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.copy-btn');
+                if (!btn) return;
+                const text = btn.getAttribute('data-copy') || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.innerHTML = '<i class="bi bi-clipboard-check"></i>';
+                    setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i>', 1200);
+                });
+            });
+        </script>
+    @endpush
+@endsection

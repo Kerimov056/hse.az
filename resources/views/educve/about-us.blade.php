@@ -3,9 +3,66 @@
 @section('title', 'About Us')
 
 @section('content')
-    <!-- Page heading (Selector #1) -->
-    <section id="about-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+    {{-- Page heading (About) with settings-driven slider --}}
+    <section id="about-hero" class="td_page_heading td_center td_heading_bg text-center">
+        @php
+            // About hero slider şəkilləri (settings → pages.heroes.about.images)
+            $aboutSlides = (array) setting('pages.heroes.about.images', []);
+            $aboutSlides = array_values(array_filter($aboutSlides, fn($v) => is_string($v) && trim($v) !== ''));
+            if (count($aboutSlides) === 0) {
+                $aboutSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+            }
+        @endphp
+
+        <style>
+            /* ===== HERO SLIDER (about) ===== */
+            #about-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #about-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #about-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #about-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #about-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .5) 100%);
+            }
+
+            #about-hero .td_page_heading_in {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Background slides --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($aboutSlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+                </div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="td_page_heading_in">
                 <h1 class="td_white_color td_fs_48 td_mb_10">About Us</h1>
@@ -15,16 +72,54 @@
                 </ol>
             </div>
         </div>
-        <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
-        <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
-        <div class="td_page_heading_shape_3 position-absolute"><img
-                src="{{ asset('assets/img/others/page_heading_shape_3.svg') }}" alt=""></div>
-        <div class="td_page_heading_shape_4 position-absolute"><img
-                src="{{ asset('assets/img/others/page_heading_shape_4.svg') }}" alt=""></div>
-        <div class="td_page_heading_shape_5 position-absolute"><img
-                src="{{ asset('assets/img/others/page_heading_shape_5.svg') }}" alt=""></div>
-        <div class="td_page_heading_shape_6 position-absolute td_hover_layer_3"></div>
     </section>
+
+    {{-- Slider JS (2s interval; hover-da pauza; tab gizlənəndə pauza) --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#about-hero .hero-slider');
+            if (!root) return;
+
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return;
+
+            let idx = 0,
+                timer = null;
+            const INTERVAL = 1900;
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const sec = document.getElementById('about-hero');
+            sec.addEventListener('mouseenter', stop);
+            sec.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
+
 
     {{-- About Section (settings-driven) — Selector #2 --}}
     @php
@@ -172,45 +267,96 @@
                                 <div style="padding:12px 14px;"></div>
                             </div>
 
-                            @foreach ($accreditations as $i => $a)
-                                <div data-acc-row data-id="{{ $a->id }}" {{ $i === 0 ? 'data-open=1' : '' }}
-                                    style="display:grid;grid-template-columns:72px 1fr 120px 46px;align-items:center;border-bottom:1px solid #f1f5f9;background:#fff;cursor:pointer;">
-                                    <div style="padding:12px 14px;">
-                                        <div
-                                            style="width:44px;height:44px;border-radius:10px;border:1px solid #ececec;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                                            <img src="{{ $a->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
-                                                alt="{{ $a->name ?? 'Accreditation' }}"
-                                                style="max-width:100%;max-height:100%;object-fit:contain;">
-                                        </div>
-                                    </div>
-                                    <div style="padding:12px 14px;">
-                                        <div style="font-weight:700;color:#111">{{ $a->name ?? 'Accreditation' }}</div>
-                                    </div>
-                                    <div style="padding:12px 14px;color:#6b7280;font-size:14px;">
-                                        {{ optional($a->created_at)->format('M d, Y') }}
-                                    </div>
-                                    <div style="padding:12px 14px;">
-                                        <button type="button" data-acc-toggle
-                                            style="width:32px;height:32px;border:0;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;cursor:pointer;">
-                                            <svg data-acc-icon width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                style="transition:transform .2s; {{ $i === 0 ? 'transform:rotate(90deg);' : '' }}">
-                                                <path d="M9 18l6-6-6-6" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div data-acc-desc
-                                        style="grid-column:1 / -1;border-top:1px dashed #e5e7eb;max-height:{{ $i === 0 ? '400px' : '0' }};overflow:hidden;transition:max-height .25s ease;">
-                                        <div data-acc-inner
-                                            style="padding:14px 18px 18px 18px;color:#374151;line-height:1.65;">
-                                            {!! $a->description && trim(strip_tags($a->description)) !== ''
-                                                ? $a->description
-                                                : '<em style="color:#6b7280;">No description provided yet.</em>' !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                          @foreach ($accreditations as $i => $a)
+    @php
+        // Orijinal HTML (ola bilər)
+        $descHtml = $a->description ?? '';
+        // HTML-i təmizləyib səliqəli mətni al
+        $descText = Str::of(strip_tags($descHtml))->squish()->__toString();
+
+        // İlk sözü müəyyən et
+        $firstWord = $descText !== '' ? Str::of($descText)->explode(' ')->first() : null;
+
+        // Başlıqda göstəriləcək dəyər:
+        //  1) description-ın ilk sözü
+        //  2) yoxdursa name
+        //  3) o da yoxdursa "Accreditation"
+        $display = $firstWord ?: ($a->name ?? 'Accreditation');
+
+        // Açıqlama hissəsində ilk sözü göstərməmək üçün qalan mətni hazırla
+        $bodyText = $descText;
+
+        if ($firstWord) {
+            $startsWith = Str::startsWith(Str::lower($bodyText), Str::lower($firstWord . ' '))
+                          || Str::lower($bodyText) === Str::lower($firstWord);
+            if ($startsWith) {
+                $bodyText = Str::of($bodyText)->substr(mb_strlen($firstWord))->ltrim()->__toString();
+            }
+        }
+
+        // Get Courses üçün istifadə edəcəyimiz axtarış termini
+        $searchTerm = $firstWord ?: ($a->name ?? null);
+        $hasBody = trim($bodyText) !== '';
+    @endphp
+
+    <div data-acc-row data-id="{{ $a->id }}" {{ $i === 0 ? 'data-open=1' : '' }}
+         style="display:grid;grid-template-columns:72px 1fr 120px 46px;align-items:center;border-bottom:1px solid #f1f5f9;background:#fff;cursor:pointer;">
+        <div style="padding:12px 14px;">
+            <div
+                style="width:44px;height:44px;border-radius:10px;border:1px solid #ececec;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                <img src="{{ $a->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
+                     alt="{{ $display }}"
+                     style="max-width:100%;max-height:100%;object-fit:contain;">
+            </div>
+        </div>
+
+        <div style="padding:12px 14px;">
+            <div style="font-weight:700;color:#111">{{ $display }}</div>
+        </div>
+
+        <div style="padding:12px 14px;color:#6b7280;font-size:14px;">
+            {{ optional($a->created_at)->format('M d, Y') }}
+        </div>
+
+        <div style="padding:12px 14px;">
+            <button type="button" data-acc-toggle
+                    style="width:32px;height:32px;border:0;border-radius:8px;background:#f3f4f6;display:grid;place-items:center;cursor:pointer;">
+                <svg data-acc-icon width="14" height="14" viewBox="0 0 24 24"
+                     fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round"
+                     style="transition:transform .2s; {{ $i === 0 ? 'transform:rotate(90deg);' : '' }}">
+                    <path d="M9 18l6-6-6-6" />
+                </svg>
+            </button>
+        </div>
+
+        <div data-acc-desc
+             style="grid-column:1 / -1;border-top:1px dashed #e5e7eb;max-height:{{ $i === 0 ? '400px' : '0' }};overflow:hidden;transition:max-height .25s ease;">
+            <div data-acc-inner
+                 style="padding:14px 18px 18px 18px;color:#374151;line-height:1.65;">
+                @if ($hasBody)
+                    {!! nl2br(e($bodyText)) !!}
+                @else
+                    <em style="color:#6b7280;">No description provided yet.</em>
+                @endif
+
+                {{-- Get Courses düyməsi (yalnız term varsa) --}}
+                @if ($searchTerm)
+                    <div style="margin-top:12px;">
+                        <a href="{{ url('en/courses') . '?q=' . urlencode($searchTerm) }}"
+                           class="td_btn td_style_1 td_radius_10 td_medium"
+                           style="display:inline-flex;align-items:center;gap:8px;">
+                            <span class="td_btn_in td_white_color td_accent_bg">
+                                <span>Get Courses</span>
+                            </span>
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endforeach
+
                         </div>
                     @else
                         <div
@@ -610,7 +756,7 @@
 
             const bubble = document.createElement('div');
             bubble.className = 'guide-bubble';
-                  bubble.innerHTML = `
+            bubble.innerHTML = `
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M21 11.5a8.5 8.5 0 1 1-3.2-6.6L22 4l-1.8 3.7A8.46 8.46 0 0 1 21 11.5Z" stroke="#e31b23" stroke-width="2"/>
@@ -629,23 +775,29 @@
 `;
 
 
-    // Əvvəlcədən bağlanıbsa, heç nə göstərməyək
-if (localStorage.getItem('guide:about:closed') === '1') {
-  bubble.remove();
-  return;
-}
+            // Əvvəlcədən bağlanıbsa, heç nə göstərməyək
+            if (localStorage.getItem('guide:about:closed') === '1') {
+                bubble.remove();
+                return;
+            }
 
-// X düyməsi: bubble-i bağla və resursları təmizlə
-const closeBtn = bubble.querySelector('#g-close');
-closeBtn?.addEventListener('click', () => {
-  try { io?.disconnect?.(); } catch(_) {}
-  window.removeEventListener('scroll', chooseMostVisible, {passive:true});
-  window.removeEventListener('resize', chooseMostVisible, {passive:true});
-  window.removeEventListener('load',   chooseMostVisible);
-  // yadda saxla (istəməsən bu sətri sil)
-  localStorage.setItem('guide:about:closed', '1');
-  bubble.remove();
-});
+            // X düyməsi: bubble-i bağla və resursları təmizlə
+            const closeBtn = bubble.querySelector('#g-close');
+            closeBtn?.addEventListener('click', () => {
+                try {
+                    io?.disconnect?.();
+                } catch (_) {}
+                window.removeEventListener('scroll', chooseMostVisible, {
+                    passive: true
+                });
+                window.removeEventListener('resize', chooseMostVisible, {
+                    passive: true
+                });
+                window.removeEventListener('load', chooseMostVisible);
+                // yadda saxla (istəməsən bu sətri sil)
+                localStorage.setItem('guide:about:closed', '1');
+                bubble.remove();
+            });
             document.body.appendChild(bubble);
 
             let current = -1;

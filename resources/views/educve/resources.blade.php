@@ -211,9 +211,66 @@
         }
     </style>
 
-    {{-- Heading (selector üçün id əlavə olundu) --}}
-    <section id="resources-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-        data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+    {{-- Heading (Resources) with settings-driven slider --}}
+    <section id="resources-hero" class="td_page_heading td_center td_heading_bg text-center">
+        @php
+            // Resources hero slider şəkilləri (settings → pages.heroes.resources.images)
+            $resSlides = (array) setting('pages.heroes.resources.images', []);
+            $resSlides = array_values(array_filter($resSlides, fn($v) => is_string($v) && trim($v) !== ''));
+            if (count($resSlides) === 0) {
+                $resSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+            }
+        @endphp
+
+        <style>
+            /* ===== HERO SLIDER (resources) ===== */
+            #resources-hero {
+                position: relative;
+                overflow: hidden;
+            }
+
+            #resources-hero .hero-slider {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+            }
+
+            #resources-hero .hero-slide {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                opacity: 0;
+                transition: opacity .8s ease-in-out;
+                will-change: opacity;
+            }
+
+            #resources-hero .hero-slide.is-active {
+                opacity: 1;
+            }
+
+            #resources-hero .hero-overlay {
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                background: linear-gradient(180deg, rgba(15, 23, 42, .25) 0%, rgba(15, 23, 42, .5) 100%);
+            }
+
+            #resources-hero .td_page_heading_in {
+                position: relative;
+                z-index: 2;
+            }
+        </style>
+
+        {{-- Background slides --}}
+        <div class="hero-slider" aria-hidden="true">
+            @foreach ($resSlides as $i => $src)
+                <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}" style="background-image:url('{{ $src }}')">
+                </div>
+            @endforeach
+            <div class="hero-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="td_page_heading_in">
                 <h1 class="td_white_color td_fs_48 td_mb_10">Resources</h1>
@@ -224,6 +281,53 @@
             </div>
         </div>
     </section>
+
+    {{-- Slider JS (2s interval; hover-da pauza; tab gizlənəndə pauza) --}}
+    <script>
+        (function() {
+            const root = document.querySelector('#resources-hero .hero-slider');
+            if (!root) return;
+
+            const slides = Array.from(root.querySelectorAll('.hero-slide'));
+            if (slides.length <= 1) return; // tək şəkil üçün animasiya lazım deyil
+
+            let idx = 0,
+                timer = null;
+            const INTERVAL = 1900;
+
+            function show(i) {
+                slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+            }
+
+            function next() {
+                idx = (idx + 1) % slides.length;
+                show(idx);
+            }
+
+            function start() {
+                if (!timer) timer = setInterval(next, INTERVAL);
+            }
+
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            }
+
+            start();
+
+            const sec = document.getElementById('resources-hero');
+            sec.addEventListener('mouseenter', stop);
+            sec.addEventListener('mouseleave', start);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop();
+                else start();
+            });
+        })();
+    </script>
+
 
     <section class="res-page">
         <div class="td_height_120 td_height_lg_80"></div>
@@ -469,7 +573,7 @@
                         } catch (e) {
                             el.insertAdjacentHTML('afterbegin',
                                 `<iframe class="rs_fit" src="${gviewUrl(url)}" style="border:0" loading="lazy"></iframe>`
-                                );
+                            );
                             return;
                         }
                     }

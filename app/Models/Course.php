@@ -42,4 +42,5 @@ class Course extends Model
     {
         return $this->hasOne(SocialLink::class, 'course_id');
     }
+
 }

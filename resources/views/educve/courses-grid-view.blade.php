@@ -247,9 +247,44 @@
 </header>
 <!-- End Header -->
 
-<!-- Page Heading -->
-<section id="courses-hero" class="td_page_heading td_center td_bg_filed td_heading_bg text-center td_hobble"
-    data-src="{{ asset('assets/img/others/page_heading_bg.jpg') }}">
+<!-- Page Heading (with settings-driven slider) -->
+<section id="courses-hero" class="td_page_heading td_center td_heading_bg text-center td_hobble">
+    @php
+        // courses hero slider şəkilləri (settings → pages.heroes.courses.images)
+        $courseSlides = (array) setting('pages.heroes.courses.images', []);
+        $courseSlides = array_values(array_filter($courseSlides, fn($v) => is_string($v) && trim($v) !== ''));
+        if (count($courseSlides) === 0) {
+            $courseSlides = [asset('assets/img/others/page_heading_bg.jpg')];
+        }
+    @endphp
+
+    <style>
+        /* ===== HERO SLIDER (courses) ===== */
+        #courses-hero { position: relative; overflow: hidden; }
+        #courses-hero .hero-slider { position: absolute; inset: 0; z-index: 0; }
+        #courses-hero .hero-slide{
+            position:absolute; inset:0;
+            background-size:cover; background-position:center;
+            opacity:0; transition:opacity .8s ease-in-out; will-change:opacity;
+        }
+        #courses-hero .hero-slide.is-active{ opacity:1; }
+        #courses-hero .hero-overlay{
+            position:absolute; inset:0;
+            background:linear-gradient(180deg, rgba(15,23,42,.25) 0%, rgba(15,23,42,.45) 100%);
+            z-index:1;
+        }
+        #courses-hero .td_page_heading_in{ position:relative; z-index:2; }
+    </style>
+
+    {{-- Slides (background) --}}
+    <div class="hero-slider" aria-hidden="true">
+        @foreach ($courseSlides as $i => $src)
+            <div class="hero-slide {{ $i === 0 ? 'is-active' : '' }}"
+                 style="background-image:url('{{ $src }}')"></div>
+        @endforeach
+        <div class="hero-overlay"></div>
+    </div>
+
     <div class="container">
         <div class="td_page_heading_in">
             <h1 class="td_white_color td_fs_48 td_mb_10">Courses Grid View</h1>
@@ -259,6 +294,8 @@
             </ol>
         </div>
     </div>
+
+    {{-- Mövcud dekorativ formalar (eyni saxlanılıb) --}}
     <div class="td_page_heading_shape_1 position-absolute td_hover_layer_3"></div>
     <div class="td_page_heading_shape_2 position-absolute td_hover_layer_5"></div>
     <div class="td_page_heading_shape_3 position-absolute">
@@ -272,6 +309,37 @@
     </div>
     <div class="td_page_heading_shape_6 position-absolute td_hover_layer_3"></div>
 </section>
+
+{{-- HERO slider JS: 2s interval, hover-da dayandırır, tab dəyişəndə pauza edir --}}
+<script>
+    (function () {
+        const root = document.querySelector('#courses-hero .hero-slider');
+        if (!root) return;
+
+        const slides = Array.from(root.querySelectorAll('.hero-slide'));
+        if (slides.length <= 1) return; // Tək şəkil üçün animasiya lazım deyil
+
+        let idx = 0, timer = null;
+        const INTERVAL = 2000; // 2s
+
+        function show(i){ slides.forEach((s,k)=>s.classList.toggle('is-active', k===i)); }
+        function next(){ idx = (idx + 1) % slides.length; show(idx); }
+
+        function start(){ if(!timer) timer = setInterval(next, INTERVAL); }
+        function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+
+        start();
+
+        const hero = document.getElementById('courses-hero');
+        hero.addEventListener('mouseenter', stop);
+        hero.addEventListener('mouseleave', start);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop(); else start();
+        });
+    })();
+</script>
+
 
 <!-- Courses Grid View -->
 <section style="background:var(--bg)">
@@ -314,7 +382,7 @@
                 <span class="td_heading_color td_medium">
                     @if (method_exists($courses, 'total'))
                         @if (($q ?? '') !== '')
-                            {{ $courses->total() }} result(s) for “{{ $q }}”
+                      
                         @else
                             Showing {{ $courses->count() }} Courses of {{ $courses->total() }}
                         @endif
