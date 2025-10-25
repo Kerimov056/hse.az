@@ -384,6 +384,7 @@
                 window.addEventListener('load', tick);
             })();
         </script>
+        
 
         <!-- MAIN HEADER -->
         <div class="td_main_header">
@@ -860,7 +861,7 @@
                 @endif
 
                 @if ($ctaText && $ctaUrl)
-                    <a href="{{ "en/courses" }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                    <a href="{{ 'en/courses' }}" class="td_btn td_style_1 td_radius_10 td_medium">
                         <span class="td_btn_in td_white_color td_accent_bg">
                             <span>{{ $ctaText }}</span>
                             <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
@@ -933,49 +934,29 @@
 
     <div class="container">
         <div class="td_hero_btn_group">
-            @php $buttons = setting('home.hero.buttons', []); @endphp
-            @foreach ($buttons as $i => $btn)
-                @php
-                    $text = data_get($btn, 'text');
-                    $url = data_get($btn, 'url', '#');
-                @endphp
-                @if ($text && $url)
-                    <a href="{{ "/" }}"
-                        class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
-                        data-wow-duration="0.9s" data-wow-delay="0.35s">
-                        <span class="td_btn_in td_white_color td_accent_bg">
-                            <span>{{ $text }}</span>
-                            {{-- SVG: index-ə görə fərqli ikonlar (0,1,2) --}}
-                            @if ($i === 0)
-                                {{-- Apply Now icon --}}
-                                <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15.1575 4.34302L3.84375 15.6567" stroke="currentColor"
-                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                    <path
-                                        d="M15.157 11.4142C15.157 11.4142 16.0887 5.2748 15.157 4.34311C14.2253 3.41142 8.08594 4.34314 8.08594 4.34314"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            @elseif($i === 1)
-                                {{-- Request Info icon --}}
-                                <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    {{-- ... sənin verdiyin ikinci SVG ... --}}
-                                </svg>
-                            @else
-                                {{-- Chat With Us icon --}}
-                                <svg width="21" height="20" viewBox="0 0 21 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    {{-- ... sənin verdiyin üçüncü SVG ... --}}
-                                </svg>
-                            @endif
-                        </span>
-                    </a>
-                @endif
-            @endforeach
+            <a href="#apply" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
+                data-wow-duration="0.9s" data-wow-delay="0.35s">
+                <span class="td_btn_in td_white_color td_accent_bg">
+                    <span>{{ __('Subscribe now') }}</span>
+                </span>
+            </a>
+
+            <a href="#request-info" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
+                data-wow-duration="0.9s" data-wow-delay="0.45s">
+                <span class="td_btn_in td_white_color td_accent_bg">
+                    <span>{{ __('Request info') }}</span>
+                </span>
+            </a>
+
+            <a href="#chat" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
+                data-wow-duration="0.9s" data-wow-delay="0.55s">
+                <span class="td_btn_in td_white_color td_accent_bg">
+                    <span>{{ __('Chat With Us') }}</span>
+                </span>
+            </a>
         </div>
     </div>
+
 
     <!-- End Hero Section -->
 
@@ -1059,7 +1040,7 @@
                             </ul>
                         </div>
 
-                        <a href="{{ data_get($cta, 'url', '') }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                        <a href="{{ data_get($cta, '', '') }}" class="td_btn td_style_1 td_radius_10 td_medium">
                             <span class="td_btn_in td_white_color td_accent_bg">
                                 <span>{{ data_get($cta, 'text', 'More About') }}</span>
                                 <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
@@ -1654,7 +1635,7 @@
                             </svg>
 
                             <div class="td_btn_box_in">
-                                <a href="{{ "en/courses" }}"
+                                <a href="{{ 'en/courses' }}"
                                     class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
                                     <span class="td_btn_in td_heading_color td_white_bg">
                                         <span>{{ $ctaText }}</span>
@@ -1811,7 +1792,7 @@
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center">
-                <h2 class="td_section_title td_fs_48 mb-0">Fresh Learning Materials & Downloads</h2>
+                <h2 class="td_section_title td_fs_48 mb-0">{{ __('Fresh Learning Materials & Downloads') }}</h2>
             </div>
             <div class="td_height_50 td_height_lg_50"></div>
 
@@ -2174,7 +2155,7 @@
                 @if ($heading)
                     <h2 class="td_fs_48 td_white_color mb-0 wow fadeInUp" data-wow-duration="1s"
                         data-wow-delay="0.2s">
-                        {!! $heading !!}
+                        {{ __("Take a Video Tour to Learn Intro of Campus") }}
                     </h2>
                 @endif
             </div>
@@ -2194,7 +2175,7 @@
                 </div>
 
                 <div class="td_contact_box_or td_fs_24 td_medium td_white_bg td_center rounded-circle td_accent_color">
-                    or
+                    {{ __('or') }}
                 </div>
 
                 <div class="td_contact_box_right">
@@ -2223,9 +2204,9 @@
                 data-wow-delay="0.2s">
                 <p
                     class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    Accreditations
+                    {{ __('Accreditations') }}
                 </p>
-                <h2 class="td_section_title td_fs_48 mb-0">Recognitions & Partnerships</h2>
+                <h2 class="td_section_title td_fs_48 mb-0"> {{ __('Recognitions & Partnerships') }}</h2>
             </div>
 
             <div class="td_height_50 td_height_lg_50"></div>
@@ -2339,9 +2320,9 @@
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
                 data-wow-delay="0.2s">
-                <h2 class="td_section_title td_fs_48 mb-0 td_white_color">Start your journey With Us</h2>
+                <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ __('Start your journey With Us') }}</h2>
                 <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
-                    Meet our featured expert from HSE.AZ
+                    {{ __('Meet our featured expert from HSE.AZ') }}
                 </p>
             </div>
             <div class="td_height_50 td_height_lg_50"></div>
@@ -2471,14 +2452,14 @@
                 @if ($kicker)
                     <p
                         class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                        {{ $kicker }}
+                        {{ __("Departments") }}
                     </p>
                 @endif
 
-                <h2 class="td_section_title td_fs_48 mb-0">{{ $title }}</h2>
+                <h2 class="td_section_title td_fs_48 mb-0">{{ __("Popular Departments") }}</h2>
 
                 @if ($subtitle)
-                    <p class="td_section_subtitle td_fs_18 mb-0">{!! $subtitle !!}</p>
+                    <p class="td_section_subtitle td_fs_18 mb-0">{{ __("Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.") }}</p>
                 @endif
             </div>
 
@@ -2558,7 +2539,8 @@
                             @endif
 
                             {{-- Tagline settings-dən (site.tagline) gəlir, yoxdursa default mətn --}}
-                            <p>{{ $tagline }}</p>
+                            <p>{{ __('Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.') }}
+                            </p>
                         </div>
 
                         <ul class="td_footer_address_widget td_medium td_mp_0">
@@ -2592,25 +2574,27 @@
 
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
-                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Navigate</h2>
+                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                            {{ __('Navigateion') }}</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li><a href="{{ route('faqss') }}">Faqs</a></li>
-                            <li><a href="{{ route('about') }}">About Us</a></li>
-                            <li><a href="{{ route('resources') }}">Resources</a></li>
-                            <li><a href="{{ route('team') }}">Team</a></li>
-                            <li><a href="{{ route('contact') }}">Contact</a></li>
+                            <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                            <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
+                            <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
+                            <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
+                            <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                            <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
-                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Courses</h2>
+                        <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                            {{ __('Courses') }}</h2>
                         <ul class="td_footer_widget_menu">
-                            <li><a href="{{ route('courses-grid-view') }}">Courses</a></li>
-                            <li><a href="{{ route('services') }}">Services</a></li>
-                            <li><a href="{{ route('topices') }}">Topices</a></li>
-                            <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
+                            <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
+                            <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                            <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+                            <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -2620,8 +2604,9 @@
                             {{ __('Subscribe now') }}
                         </h2>
                         <div class="td_newsletter td_style_1">
-                            <p class="td_mb_20 td_opacity_7">Far far away, behind the word mountains, far from the
-                                Consonantia.</p>
+                            <p class="td_mb_20 td_opacity_7">
+                                {{ __('Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.') }}
+                            </p>
                             <form class="td_newsletter_form" action="{{ route('subscribe') }}" method="POST"
                                 id="newsletterForm">
                                 @csrf

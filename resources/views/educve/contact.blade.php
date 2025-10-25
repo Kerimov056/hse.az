@@ -66,10 +66,10 @@
 
     <div class="container">
         <div class="td_page_heading_in">
-            <h1 class="td_white_color td_fs_48 td_mb_10">Contact</h1>
+            <h1 class="td_white_color td_fs_48 td_mb_10">{{ __("Contact") }}</h1>
             <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active">Contact</li>
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
+                <li class="breadcrumb-item active">{{ __("Contact") }}</li>
             </ol>
         </div>
     </div>
@@ -331,8 +331,8 @@
     </style>
 
     <div class="wrap">
-        <div class="subtitle">TELEPHONE AND EMAIL <span class="bar"></span></div>
-        <h1 class="section-title">Contact details</h1>
+        <div class="subtitle">{{ __("TELEPHONE AND EMAIL") }}<span class="bar"></span></div>
+        <h1 class="section-title">{{ __("Contact details") }}</h1>
 
         <div class="grid">
             <!-- LEFT: DETAILS -->
@@ -341,7 +341,7 @@
                     <li class="row">
                         <span class="icon" aria-hidden="true"></span>
                         <div>
-                            <strong>Telephone:</strong>
+                            <strong>{{ __("Telephone") }}:</strong>
                             <a href="tel:+994512067288">(+994) 51-206-72-88</a><br />
                             <a href="tel:+994102532388">(+994) 10-253-23-88</a>
                         </div>
@@ -349,28 +349,28 @@
                     <li class="row">
                         <span class="icon" aria-hidden="true"></span>
                         <div>
-                            <strong>For general inquiries:</strong>
+                            <strong>{{ __("For general inquiries") }}:</strong>
                             <a href="mailto:info@hse.az">info@hse.az</a>
                         </div>
                     </li>
                     <li class="row">
                         <span class="icon" aria-hidden="true"></span>
                         <div>
-                            <strong>For purchasing training courses and getting information about them:</strong>
+                            <strong>{{ __("For purchasing training courses and getting information about them") }}:</strong>
                             <a href="mailto:training@hse.az">training@hse.az</a>
                         </div>
                     </li>
                     <li class="row">
                         <span class="icon" aria-hidden="true"></span>
                         <div>
-                            <strong>For exam / assessment results of courses:</strong>
+                            <strong>{{ __("For exam / assessment results of courses") }}:</strong>
                             <a href="mailto:customerservice@hse.az">customerservice@hse.az</a>
                         </div>
                     </li>
                     <li class="row">
                         <span class="icon" aria-hidden="true"></span>
                         <div>
-                            <strong>Address:</strong>
+                            <strong>{{ __("Address") }}:</strong>
                             <span class="muted">Tbilisi Avenue 22, "Europe Hotel" 2nd Floor, Room 106, Baku,
                                 Azerbaijan, AZ1078</span>
                         </div>
@@ -380,9 +380,9 @@
 
             <!-- RIGHT: FORM -->
             <div>
-                <div class="subtitle">ONLINE CONTACT FORM <span class="bar"></span></div>
+                <div class="subtitle">{{ __("ONLINE CONTACT FORM") }} <span class="bar"></span></div>
                 <div class="form" id="contact-form">
-                    <h2>Message to us</h2>
+                    <h2>{{ __("Message to us") }}</h2>
 
                     <form method="POST" action="{{ route('contact.send') }}" id="contactForm" novalidate>
                         @csrf
@@ -396,7 +396,7 @@
                         </div>
 
                         <button style="background-color:#e31b23;color:white" class="btn" type="submit">
-                            <span class="btn-text">Send</span>
+                            <span class="btn-text">{{ __("Send") }}</span>
                             <span class="btn-spinner" style="display:none;margin-left:8px;">⏳</span>
                         </button>
                     </form>

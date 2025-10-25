@@ -287,10 +287,10 @@
 
     <div class="container">
         <div class="td_page_heading_in">
-            <h1 class="td_white_color td_fs_48 td_mb_10">Courses Grid View</h1>
+            <h1 class="td_white_color td_fs_48 td_mb_10">{{ __("Courses") }}</h1>
             <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active">Courses Grid View</li>
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
+                <li class="breadcrumb-item active">{{ __("Courses") }}</li>
             </ol>
         </div>
     </div>
@@ -354,7 +354,7 @@
                     placeholder="Search by name or description..." autocomplete="off" />
                 <button class="td_btn td_style_1 td_medium" type="submit">
                     <span class="td_btn_in td_white_color td_accent_bg">
-                        <span>Search</span>
+                        <span>{{ __("Axtar") }}</span>
                         <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path d="M15.1575 4.34302L3.84375 15.6567" stroke="currentColor" stroke-width="1.5"

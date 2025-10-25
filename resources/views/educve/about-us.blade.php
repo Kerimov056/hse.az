@@ -65,10 +65,10 @@
 
         <div class="container">
             <div class="td_page_heading_in">
-                <h1 class="td_white_color td_fs_48 td_mb_10">About Us</h1>
+                <h1 class="td_white_color td_fs_48 td_mb_10">{{ __("About Us") }}</h1>
                 <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                    <li class="breadcrumb-item active">About Us</li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
+                    <li class="breadcrumb-item active">{{ __("About Us") }}</li>
                 </ol>
             </div>
         </div>
@@ -514,7 +514,7 @@
             <div class="td_section_heading td_style_1 text-center fly fly-up stagger-1">
                 <p
                     class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    Who we are?</p>
+                    {{ __("Who we are?") }}</p>
                 <h2 class="td_section_title td_fs_40 mb-0">HSE.AZ LLC</h2>
             </div>
 
@@ -614,8 +614,8 @@
             <div class="td_section_heading td_style_1 text-center">
                 <p
                     class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    BLOG & ARTICLES</p>
-                <h2 class="td_section_title td_fs_48 mb-0">Take A Look At The Latest <br>Articles</h2>
+                    {{ __("BLOG & ARTICLES") }}</p>
+                <h2 class="td_section_title td_fs_48 mb-0">{{ __("Take A Look At The Latest Articles") }}</h2>
             </div>
             <div class="td_height_50 td_height_lg_40"></div>
 

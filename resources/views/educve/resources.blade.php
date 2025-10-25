@@ -273,10 +273,10 @@
 
         <div class="container">
             <div class="td_page_heading_in">
-                <h1 class="td_white_color td_fs_48 td_mb_10">Resources</h1>
+                <h1 class="td_white_color td_fs_48 td_mb_10">{{ __("Resources") }}</h1>
                 <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Resources</li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
+                    <li class="breadcrumb-item active">{{ __("Resources") }}</li>
                 </ol>
             </div>
         </div>
@@ -361,8 +361,8 @@
                     </div>
 
                     <div class="col-xl-2 col-lg-2 d-flex gap-2">
-                        <button class="btn btn-primary w-100 res-btn">Axtar</button>
-                        <a href="{{ route('resources') }}" class="btn btn-outline-secondary res-btn">Təmizlə</a>
+                        <button class="btn btn-primary w-100 res-btn">{{ __("Axtar") }}</button>
+                        <a href="{{ route('resources') }}" class="btn btn-outline-secondary res-btn">{{ __("Təmizlə") }}</a>
                     </div>
                 </form>
 

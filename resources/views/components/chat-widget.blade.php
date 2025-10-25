@@ -113,7 +113,7 @@
             <path d="M4 12L20 4l-5 16-4-6-7-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
         </svg>
     </span>
-    <span>{{ $label }}</span>
+    <span>{{ __("Mesaj göndərin") }}</span>
 </button>
 
 <div class="cw-panel" id="cwPanel" role="dialog" aria-labelledby="cwTitle" aria-modal="true">
@@ -138,12 +138,12 @@
             </div>
 
             <button class="cw-btn" type="submit" id="cwSubmit">
-                <span class="btn-text">Göndər</span>
+                <span class="btn-text">{{ __("Göndər") }}</span>
                 <span class="btn-spin" style="display:none">⏳</span>
             </button>
         </form>
 
-        <div class="cw-footer-hint">Bu forma <b>Əlaqə</b> bölməsinə göndəriləcək.</div>
+        <div class="cw-footer-hint">{{ __("Bu forma") }} <b>{{ __("Əlaqə") }}</b> {{ __("bölməsinə göndəriləcək.") }}</div>
     </div>
 </div>
 

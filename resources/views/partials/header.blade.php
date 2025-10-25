@@ -148,35 +148,294 @@
 
     {{-- resources/views/partials/header.blade.php --}}
     <header class="td_site_header td_style_1 td_type_2 td_sticky_header td_medium td_heading_color">
+        <style>
+            .container {
+                max-width: 100%;
+                padding-left: 100px;
+                padding-right: 100px;
+            }
+
+            .td_top_header_in {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .td_top_header_left {
+                flex: 1 1 auto;
+                max-width: calc(100% - 220px);
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .typed-text {
+                font-weight: 950;
+                font-size: 14px;
+                color: #fff;
+                white-space: pre;
+                display: inline-block;
+            }
+
+            .td_top_header_right {
+                flex: 0 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                white-space: nowrap;
+            }
+
+            /* MAIN HEADER */
+            .td_main_header_in {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+            }
+
+            /* Left block now holds logo + primary nav in a single row */
+            .td_header_bar_left {
+                display: flex;
+                align-items: center;
+                gap: 28px;
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .td_site_branding {
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .td_site_branding img {
+                height: 48px;
+                width: auto;
+                display: block;
+            }
+
+            /* Nav sits directly to the right of the logo */
+            .td_nav {
+                flex: 1 1 auto;
+            }
+
+            .td_nav_list_wrap {
+                overflow: visible;
+            }
+
+            .td_nav_list_wrap_in {
+                display: block;
+            }
+
+            .td_nav_list {
+                display: inline-flex;
+                align-items: center;
+                gap: 20px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                white-space: nowrap;
+            }
+
+            .td_nav_list>li {
+                position: relative;
+            }
+
+            .td_nav_list>li>a {
+                display: inline-block;
+                padding: 12px 6px;
+            }
+
+            /* Dropdowns */
+            .td_nav_list>li.menu-item-has-children>ul {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: #fff;
+                min-width: 220px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+                padding: 8px 0;
+                margin: 0;
+                list-style: none;
+                display: none;
+                z-index: 50;
+            }
+
+            .td_nav_list>li.menu-item-has-children:hover>ul {
+                display: block;
+            }
+
+            .td_nav_list>li.menu-item-has-children>ul>li>a {
+                display: block;
+                padding: 10px 14px;
+            }
+
+            /* Right controls area */
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 0 0 auto;
+            }
+
+            /* Optional: collapse nav spacing a bit on narrower widths */
+            @media (max-width: 1200px) {
+                .td_nav_list {
+                    gap: 14px;
+                }
+
+                .container {
+                    padding-left: 24px;
+                    padding-right: 24px;
+                }
+            }
+
+            /* Very small screens—let your theme’s hamburger takeover */
+            @media (max-width: 992px) {
+                .td_nav {
+                    display: none;
+                }
+            }
+
+
+            /* --- Right cluster layout tweaks --- */
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+            /* Language & Search keep their spacing consistent */
+            .td_language_wrap {
+                margin-right: 4px;
+            }
+
+            /* --- Social buttons --- */
+            .td_header_social_btns {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .td_social_btn {
+                --btn-bg: rgba(15, 23, 42, .06);
+                /* default soft bg */
+                --btn-icon: #0f172a;
+                /* default icon */
+                --btn-ring: rgba(15, 23, 42, .25);
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: var(--btn-bg);
+                color: var(--btn-icon);
+                border: 1px solid rgba(15, 23, 42, .06);
+                box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
+                transition: background .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+            }
+
+            .td_social_btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(15, 23, 42, .10);
+                border-color: rgba(15, 23, 42, .10);
+            }
+
+            /* Focus for keyboard users */
+            .td_social_btn:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px var(--btn-ring);
+            }
+
+            /* Brand hover accents (icon turns white, bg turns brand) */
+            .td_social_btn--fb:hover {
+                background: #1877F2;
+                color: #fff;
+            }
+
+            .td_social_btn--tw:hover {
+                background: #111;
+                color: #fff;
+            }
+
+            /* X */
+            .td_social_btn--ig:hover {
+                background: radial-gradient(120% 120% at 0% 100%, #feda75, #d62976 50%, #962fbf 75%, #4f5bd5);
+                color: #fff;
+            }
+
+            .td_social_btn--li:hover {
+                background: #0A66C2;
+                color: #fff;
+            }
+
+            .td_social_btn--wa:hover {
+                background: #25D366;
+                color: #fff;
+            }
+
+            /* Dark mode friendly defaults */
+            @media (prefers-color-scheme: dark) {
+                .td_social_btn {
+                    --btn-bg: rgba(255, 255, 255, .06);
+                    --btn-icon: #e5e7eb;
+                    --btn-ring: rgba(255, 255, 255, .35);
+                    border-color: rgba(255, 255, 255, .08);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+                }
+            }
+
+            /* Reduce motion support */
+            @media (prefers-reduced-motion: reduce) {
+
+                .td_social_btn,
+                .td_social_btn:hover {
+                    transition: none;
+                    transform: none;
+                }
+            }
+
+            /* Optional: make the search button visually match pills */
+            .td_circle_btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: rgba(15, 23, 42, .06);
+                border: 1px solid rgba(15, 23, 42, .06);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .td_circle_btn:hover {
+                background: rgba(15, 23, 42, .10);
+            }
+        </style>
+
+        <!-- TOP STRIP -->
         <div class="td_top_header td_heading_bg td_white_color">
             <div class="container">
                 <div class="td_top_header_in">
                     <div class="td_top_header_left">
-                        <div class="ticker" role="marquee" aria-label="Site notice">
-                            <div class="ticker__inner">
-                                Welcome to the first occupational health, safety, environmental web portal!
-                            </div>
-                        </div>
+                        <div class="typed-text" id="typedText"></div>
                     </div>
-
 
                     <div class="td_top_header_right">
                         @guest
                             <span>
-                                <a href="{{ route('auth.show', 'login') }}" class="">{{ __('Sign in') }}</a> /
-                                <a href="{{ route('auth.show', 'register') }}" class="">{{ __('Sign up') }}</a>
+                                <a href="{{ route('auth.show', 'login') }}">{{ __('Sign in') }}</a> /
+                                <a href="{{ route('auth.show', 'register') }}">{{ __('Sign up') }}</a>
                             </span>
                         @endguest
 
                         @auth
                             @if (auth()->user()->isAdmin())
                                 <a href="{{ route('admin.dashboard') }}" class="td_btn td_style_1 td_medium">
-                                    <span class="td_btn_in td_white_color td_accent_bg"><span>Admin panel</span></span>
+                                    <span class="td_btn_in td_white_color td_accent_bg"><span>Admin Panel</span></span>
                                 </a>
                             @endif
-                        @endauth
 
-                        @auth
                             <div class="d-inline-flex align-items-center gap-3">
                                 <span class="td_medium">{{ Auth::user()->name }}</span>
                                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
@@ -194,6 +453,24 @@
             </div>
         </div>
 
+        <script>
+            (function() {
+                const text =
+                    "The Constitution of the Republic of Azerbaijan, Article 35/VI Everyone has right to work in safe and healthy workplace....";
+                const typedText = document.getElementById('typedText');
+                if (!typedText) return;
+                let i = 0;
+
+                function tick() {
+                    if (i < text.length) {
+                        typedText.innerHTML += text.charAt(i++);
+                        setTimeout(tick, 50);
+                    }
+                }
+                window.addEventListener('load', tick);
+            })();
+        </script>
+
         <div class="td_main_header">
             <div class="container">
                 <div class="td_main_header_in">
@@ -201,7 +478,7 @@
                         <a class="td_site_branding td_accent_color" href="{{ route('home') }}">
                             {{-- LOGO --}}
                             <a class="td_site_branding" href="{{ route('home') }}">
-                                <img src="{{ $logoUrl }}" alt="Logo">
+                                <img src="{{ asset('assets/logoeng.png') }}" alt="Logo">
                             </a>
                         </a>
 
@@ -314,3 +591,6 @@
                 </div>
             </div>
     </header>
+
+
+    

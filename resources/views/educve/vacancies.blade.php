@@ -230,10 +230,10 @@
 
         <div class="container">
             <div class="td_page_heading_in">
-                <h1 class="td_white_color td_fs_48 td_mb_10">Vacancies</h1>
+                <h1 class="td_white_color td_fs_48 td_mb_10">{{ __("Vacancies") }}</h1>
                 <ol class="breadcrumb m-0 td_fs_20 td_opacity_8 td_semibold td_white_color">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Vacancies</li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __("Home") }}</a></li>
+                    <li class="breadcrumb-item active">{{ __("Vacancies") }}</li>
                 </ol>
             </div>
         </div>
@@ -292,9 +292,9 @@
             <table class="jobs-table">
                 <thead>
                     <tr>
-                        <th style="width:60%">Vacancy</th>
-                        <th style="width:20%">Salary</th>
-                        <th style="width:20%">Posted</th>
+                        <th style="width:60%">{{ __("Vacancy") }}</th>
+                        <th style="width:20%">{{ __("Salary") }}</th>
+                        <th style="width:20%">{{ __("Posted") }}</th>
                     </tr>
                 </thead>
                 <tbody>

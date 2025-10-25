@@ -54,7 +54,8 @@
                              @endif
 
                              {{-- Tagline settings-dən (site.tagline) gəlir, yoxdursa default mətn --}}
-                             <p>{{ $tagline }}</p>
+                             <p>{{ __('Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.') }}
+                             </p>
                          </div>
 
                          <ul class="td_footer_address_widget td_medium td_mp_0">
@@ -88,25 +89,27 @@
 
                  <div class="td_footer_col">
                      <div class="td_footer_widget">
-                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Navigate</h2>
+                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                             {{ __('Navigateion') }}</h2>
                          <ul class="td_footer_widget_menu">
-                             <li><a href="{{ route('home') }}">Home</a></li>
-                             <li><a href="{{ route('faqss') }}">Faqs</a></li>
-                             <li><a href="{{ route('about') }}">About Us</a></li>
-                             <li><a href="{{ route('resources') }}">Resources</a></li>
-                             <li><a href="{{ route('team') }}">Team</a></li>
-                             <li><a href="{{ route('contact') }}">Contact</a></li>
+                             <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                             <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
+                             <li><a href="{{ route('about') }}">{{ __('About Us') }}</a></li>
+                             <li><a href="{{ route('resources') }}">{{ __('Resources') }}</a></li>
+                             <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                             <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
                          </ul>
                      </div>
                  </div>
                  <div class="td_footer_col">
                      <div class="td_footer_widget">
-                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">Courses</h2>
+                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
+                             {{ __('Courses') }}</h2>
                          <ul class="td_footer_widget_menu">
-                             <li><a href="{{ route('courses-grid-view') }}">Courses</a></li>
-                             <li><a href="{{ route('services') }}">Services</a></li>
-                             <li><a href="{{ route('topices') }}">Topices</a></li>
-                             <li><a href="{{ route('vacancies') }}">Vacancies</a></li>
+                             <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
+                             <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                             <li><a href="{{ route('topices') }}">{{ __('Topics') }}</a></li>
+                             <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                          </ul>
                      </div>
                  </div>
@@ -116,8 +119,9 @@
                              {{ __('Subscribe now') }}
                          </h2>
                          <div class="td_newsletter td_style_1">
-                             <p class="td_mb_20 td_opacity_7">Far far away, behind the word mountains, far from the
-                                 Consonantia.</p>
+                             <p class="td_mb_20 td_opacity_7">
+                                 {{ __('Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.') }}
+                             </p>
                              <form class="td_newsletter_form" action="{{ route('subscribe') }}" method="POST"
                                  id="newsletterForm">
                                  @csrf
