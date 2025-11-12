@@ -370,7 +370,7 @@
         <script>
             (function() {
                 const text =
-                    "The Constitution of the Republic of Azerbaijan, Article 35/VI Everyone has right to work in safe and healthy workplace.... Welcome to the first health, safety, environmental web portal of Azerbaijan.";
+                    "Welcome to the first health, safety, environmental web portal of Azerbaijan.The Constitution of the Republic of Azerbaijan, Article 35/VI Everyone has right to work in safe and healthy workplace....";
                 const typedText = document.getElementById('typedText');
                 if (!typedText) return;
                 let i = 0;
