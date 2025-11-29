@@ -19,8 +19,9 @@
             </div>
             <div class="td_top_header_right">
               <span>
-                <a href="signin.html">Login</a> /
-                <a href="signup.html">Register</a>
+                {{-- HTML fayla yox, Laravel route-a get --}}
+                <a href="{{ route('auth.show', ['tab' => 'login']) }}">Login</a> /
+                <a href="{{ route('auth.show', ['tab' => 'register']) }}">Register</a>
               </span>
               <a href="#" class="td_btn td_style_1 td_medium">
                 <span class="td_btn_in td_white_color td_accent_bg">
@@ -123,25 +124,53 @@
                 <h2 class="td_fs_36 td_mb_20">SIGN IN</h2>
                 <hr>
                 <div class="td_height_30"></div>
-                <input type="text" class="td_form_field td_mb_30" placeholder="Email *">
-                <input type="password" class="td_form_field td_mb_10" placeholder="Password *">
-                <div class="td_form_card_text_2 td_mb_50">
-                  <a href="#" class="td_semibold td_accent_color">Forgot Password?</a>
-                  <div class="td_custom_checkbox">
-                    <input type="checkbox" id="remember">
-                    <label for="remember">Remember me</label>
-                  </div>
-                </div>
-                <button type="submit" class="td_btn td_style_1 td_radius_10 td_medium">
-                  <span class="td_btn_in td_white_color td_accent_bg"><span>Sign In</span></span>
-                </button>
+
+                {{-- ƏSAS LOGIN FORMU --}}
+                <form method="POST" action="{{ route('login.post') }}">
+                    @csrf
+
+                    <input
+                        type="email"
+                        name="email"
+                        class="td_form_field td_mb_30"
+                        placeholder="Email *"
+                        value="{{ old('email') }}"
+                        required
+                    >
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="td_form_field td_mb_10"
+                        placeholder="Password *"
+                        required
+                    >
+
+                    <div class="td_form_card_text_2 td_mb_50">
+                      <a href="#" class="td_semibold td_accent_color">Forgot Password?</a>
+                      <div class="td_custom_checkbox">
+                        <input type="checkbox" id="remember" name="remember" value="1">
+                        <label for="remember">Remember me</label>
+                      </div>
+                    </div>
+
+                    <button type="submit" class="td_btn td_style_1 td_radius_10 td_medium">
+                      <span class="td_btn_in td_white_color td_accent_bg">
+                        <span>Sign In</span>
+                      </span>
+                    </button>
+                </form>
+
                 <p class="td_fs_20 td_medium td_heading_color mt-3">or sign up with</p>
                 <div class="td_form_social td_fs_20">
                   <a href="#"><i class="fa-brands fa-apple"></i></a>
                   <a href="#"><i class="fa-brands fa-google"></i></a>
                   <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
-                <p class="td_fs_20 td_medium td_heading_color mt-3">Don’t Have an Account? <a href="signup.html">Sign up</a></p>
+                <p class="td_fs_20 td_medium td_heading_color mt-3">
+                    Don’t Have an Account?
+                    <a href="{{ route('auth.show', ['tab' => 'register']) }}">Sign up</a>
+                </p>
               </div>
             </div>
           </div>

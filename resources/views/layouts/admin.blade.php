@@ -213,7 +213,7 @@
         .table thead th {
             background-color: #e5e7eb !important;
         }
-        
+
         .form-control:focus,
         .form-select:focus {
             box-shadow: 0 0 0 .2rem rgba(34, 197, 94, .25);
@@ -294,6 +294,10 @@
                     <a class="nav-link {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}"
                         href="{{ route('admin.courses.index') }}">
                         <i class="bi bi-journal-text"></i><span>Courses</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('admin.gallery-images.*') ? 'active' : '' }}"
+                        href="{{ route('admin.gallery-images.index') }}">
+                        <i class="bi bi-images"></i><span>Gallery Images</span>
                     </a>
                 </nav>
             </div>

@@ -384,7 +384,7 @@
                 window.addEventListener('load', tick);
             })();
         </script>
-        
+
 
         <!-- MAIN HEADER -->
         <div class="td_main_header">
@@ -1788,158 +1788,538 @@
         }
     @endphp
 
-    <section id="home-resources">
-        <div class="td_height_112 td_height_lg_75"></div>
-        <div class="container">
-            <div class="td_section_heading td_style_1 text-center">
-                <h2 class="td_section_title td_fs_48 mb-0">{{ __('Fresh Learning Materials & Downloads') }}</h2>
-            </div>
-            <div class="td_height_50 td_height_lg_50"></div>
 
-            @if (isset($resources) && $resources->count())
-                @php $hero = $resources->first(); @endphp
 
-                <style>
-                    .res-thumb {
-                        position: relative
-                    }
 
-                    .res-thumb::before {
-                        content: "";
-                        display: block;
-                        aspect-ratio: 16/9
-                    }
 
-                    .res-thumb>* {
-                        position: absolute;
-                        inset: 0
-                    }
+<section id="home-resources">
+    <div class="td_height_112 td_height_lg_75"></div>
+    <div class="container">
+        <div class="td_section_heading td_style_1 text-center">
+            <h2 class="td_section_title td_fs_48 mb-0">
+                {{ __('Fresh Learning Materials & Downloads') }}
+            </h2>
+        </div>
+        <div class="td_height_50 td_height_lg_50"></div>
 
-                    .res-thumb-img {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
-                        background: #0b1324
-                    }
+        @if (isset($resources) && $resources->count())
+            @php
+                /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\ResourceItem[] $resources */
+                $hero = $resources->first();
 
-                    .res-thumb-canvas {
-                        width: 100%;
-                        height: 100%
-                    }
+                $heroExt  = strtolower(pathinfo($hero->resourceUrl, PATHINFO_EXTENSION) ?: '');
+                $heroMime = strtolower($hero->mime ?? '');
+                $heroIsImage =
+                    \Illuminate\Support\Str::startsWith($heroMime, 'image/') ||
+                    in_array($heroExt, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'], true);
+                $heroIsPdf = !$heroIsImage && $heroExt === 'pdf';
 
-                    .res-ext {
-                        position: absolute;
-                        right: 10px;
-                        bottom: 10px;
-                        background: rgba(0, 0, 0, .7);
-                        color: #fff;
-                        border-radius: 10px;
-                        padding: 4px 8px;
-                        font-size: 12px;
-                        font-weight: 700
-                    }
+                // Sağ list üçün loop
+                $baseList = $resources->values()->all();
+                if (count($baseList) < 4) {
+                    $baseList = array_merge($baseList, $baseList);
+                }
+                $loopList = array_merge($baseList, $baseList);
+            @endphp
 
-                    .res-icon {
-                        position: absolute;
-                        inset: 0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: #cbd5e1
-                    }
-                </style>
+            <div class="row td_gap_y_30">
+                {{-- SOL: BÖYÜK HERO PREVIEW --}}
+                <div class="col-lg-6">
+                    <div style="background:transparent!important;border:none!important;box-shadow:none!important;">
+                        <a id="res-hero-link"
+                           href="{{ route('resources-details', $hero->id) }}"
+                           style="text-decoration:none!important;color:inherit!important;">
+                            <div id="res-hero-card"
+                                 style="
+                                    position:relative!important;
+                                    border-radius:34px!important;
+                                    overflow:hidden!important;
+                                    height:460px!important;
+                                    background:#020617!important;
+                                    box-shadow:0 40px 110px rgba(15,23,42,0.95)!important;
+                                 ">
 
-                <div class="row td_gap_y_30">
-                    <!-- FEATURED -->
-                    <div class="col-lg-6">
-                        <div class="td_card td_style_1 td_radius_5">
-                            <a href="{{ route('resources-details', $hero->id) }}"
-                                class="td_card_thumb td_mb_30 d-block res-thumb" data-src="{{ $hero->resourceUrl }}"
-                                data-mime="{{ strtolower($hero->mime ?? '') }}">
-                                <img class="res-thumb-img" alt="Resource"
-                                    src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
-                                <canvas class="res-thumb-canvas" style="display:none;"></canvas>
-                                <span class="res-ext"></span>
-                                <div class="res-icon" aria-hidden="true" style="display:none"></div>
-                            </a>
+                                {{-- MEDIA LAYER --}}
+                                <div style="position:absolute!important;inset:0!important;overflow:hidden!important;">
+                                    <img id="res-hero-img"
+                                         src="{{ $heroIsImage ? $hero->resourceUrl : '' }}"
+                                         alt=""
+                                         style="
+                                            width:100%!important;
+                                            height:100%!important;
+                                            object-fit:cover!important;
+                                            display:{{ $heroIsImage ? 'block' : 'none' }}!important;
+                                         ">
 
-                            <div class="td_card_info">
-                                <div class="td_card_info_in">
-                                    <div class="td_mb_20">
-                                        <ul class="td_card_meta td_mp_0 td_fs_18 td_medium td_heading_color">
-                                            <li><span>{{ optional($hero->created_at)->format('M d , Y') }}</span></li>
-                                            <li><span>{{ $hero->mime ?: 'file' }}</span></li>
-                                        </ul>
+                                    <iframe id="res-hero-pdf"
+                                            src="{{ $heroIsPdf ? $hero->resourceUrl . '#page=1&view=FitH' : '' }}"
+                                            style="
+                                                width:100%!important;
+                                                height:100%!important;
+                                                border:0!important;
+                                                display:{{ $heroIsPdf ? 'block' : 'none' }}!important;
+                                            ">
+                                    </iframe>
+
+                                    <div id="res-hero-icon"
+                                         style="
+                                            position:absolute!important;
+                                            inset:0!important;
+                                            display:{{ (!$heroIsImage && !$heroIsPdf) ? 'flex' : 'none' }}!important;
+                                            align-items:center!important;
+                                            justify-content:center!important;
+                                            color:rgba(226,232,240,0.45)!important;
+                                            font-size:72px!important;
+                                        ">
+                                        <i class="fa-regular fa-file-lines"></i>
                                     </div>
-                                    <h2 class="td_card_title td_fs_32 td_semibold td_mb_16">
-                                        <a
-                                            href="{{ route('resources-details', $hero->id) }}">{{ $hero->name }}</a>
-                                    </h2>
-                                    <p class="td_mb_24 td_fs_18">
-                                        {{ $hero->type?->name ?? 'Resource' }} @if ($hero->year)
-                                            • {{ $hero->year }}
-                                        @endif
-                                        @if ($hero->mime)
-                                            • {{ $hero->mime }}
-                                        @endif
-                                    </p>
-                                    <div class="td_card_btn">
-                                        <a href="{{ route('resources-details', $hero->id) }}"
-                                            class="td_btn td_style_1 td_radius_10 td_medium">
-                                            <span class="td_btn_in td_white_color td_accent_bg"><span>View /
-                                                    Download</span></span>
-                                        </a>
+
+                                    {{-- DARK GRADIENT OVERLAY --}}
+                                    <div
+                                        style="
+                                            position:absolute!important;
+                                            inset:0!important;
+                                            background:
+                                                linear-gradient(
+                                                    to top,
+                                                    rgba(15,23,42,0.98),
+                                                    rgba(15,23,42,0.4),
+                                                    transparent
+                                                )!important;
+                                        ">
+                                    </div>
+                                </div>
+
+                                {{-- CONTENT LAYER --}}
+                                <div
+                                    style="
+                                        position:absolute!important;
+                                        inset:0!important;
+                                        padding:24px 26px 26px 26px!important;
+                                        display:flex!important;
+                                        flex-direction:column!important;
+                                        justify-content:space-between!important;
+                                        z-index:2!important;
+                                    ">
+
+                                    <div
+                                        style="
+                                            display:flex!important;
+                                            justify-content:space-between!important;
+                                            align-items:flex-start!important;
+                                            gap:12px!important;
+                                        ">
+                                        <div
+                                            style="
+                                                display:inline-flex!important;
+                                                align-items:center!important;
+                                                gap:8px!important;
+                                                padding:6px 15px!important;
+                                                border-radius:999px!important;
+                                                background:rgba(15,23,42,0.9)!important;
+                                                color:#e5e7eb!important;
+                                                font-size:12px!important;
+                                                font-weight:600!important;
+                                                border:1px solid rgba(148,163,184,0.7)!important;
+                                                letter-spacing:0.04em!important;
+                                                text-transform:uppercase!important;
+                                            ">
+                                            <span
+                                                style="
+                                                    width:7px!important;
+                                                    height:7px!important;
+                                                    border-radius:999px!important;
+                                                    background:#22c55e!important;
+                                                    box-shadow:0 0 0 4px rgba(34,197,94,0.35)!important;
+                                                ">
+                                            </span>
+                                            <span id="res-hero-type">
+                                                {{ $hero->type?->name ?? 'Resource' }}
+                                                @if ($hero->year)
+                                                    • {{ $hero->year }}
+                                                @endif
+                                            </span>
+                                        </div>
+
+                                        @php $heroLabel = strtoupper($heroExt ?: ($hero->mime ?: 'file')); @endphp
+                                        <span id="res-hero-ext"
+                                              style="
+                                                background:rgba(15,23,42,0.9)!important;
+                                                color:#e5e7eb!important;
+                                                border-radius:999px!important;
+                                                padding:4px 11px!important;
+                                                font-size:11px!important;
+                                                font-weight:700!important;
+                                                letter-spacing:0.08em!important;
+                                                text-transform:uppercase!important;
+                                                border:1px solid rgba(148,163,184,0.7)!important;
+                                              ">
+                                            {{ $heroLabel }}
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        style="
+                                            margin-top:auto!important;
+                                            padding-top:12px!important;
+                                        ">
+                                        <div
+                                            style="
+                                                display:flex!important;
+                                                flex-wrap:wrap!important;
+                                                align-items:center!important;
+                                                gap:8px!important;
+                                                margin-bottom:8px!important;
+                                                font-size:13px!important;
+                                                color:#cbd5f5!important;
+                                                opacity:0.9!important;
+                                            ">
+                                            <span id="res-hero-date">
+                                                {{ optional($hero->created_at)->format('M d, Y') }}
+                                            </span>
+                                            @if ($hero->mime)
+                                                <span
+                                                    style="width:3px!important;height:3px!important;border-radius:999px!important;background:#9ca3af!important;">
+                                                </span>
+                                                <span id="res-hero-mime">{{ $hero->mime }}</span>
+                                            @endif
+                                        </div>
+
+                                        <h2 id="res-hero-title"
+                                            style="
+                                                margin:0!important;
+                                                font-size:28px!important;
+                                                line-height:1.3!important;
+                                                font-weight:600!important;
+                                                color:#f9fafb!important;
+                                                text-shadow:0 8px 22px rgba(15,23,42,0.98)!important;
+                                            ">
+                                            {{ $hero->name }}
+                                        </h2>
                                     </div>
                                 </div>
                             </div>
+                        </a>
+
+                        <div style="padding-top:14px!important;">
+                            <p id="res-hero-meta"
+                               style="
+                                    margin-bottom:18px!important;
+                                    font-size:15px!important;
+                                    color:#4b5563!important;
+                               ">
+                                {{ $hero->type?->name ?? 'Resource' }}
+                                @if ($hero->year)
+                                    • {{ $hero->year }}
+                                @endif
+                                @if ($hero->mime)
+                                    • {{ $hero->mime }}
+                                @endif
+                            </p>
+                            <a id="res-hero-cta"
+                               href="{{ route('resources-details', $hero->id) }}"
+                               class="td_btn td_style_1 td_radius_10 td_medium">
+                                <span class="td_btn_in td_white_color td_accent_bg">
+                                    <span>View / Download</span>
+                                </span>
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 3 SMALL CARDS -->
-                    <div class="col-lg-6 td_gap_y_30 flex-wrap d-flex">
-                        @foreach ($resources->skip(1) as $res)
-                            <div class="td_card td_style_1 td_type_1" style="flex:1 1 100%;max-width:100%;">
-                                <a href="{{ route('resources-details', $res->id) }}"
-                                    class="td_card_thumb d-block res-thumb" data-src="{{ $res->resourceUrl }}"
-                                    data-mime="{{ strtolower($res->mime ?? '') }}">
-                                    <img class="res-thumb-img" alt="Resource"
-                                        src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">
-                                    <canvas class="res-thumb-canvas" style="display:none;"></canvas>
-                                    <span class="res-ext"></span>
-                                    <div class="res-icon" aria-hidden="true" style="display:none"></div>
-                                </a>
-                                <div class="td_card_info">
-                                    <div class="td_card_info_in">
-                                        <a href="{{ route('resources') }}"
-                                            class="td_card_category td_fs_14 td_bold td_heading_color td_mb_14">
-                                            <span>{{ $res->type?->name ?? 'Resource' }}</span>
-                                        </a>
-                                        <h3 class="td_card_title td_fs_22 td_semibold td_mb_12">
-                                            <a
-                                                href="{{ route('resources-details', $res->id) }}">{{ $res->name }}</a>
-                                        </h3>
-                                        <p class="td_card_subtitle td_heading_color td_opacity_7 td_mb_16">
-                                            @if ($res->year)
-                                                {{ $res->year }} •
-                                            @endif {{ $res->mime ?: 'file' }}
-                                        </p>
-                                        <a href="{{ route('resources-details', $res->id) }}"
-                                            class="td_btn td_style_1 td_radius_10 td_medium">
+                {{-- SAĞ: VERTİKAL SCROLL + HOVER PREVIEW --}}
+                <div class="col-lg-6">
+                    <div class="js-res-list"
+                         style="
+                            position:relative!important;
+                            overflow:hidden!important;
+                            height:430px!important;
+                         ">
+                        <div class="js-res-list-track"
+                             style="
+                                position:relative!important;
+                                display:flex!important;
+                                flex-direction:column!important;
+                                gap:16px!important;
+                                will-change:transform!important;
+                                animation:resListScroll 28s linear infinite!important;
+                             ">
+                            @foreach ($loopList as $res)
+                                @php
+                                    $ext  = strtolower(pathinfo($res->resourceUrl, PATHINFO_EXTENSION) ?: '');
+                                    $mime = strtolower($res->mime ?? '');
+                                    $isImage =
+                                        \Illuminate\Support\Str::startsWith($mime, 'image/') ||
+                                        in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'], true);
+                                    $isPdf  = !$isImage && $ext === 'pdf';
+                                    $label  = strtoupper($ext ?: ($res->mime ?: 'file'));
+                                @endphp
+
+                                <div class="js-res-item"
+                                     data-id="{{ $res->id }}"
+                                     data-title="{{ e($res->name) }}"
+                                     data-type="{{ e($res->type?->name ?? 'Resource') }}"
+                                     data-year="{{ $res->year }}"
+                                     data-mime="{{ $res->mime }}"
+                                     data-date="{{ optional($res->created_at)->format('M d, Y') }}"
+                                     data-details-url="{{ route('resources-details', $res->id) }}"
+                                     data-src="{{ $res->resourceUrl }}"
+                                     data-ext="{{ $ext }}"
+                                     data-is-image="{{ $isImage ? '1' : '0' }}"
+                                     style="cursor:pointer!important;">
+
+                                    {{-- BURDA ARTıq td_card YOXDUR, ÖZ KARTIMIZ VAR --}}
+                                    <div class="res-side-card"
+                                         style="
+                                            border-radius:18px!important;
+                                            background:#ffffff!important;
+                                            border:1px solid rgba(226,232,240,0.9)!important;
+                                            box-shadow:0 14px 34px rgba(15,23,42,0.12)!important;
+                                            overflow:hidden!important;
+                                            padding:11px 16px 12px 14px!important;
+                                            display:flex!important;
+                                            align-items:stretch!important;
+                                            gap:14px!important;
+                                         ">
+
+                                        {{-- THUMBNAIL --}}
+                                        <div
+                                            style="
+                                                flex:0 0 120px!important;
+                                                height:92px!important;
+                                                border-radius:14px!important;
+                                                overflow:hidden!important;
+                                                position:relative!important;
+                                                background:#0f172a!important;
+                                            ">
+                                            @if ($isImage)
+                                                <img src="{{ $res->resourceUrl }}"
+                                                     alt=""
+                                                     style="
+                                                        width:100%!important;
+                                                        height:100%!important;
+                                                        object-fit:cover!important;
+                                                     ">
+                                            @elseif ($isPdf)
+                                                <iframe src="{{ $res->resourceUrl }}#page=1&view=FitH"
+                                                        style="
+                                                            width:100%!important;
+                                                            height:100%!important;
+                                                            border:0!important;
+                                                        ">
+                                                </iframe>
+                                            @else
+                                                <div
+                                                    style="
+                                                        position:absolute!important;
+                                                        inset:0!important;
+                                                        display:flex!important;
+                                                        align-items:center!important;
+                                                        justify-content:center!important;
+                                                        color:rgba(148,163,184,0.9)!important;
+                                                        font-size:28px!important;
+                                                    ">
+                                                    <i class="fa-regular fa-file-lines"></i>
+                                                </div>
+                                            @endif
+
                                             <span
-                                                class="td_btn_in td_white_color td_accent_bg"><span>Details</span></span>
-                                        </a>
+                                                style="
+                                                    position:absolute!important;
+                                                    left:8px!important;
+                                                    bottom:7px!important;
+                                                    background:rgba(15,23,42,0.92)!important;
+                                                    color:#e5e7eb!important;
+                                                    border-radius:999px!important;
+                                                    padding:3px 8px!important;
+                                                    font-size:10px!important;
+                                                    font-weight:700!important;
+                                                    letter-spacing:0.06em!important;
+                                                    text-transform:uppercase!important;
+                                                    border:1px solid rgba(148,163,184,0.7)!important;
+                                                ">
+                                                {{ $label }}
+                                            </span>
+                                        </div>
+
+                                        {{-- TEXT + BUTTON --}}
+                                        <div
+                                            style="
+                                                flex:1 1 auto!important;
+                                                display:flex!important;
+                                                flex-direction:column!important;
+                                                min-width:0!important;
+                                                padding-right:6px!important;
+                                            ">
+                                            <div
+                                                style="
+                                                    flex:1 1 auto!important;
+                                                    display:flex!important;
+                                                    flex-direction:column!important;
+                                                ">
+                                                <div
+                                                    style="
+                                                        display:inline-flex!important;
+                                                        align-items:center!important;
+                                                        gap:8px!important;
+                                                        margin-bottom:4px!important;
+                                                        font-size:11px!important;
+                                                        font-weight:600!important;
+                                                        color:#6b7280!important;
+                                                        text-transform:uppercase!important;
+                                                        letter-spacing:0.06em!important;
+                                                    ">
+                                                    <span>{{ $res->type?->name ?? 'Resource' }}</span>
+                                                    @if ($res->year)
+                                                        <span
+                                                            style="width:3px!important;height:3px!important;border-radius:999px!important;background:#9ca3af!important;">
+                                                        </span>
+                                                        <span>{{ $res->year }}</span>
+                                                    @endif
+                                                </div>
+
+                                                <h3
+                                                    style="
+                                                        margin:0 0 4px 0!important;
+                                                        font-size:16px!important;
+                                                        line-height:1.35!important;
+                                                        color:#0f172a!important;
+                                                        white-space:nowrap!important;
+                                                        overflow:hidden!important;
+                                                        text-overflow:ellipsis!important;
+                                                    ">
+                                                    {{ $res->name }}
+                                                </h3>
+
+                                                <p
+                                                    style="
+                                                        margin:0 0 6px 0!important;
+                                                        font-size:12px!important;
+                                                        color:#6b7280!important;
+                                                    ">
+                                                    {{ optional($res->created_at)->format('M d, Y') }}
+                                                    @if ($res->mime)
+                                                        • {{ $res->mime }}
+                                                    @endif
+                                                </p>
+                                            </div>
+
+                                            {{-- BUTTON: HƏR KARTDA AŞAĞI-SAĞDA SABİT --}}
+                                            <div
+                                                style="
+                                                    margin-top:6px!important;
+                                                    display:flex!important;
+                                                    justify-content:flex-end!important;
+                                                ">
+                                                <a href="{{ route('resources-details', $res->id) }}"
+                                                   class="td_btn td_style_1 td_radius_10 td_medium"
+                                                   style="
+                                                       font-size:12px!important;
+                                                       padding:0!important;
+                                                   ">
+                                                    <span class="td_btn_in td_white_color td_accent_bg">
+                                                        <span>Details</span>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            @else
-                <div class="text-center text-muted">No resources yet.</div>
-            @endif
-        </div>
-        <div class="td_height_120 td_height_lg_80"></div>
-    </section>
+            </div>
+        @else
+            <div class="text-center text-muted">No resources yet.</div>
+        @endif
+    </div>
+    <div class="td_height_120 td_height_lg_80"></div>
+</section>
+
+<style>
+    @keyframes resListScroll {
+        0%   { transform: translateY(0); }
+        100% { transform: translateY(-50%); }
+    }
+
+    #home-resources .js-res-list:hover .js-res-list-track {
+        animation-play-state: paused !important;
+    }
+
+    #home-resources .js-res-item:hover .res-side-card {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 18px 46px rgba(15, 23, 42, 0.18) !important;
+        border-color: rgba(209, 213, 219, 1) !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateHeroFromItem(el) {
+            var ds = el.dataset || {};
+
+            var img   = document.getElementById('res-hero-img');
+            var pdf   = document.getElementById('res-hero-pdf');
+            var icon  = document.getElementById('res-hero-icon');
+            var link  = document.getElementById('res-hero-link');
+            var title = document.getElementById('res-hero-title');
+            var type  = document.getElementById('res-hero-type');
+            var date  = document.getElementById('res-hero-date');
+            var mime  = document.getElementById('res-hero-mime');
+            var meta  = document.getElementById('res-hero-meta');
+            var extEl = document.getElementById('res-hero-ext');
+            var cta   = document.getElementById('res-hero-cta');
+
+            var isImage = ds.isImage === '1';
+            var ext     = (ds.ext || '').toLowerCase();
+            var isPdf   = !isImage && ext === 'pdf';
+
+            if (img) img.style.display  = 'none';
+            if (pdf) pdf.style.display  = 'none';
+            if (icon) icon.style.display = 'none';
+
+            if (isImage && ds.src && img) {
+                img.src = ds.src;
+                img.style.display = 'block';
+            } else if (isPdf && ds.src && pdf) {
+                pdf.src = ds.src + '#page=1&view=FitH';
+                pdf.style.display = 'block';
+            } else if (icon) {
+                icon.style.display = 'flex';
+            }
+
+            if (title) title.textContent = ds.title || '';
+            if (type)  type.textContent  = (ds.type || 'Resource') + (ds.year ? ' • ' + ds.year : '');
+            if (date)  date.textContent  = ds.date || '';
+            if (mime)  mime.textContent  = ds.mime || (ds.ext || 'file');
+
+            var label = (ds.ext || ds.mime || 'file').toUpperCase();
+            if (extEl) extEl.textContent = label;
+
+            if (meta) {
+                var parts = [];
+                if (ds.type) parts.push(ds.type);
+                if (ds.year) parts.push(ds.year);
+                if (ds.mime) parts.push(ds.mime);
+                meta.textContent = parts.join(' • ');
+            }
+
+            if (cta && ds.detailsUrl)  cta.href  = ds.detailsUrl;
+            if (link && ds.detailsUrl) link.href = ds.detailsUrl;
+        }
+
+        document
+            .querySelectorAll('#home-resources .js-res-item')
+            .forEach(function (item) {
+                item.addEventListener('mouseenter', function () {
+                    updateHeroFromItem(item);
+                });
+            });
+    });
+</script>
+
+    
 
     {{-- Scripts (pdf.js + thumb builder) --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous"
@@ -2155,7 +2535,7 @@
                 @if ($heading)
                     <h2 class="td_fs_48 td_white_color mb-0 wow fadeInUp" data-wow-duration="1s"
                         data-wow-delay="0.2s">
-                        {{ __("Take a Video Tour to Learn Intro of Campus") }}
+                        {{ __('Take a Video Tour to Learn Intro of Campus') }}
                     </h2>
                 @endif
             </div>
@@ -2313,116 +2693,190 @@
     </section>
     <!-- End Accreditation Showcase -->
 
-
-    <!-- Start Team Highlight (replaces Testimonial) -->
+    <!-- Start Team Highlight (carousel) -->
     <section id="home-team" class="td_heading_bg td_hobble">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
                 data-wow-delay="0.2s">
-                <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ __('Start your journey With Us') }}</h2>
+                <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ __('Learn and grow with our team') }}
+                </h2>
                 <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
-                    {{ __('Meet our featured expert from HSE.AZ') }}
+                    {{ __('Meet our experts from HSE.AZ') }}
                 </p>
             </div>
             <div class="td_height_50 td_height_lg_50"></div>
 
-            @if ($heroTeam)
+            @if ($teamMembers->count())
                 @php
                     $maleDefault =
                         'https://t4.ftcdn.net/jpg/14/05/81/37/360_F_1405813706_e7f6ONwQ8KD8bRbinELfD1jazaXGB5q3.jpg';
                     $femaleDefault =
                         'https://img.freepik.com/premium-vector/portrait-business-woman_505024-2793.jpg?semt=ais_hybrid&w=740&q=80';
-                    $thumb = $heroTeam->imageUrl ?: ($heroTeam->gender === 'female' ? $femaleDefault : $maleDefault);
                 @endphp
 
-                <div class="row align-items-center td_gap_y_40">
-                    <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
-                        <div class="td_testimonial_img_wrap">
-                            <img src="{{ $thumb }}" alt="{{ $heroTeam->full_name }}"
-                                class="td_testimonial_img"
-                                style="object-fit:cover;border-radius:18px;aspect-ratio:4/3;width:100%;height:auto;">
-                            <span class="td_testimonial_img_shape_1"><span></span></span>
-                            <span class="td_testimonial_img_shape_2 td_accent_color td_hover_layer_3">
-                                <!-- dekorativ svg qalır -->
-                                <svg width="145" height="165" viewBox="0 0 145 165" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="34" cy="150" r="15" fill="currentColor" />
-                                    <circle cx="15" cy="137" r="15" fill="currentColor" />
-                                    <circle cx="24" cy="144" r="15" fill="white" />
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
+                <div class="js-home-team-slider">
+                    @foreach ($teamMembers as $member)
+                        @php
+                            $thumb =
+                                $member->imageUrl ?: ($member->gender === 'female' ? $femaleDefault : $maleDefault);
 
-                    <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
-                        <div class="td_white_bg td_radius_5"
-                            style="border-radius:14px;border:1px solid #eef2f7;padding:26px 24px;">
-                            <div class="d-flex align-items-center gap-3 td_mb_20">
-                                <div
-                                    style="width:58px;height:58px;border-radius:50%;overflow:hidden;border:1px solid #eee;">
-                                    <img src="{{ $thumb }}" alt="{{ $heroTeam->full_name }}"
-                                        style="width:100%;height:100%;object-fit:cover;">
+                            $skills = (array) ($member->skills ?? []);
+                            $skills = array_values(array_filter($skills, fn($s) => !empty($s['name'])));
+                        @endphp
+
+                        <div class="js-home-team-slide">
+                            <div class="row align-items-center td_gap_y_40">
+                                <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                                    <div class="td_testimonial_img_wrap">
+                                        <img src="{{ $thumb }}" alt="{{ $member->full_name }}"
+                                            class="td_testimonial_img"
+                                            style="object-fit:cover;border-radius:18px;aspect-ratio:4/3;width:100%;height:auto;">
+                                        <span class="td_testimonial_img_shape_1"><span></span></span>
+                                        <span class="td_testimonial_img_shape_2 td_accent_color td_hover_layer_3">
+                                            <svg width="145" height="165" viewBox="0 0 145 165" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="34" cy="150" r="15" fill="currentColor" />
+                                                <circle cx="15" cy="137" r="15" fill="currentColor" />
+                                                <circle cx="24" cy="144" r="15" fill="white" />
+                                            </svg>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="td_fs_24 td_semibold td_mb_2">{{ $heroTeam->full_name }}</h3>
-                                    <p class="td_fs_14 mb-0 td_heading_color td_opacity_7">
-                                        {{ $heroTeam->position ?: 'Team Member' }}</p>
-                                </div>
-                            </div>
 
-                            <blockquote class="td_fs_18 td_heading_color td_opacity_9" style="line-height:1.7;">
-                                {!! \Illuminate\Support\Str::limit(strip_tags($heroTeam->description ?? ''), 320) ?: '—' !!}
-                            </blockquote>
-
-                            @php
-                                $skills = (array) ($heroTeam->skills ?? []);
-                                $skills = array_values(array_filter($skills, fn($s) => !empty($s['name'])));
-                            @endphp
-
-                            @if (count($skills))
-                                <div class="td_height_10"></div>
-                                @foreach (array_slice($skills, 0, 3) as $s)
-                                    @php $p = (int)($s['percent'] ?? 0); @endphp
-                                    <div class="mb-2">
-                                        <div class="d-flex justify-content-between td_medium">
-                                            <span>{{ $s['name'] }}</span><span>{{ $p }}%</span>
+                                <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
+                                    <div class="td_white_bg td_radius_5"
+                                        style="border-radius:14px;border:1px solid #eef2f7;padding:26px 24px;">
+                                        <div class="d-flex align-items-center gap-3 td_mb_20">
+                                            <div
+                                                style="width:58px;height:58px;border-radius:50%;overflow:hidden;border:1px solid #eee;">
+                                                <img src="{{ $thumb }}" alt="{{ $member->full_name }}"
+                                                    style="width:100%;height:100%;object-fit:cover;">
+                                            </div>
+                                            <div>
+                                                <h3 class="td_fs_24 td_semibold td_mb_2">{{ $member->full_name }}
+                                                </h3>
+                                                <p class="td_fs_14 mb-0 td_heading_color td_opacity_7">
+                                                    {{ $member->position ?: 'Team Member' }}</p>
+                                            </div>
                                         </div>
-                                        <div class="progress" style="height:8px;background:#f1f5f9;">
-                                            <div class="progress-bar td_accent_bg" role="progressbar"
-                                                style="width: {{ $p }}%"></div>
+
+                                        <blockquote class="td_fs_18 td_heading_color td_opacity_9"
+                                            style="line-height:1.7;">
+                                            {!! \Illuminate\Support\Str::limit(strip_tags($member->description ?? ''), 320) ?: '—' !!}
+                                        </blockquote>
+
+                                        @if (count($skills))
+                                            <div class="td_height_10"></div>
+                                            @foreach (array_slice($skills, 0, 3) as $s)
+                                                @php $p = (int)($s['percent'] ?? 0); @endphp
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between td_medium">
+                                                        <span>{{ $s['name'] }}</span><span>{{ $p }}%</span>
+                                                    </div>
+                                                    <div class="progress" style="height:8px;background:#f1f5f9;">
+                                                        <div class="progress-bar td_accent_bg" role="progressbar"
+                                                            style="width: {{ $p }}%"></div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+
+                                        <div class="d-flex gap-2 td_mt_20">
+                                            <a href="{{ route('team-details', $member) }}"
+                                                class="td_btn td_style_1 td_radius_10 td_medium">
+                                                <span class="td_btn_in td_white_color td_accent_bg"><span>View
+                                                        Profile</span></span>
+                                            </a>
+                                            @if ($member->email)
+                                                <a href="mailto:{{ $member->email }}"
+                                                    class="td_btn td_style_1 td_radius_10 td_medium">
+                                                    <span
+                                                        class="td_btn_in td_accent_color td_white_bg"><span>Email</span></span>
+                                                </a>
+                                            @endif
+                                            @if ($member->phone)
+                                                <a href="tel:{{ preg_replace('/\s+/', '', $member->phone) }}"
+                                                    class="td_btn td_style_1 td_radius_10 td_medium">
+                                                    <span
+                                                        class="td_btn_in td_accent_color td_white_bg"><span>Call</span></span>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
-                                @endforeach
-                            @endif
-
-                            <div class="d-flex gap-2 td_mt_20">
-                                <a href="{{ route('team-details', $heroTeam) }}"
-                                    class="td_btn td_style_1 td_radius_10 td_medium">
-                                    <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                            Profile</span></span>
-                                </a>
-                                @if ($heroTeam->email)
-                                    <a href="mailto:{{ $heroTeam->email }}"
-                                        class="td_btn td_style_1 td_radius_10 td_medium">
-                                        <span class="td_btn_in td_accent_color td_white_bg"><span>Email</span></span>
-                                    </a>
-                                @endif
-                                @if ($heroTeam->phone)
-                                    <a href="tel:{{ preg_replace('/\s+/', '', $heroTeam->phone) }}"
-                                        class="td_btn td_style_1 td_radius_10 td_medium">
-                                        <span class="td_btn_in td_accent_color td_white_bg"><span>Call</span></span>
-                                    </a>
-                                @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             @endif
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
     <!-- End Team Highlight -->
+
+    <style>
+        /* Slick dots custom style for team slider */
+        #home-team .slick-dots {
+            position: static;
+            margin-top: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #home-team .slick-dots li {
+            margin: 0;
+            padding: 0;
+        }
+
+        #home-team .slick-dots li button {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            border: none;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            font-size: 0;
+            /* rəqəmi gizlət */
+            line-height: 0;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        #home-team .slick-dots li.slick-active button {
+            width: 22px;
+            height: 9px;
+            background: #ff7a3c;
+            box-shadow: 0 0 0 2px rgba(255, 122, 60, 0.35);
+        }
+
+        #home-team .slick-dots li button::before {
+            display: none;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof jQuery !== 'undefined' && typeof jQuery.fn.slick === 'function') {
+                jQuery('.js-home-team-slider').slick({
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    arrows: false,
+                    dots: true,
+                    autoplay: true,
+                    autoplaySpeed: 3000, // 3 saniyə
+                    adaptiveHeight: true,
+                    pauseOnHover: true,
+                });
+            }
+        });
+    </script>
+
+
+
 
     {{-- Start Departments Section (settings-driven) --}}
     @php
@@ -2442,9 +2896,21 @@
                 ? asset($path)
                 : asset('storage/' . ltrim($path, '/'));
         };
+
+        // Əsas list – az department olanda doldururuq ki, sıra uzun olsun
+        $baseList = $list;
+
+        if (count($baseList) && count($baseList) < 6) {
+            while (count($baseList) < 6) {
+                $baseList = array_merge($baseList, $list);
+            }
+        }
+
+        // Sonsuz loop üçün baseList-i 2 dəfə təkrarlayırıq
+        $loopList = array_merge($baseList, $baseList);
     @endphp
 
-    <section id="home-departments">
+    <section id="home-departments" style="background:transparent!important;">
         <div class="td_height_112 td_height_lg_75"></div>
         <div class="container">
             <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
@@ -2452,79 +2918,226 @@
                 @if ($kicker)
                     <p
                         class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                        {{ __("Departments") }}
+                        {{ __('Departments') }}
                     </p>
                 @endif
 
-                <h2 class="td_section_title td_fs_48 mb-0">{{ __("Popular Departments") }}</h2>
+                <h2 class="td_section_title td_fs_48 mb-0">
+                    {{ __('Popular Departments') }}
+                </h2>
 
                 @if ($subtitle)
-                    <p class="td_section_subtitle td_fs_18 mb-0">{{ __("Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.") }}</p>
+                    <p class="td_section_subtitle td_fs_18 mb-0">
+                        {{ $subtitle }}
+                    </p>
                 @endif
             </div>
 
             <div class="td_height_50 td_height_lg_50"></div>
 
-            <div class="td_iconbox_1_wrap">
-                @foreach ($list as $i => $it)
-                    @php
-                        $itTitle = data_get($it, 'title', '');
-                        $icon = $toUrl(data_get($it, 'icon'));
-                        // 0.2s, 0.3s, 0.4s ... artan gecikmə
-                        $delay = number_format(0.2 + $i * 0.1, 2) . 's';
-                    @endphp
+            {{-- Sonsuz, yavaş, sağdan-sola axan slider (glassmorphism kartlar) --}}
+            <div class="td_departments_scroller"
+                style="
+                position:relative!important;
+                overflow:hidden!important;
+                width:100%!important;
+                padding:8px 0 8px 0!important;
+                background:transparent!important;
+             ">
+                <div class="td_departments_track"
+                    style="
+                    display:flex!important;
+                    flex-wrap:nowrap!important;
+                    align-items:stretch!important;
+                    gap:36px!important;
+                    width:max-content!important;
+                    will-change:transform!important;
+                    animation:departmentsScroll 40s linear infinite!important;
+                 ">
+                    @foreach ($loopList as $i => $it)
+                        @php
+                            $itTitle = data_get($it, 'title', '');
+                            $icon = $toUrl(data_get($it, 'icon'));
+                        @endphp
 
-                    <div class="td_iconbox td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
-                        data-wow-delay="{{ $delay }}">
-                        <div class="td_iconbox_icon td_accent_color td_mb_10">
-                            @if ($icon)
-                                <img src="{{ $icon }}" alt="{{ $itTitle }}" width="100"
-                                    height="100" style="width:100px;height:100px;object-fit:contain;">
-                            @endif
+                        <div class="td_iconbox td_style_1 text-center"
+                            style="
+                            flex:0 0 auto!important;
+                            padding:4px!important;
+                            box-sizing:border-box!important;
+                         ">
+                            <div
+                                style="
+                                min-width:300px!important;
+                                max-width:380px!important;
+                                width:340px!important;
+
+                                /* glassmorphism */
+                                background:rgba(255,255,255,0.06)!important;
+                                backdrop-filter:blur(18px)!important;
+                                -webkit-backdrop-filter:blur(18px)!important;
+                                border-radius:26px!important;
+                                border:1px solid rgba(255,255,255,0.14)!important;
+
+                                padding:26px 24px 22px 24px!important;
+                                box-shadow:0 28px 70px rgba(0,0,0,0.65)!important;
+                                color:#ffffff!important;
+                                box-sizing:border-box!important;
+                                position:relative!important;
+                                overflow:hidden!important;
+                                height:100%!important;
+                                display:flex!important;
+                                flex-direction:column!important;
+                                align-items:center!important;
+                                justify-content:flex-start!important;
+                            ">
+
+                                {{-- Böyük image, mərkəzdə --}}
+                                <div class="td_iconbox_icon td_accent_color td_mb_10"
+                                    style="
+                                    margin-bottom:20px!important;
+                                    display:flex!important;
+                                    align-items:center!important;
+                                    justify-content:center!important;
+                                 ">
+                                    <div
+                                        style="
+                                    width:140px!important;
+                                    height:140px!important;
+                                    border-radius:32px!important;
+                                    background:radial-gradient(circle at 20% 15%,rgba(255,255,255,0.9) 0,rgba(255,255,255,0) 45%)!important;
+                                    border:1px solid rgba(255,255,255,0.18)!important;
+                                    display:flex!important;
+                                    align-items:center!important;
+                                    justify-content:center!important;
+                                    overflow:hidden!important;
+                                    box-shadow:0 20px 50px rgba(0,0,0,0.75)!important;
+                                ">
+                                        @if ($icon)
+                                            <img src="{{ $icon }}" alt="{{ $itTitle }}"
+                                                width="140" height="140"
+                                                style="
+                                                display:block!important;
+                                                width:120px!important;
+                                                height:120px!important;
+                                                object-fit:cover!important;
+                                                border-radius:24px!important;
+                                             ">
+                                        @endif
+                                    </div>
+                                </div>
+
+                                {{-- Yalnız title --}}
+                                <p class="td_iconbox_title mb-0 td_medium td_fs_36"
+                                    style="
+                                  font-size:22px!important;
+                                  line-height:1.25!important;
+                                  margin:0!important;
+                                  font-weight:600!important;
+                                  text-align:center!important;
+                                  letter-spacing:0.01em!important;
+                               ">
+                                    {{ $itTitle }}
+                                </p>
+                            </div>
                         </div>
-                        <p style="font-size: 24px" class="td_iconbox_title mb-0 td_medium td_fs_36">
-                            {{ $itTitle }}</p>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
     {{-- End Departments Section --}}
 
+    <style>
+        @keyframes departmentsScroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (max-width: 992px) {
+            #home-departments .td_departments_track {
+                animation-duration: 35s !important;
+                gap: 28px !important;
+            }
+
+            #home-departments .td_departments_track .td_iconbox>div {
+                min-width: 270px !important;
+                max-width: 330px !important;
+                width: 300px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            #home-departments .td_departments_track {
+                animation-duration: 30s !important;
+                gap: 20px !important;
+            }
+
+            #home-departments .td_departments_track .td_iconbox>div {
+                min-width: 84% !important;
+                max-width: 94% !important;
+                width: 90% !important;
+            }
+        }
+    </style>
+
+
+
+
+    @php
+        // Sosial şəbəkələr
+        $fb = setting('social.facebook');
+        $tw = setting('social.twitter');
+        $ig = setting('social.instagram');
+        $pin = setting('social.pinterest'); // fallback üçün saxlayırıq
+        $wa = setting('social.whatsapp'); // tercihen wa.me/…
+
+        // LinkedIn: varsa onu götür, yoxdursa Pinterest URL-ni istifadə et
+        $li = setting('social.linkedin', $pin);
+
+        // Linkləri təhlükəsiz açmaq üçün atributlar
+        $attrs = 'target="_blank" rel="noopener noreferrer"';
+
+        // Sayt məlumatları
+        $siteName = setting('site.name', 'Educve');
+        $phone = setting('site.phone');
+        $email = setting('site.email');
+        $address = setting('site.address');
+        $tagline = setting(
+            'site.tagline',
+            'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
+        );
+
+        // 1) site.logo üstünlük; 2) branding.logo fallback
+        $logoPath = setting('site.logo') ?: setting('branding.logo');
+
+        $logoUrl = null;
+        if ($logoPath) {
+            $logoUrl = \Illuminate\Support\Str::startsWith($logoPath, ['http', '/storage', 'assets/'])
+                ? asset($logoPath)
+                : asset('storage/' . ltrim($logoPath, '/'));
+        }
+
+        // tel: üçün yalnız rəqəm və + saxla
+        $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
+
+        // Footer qalereyası üçün son şəkillər (gallery_images cədvəlindən)
+        $footerGallery = \App\Models\GalleryImage::query()->latest()->take(6)->get();
+    @endphp
 
 
     <x-chat-widget label="Mesaj göndərin" title="Bizə yazın" />
-
     <footer class="td_footer td_style_1">
         <div class="container">
             <div class="td_footer_row">
+                {{-- 1. Sütun: Logo, mətn, kontakt, sosial ikonlar --}}
                 <div class="td_footer_col">
-                    {{-- Footer – Site (settings-driven, with site.logo + fallback to branding.logo) --}}
-                    @php
-                        $siteName = setting('site.name', 'Educve');
-                        $phone = setting('site.phone'); // "+23 (000) 68 603"
-                        $email = setting('site.email'); // "support@educat.com"
-                        $address = setting('site.address'); // "66 broklyn golden street, New York, USA"
-                        $tagline = setting(
-                            'site.tagline',
-                            'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
-                        );
-
-                        // 1) site.logo üstünlük; 2) branding.logo fallback
-                        $logoPath = setting('site.logo') ?: setting('branding.logo');
-
-                        $logoUrl = null;
-                        if ($logoPath) {
-                            $logoUrl = \Illuminate\Support\Str::startsWith($logoPath, ['http', '/storage', 'assets/'])
-                                ? asset($logoPath)
-                                : asset('storage/' . ltrim($logoPath, '/'));
-                        }
-
-                        // tel: üçün yalnız rəqəm və + saxla
-                        $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
-                    @endphp
-
                     <div class="td_footer_widget">
                         <div class="td_footer_text_widget td_fs_18">
                             @if ($logoUrl)
@@ -2538,9 +3151,8 @@
                                 </svg>
                             @endif
 
-                            {{-- Tagline settings-dən (site.tagline) gəlir, yoxdursa default mətn --}}
-                            <p>{{ __('Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.') }}
-                            </p>
+                            {{-- Tagline settings-dən (site.tagline) gəlir --}}
+                            <p>{{ $tagline }}</p>
                         </div>
 
                         <ul class="td_footer_address_widget td_medium td_mp_0">
@@ -2569,13 +3181,51 @@
                                 </li>
                             @endif
                         </ul>
+
+                        {{-- Sosial ikonlar --}}
+                        @if ($fb || $tw || $ig || $li || $wa)
+                            <div class="td_footer_social_btns td_fs_20 mt-3">
+                                @if ($fb)
+                                    <a href="{{ $fb }}" class="td_center" {!! $attrs !!}>
+                                        <i class="fa-brands fa-facebook-f"></i>
+                                    </a>
+                                @endif
+
+                                @if ($tw)
+                                    <a href="{{ $tw }}" class="td_center" {!! $attrs !!}>
+                                        <i class="fa-brands fa-x-twitter"></i>
+                                    </a>
+                                @endif
+
+                                @if ($ig)
+                                    <a href="{{ $ig }}" class="td_center" {!! $attrs !!}>
+                                        <i class="fa-brands fa-instagram"></i>
+                                    </a>
+                                @endif
+
+                                {{-- Pinterest göstərilmir, onun yerinə LinkedIn (Pinterest URL fallback kimi) --}}
+                                @if ($li)
+                                    <a href="{{ $li }}" class="td_center" {!! $attrs !!}>
+                                        <i class="fa-brands fa-linkedin-in"></i>
+                                    </a>
+                                @endif
+
+                                @if ($wa)
+                                    <a href="{{ $wa }}" class="td_center" {!! $attrs !!}>
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
 
+                {{-- 2. Sütun: Naviqasiya --}}
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
-                            {{ __('Navigateion') }}</h2>
+                            {{ __('Navigateion') }}
+                        </h2>
                         <ul class="td_footer_widget_menu">
                             <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
                             <li><a href="{{ route('faqss') }}">{{ __('Faqs') }}</a></li>
@@ -2586,10 +3236,13 @@
                         </ul>
                     </div>
                 </div>
+
+                {{-- 3. Sütun: Courses / Services / Topics / Vacancies --}}
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
-                            {{ __('Courses') }}</h2>
+                            {{ __('Courses') }}
+                        </h2>
                         <ul class="td_footer_widget_menu">
                             <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
                             <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
@@ -2598,6 +3251,8 @@
                         </ul>
                     </div>
                 </div>
+
+                {{-- 4. Sütun: Subscribe + Gallery images --}}
                 <div class="td_footer_col">
                     <div class="td_footer_widget">
                         <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
@@ -2613,8 +3268,9 @@
                                 <input type="email" name="email" class="td_newsletter_input"
                                     placeholder="Email address" required>
                                 <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
-                                    <span
-                                        class="td_btn_in td_white_color td_accent_bg"><span>{{ __('Subscribe now') }}</span></span>
+                                    <span class="td_btn_in td_white_color td_accent_bg">
+                                        <span>{{ __('Subscribe now') }}</span>
+                                    </span>
                                 </button>
                             </form>
 
@@ -2623,9 +3279,9 @@
                             @endif
 
                             <script>
-                                // İstəsən AJAX:
+                                // İstəsən AJAX
                                 document.getElementById('newsletterForm')?.addEventListener('submit', async function(e) {
-                                    if (!this.hasAttribute('data-ajax')) return; // istəsən attribute ilə aktiv et
+                                    if (!this.hasAttribute('data-ajax')) return;
                                     e.preventDefault();
                                     const formData = new FormData(this);
                                     const res = await fetch(this.action, {
@@ -2640,39 +3296,39 @@
                                     this.reset();
                                 });
                             </script>
-
                         </div>
-                        <div class="td_footer_social_btns td_fs_20">
-                            @if ($fb)
-                                <a href="{{ $fb }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-facebook-f"></i></a>
-                            @endif
 
-                            @if ($tw)
-                                <a href="{{ $tw }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-x-twitter"></i></a>
-                            @endif
-
-                            @if ($ig)
-                                <a href="{{ $ig }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-instagram"></i></a>
-                            @endif
-
-                            {{-- Pinterest göstərilmir. Onun yerinə LinkedIn gəlir (Pinterest URL fallback kimi) --}}
-                            @if ($li)
-                                <a href="{{ $li }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                            @endif
-
-                            @if ($wa)
-                                <a href="{{ $wa }}" class="td_center" {!! $attrs !!}><i
-                                        class="fa-brands fa-whatsapp"></i></a>
-                            @endif
-                        </div>
+                        {{-- GalleryImages qalereyası: bütün şəkillər eyni blok ölçüsündə, kəsilmədən görünür --}}
+                        @if ($footerGallery->count())
+                            <div class="td_footer_gallery mt-4">
+                                <h3 class="td_fs_20 td_white_color td_medium mb-3">
+                                </h3>
+                                <div class="row g-2">
+                                    @foreach ($footerGallery as $g)
+                                        <div class="col-4">
+                                            <a href="{{ $g->image }}" target="_blank"
+                                                rel="noopener noreferrer">
+                                                <img src="{{ $g->image }}"
+                                                    alt="Gallery image {{ $loop->iteration }}" class="img-fluid"
+                                                    style="
+                                                    width: 100%;
+                                                    height: 90px;
+                                                    object-fit: contain;
+                                                    background: #111;
+                                                    padding: 4px;
+                                                    border-radius: 10px;
+                                                 ">
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="td_footer_bottom td_fs_18">
             <div class="container">
                 <div class="td_footer_bottom_in">
@@ -2685,7 +3341,6 @@
             </div>
         </div>
     </footer>
-
     <!-- End Footer Section -->
     <!-- Start Scroll Up Button -->
     <div class="td_scrollup">

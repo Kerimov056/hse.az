@@ -30,6 +30,7 @@ use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AccreditationController;
+use App\Http\Controllers\Admin\GalleryImageController;
 
 use App\Http\Middleware\SetLocale;
 
@@ -43,7 +44,6 @@ Route::get('/', function () {
 
 /**
  * İstəsən: "/admin" daxil olunsa, avtomatik "/{default}/admin" olsun
- * (opsional, amma daha səliqəlidir)
  */
 Route::get('/admin', function () {
     return redirect('/' . config('app.locale') . '/admin');
@@ -53,8 +53,6 @@ Route::get('/admin', function () {
  * =====================
  * ADMIN ({locale?} ilə)
  * =====================
- * Burada da SetLocale işləyir ki, admin içində route() çağırışları
- * avtomatik cari dillə generasiya olunsun.
  */
 Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
     ->prefix('{locale?}/admin')
@@ -73,6 +71,7 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
         Route::resource('accreditations', AccreditationController::class);
         Route::resource('faqs', FaqController::class);
         Route::resource('teams', TeamController::class);
+        Route::resource('gallery-images', GalleryImageController::class);
 
         Route::get('settings',         [SettingController::class, 'index'])->name('settings.index');
         Route::get('settings/edit',    [SettingController::class, 'edit'])->name('settings.edit');
@@ -85,10 +84,6 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
  * ============================================
  * FRONTEND — {locale?} OPTIONAL prefix + SetLocale
  * ============================================
- * Nəticə:
- *  - "/az/..." da işləyir
- *  - "/..." da işləyir (SetLocale 1-ci segmenti yoxlayıb app locale-i qurur)
- *  - Controller-lər $locale almır
  */
 Route::group([
     'prefix' => '{locale?}',
@@ -96,15 +91,30 @@ Route::group([
     'middleware' => [SetLocale::class],
 ], function () {
 
-    /** AUTH */
+    /** AUTH: əsas auth route-u */
     Route::get('/auth/{tab?}', [AuthController::class, 'show'])
         ->whereIn('tab', ['login', 'register'])
         ->name('auth.show');
+
+    /**
+     * BURADA ƏLAVƏ ETDİK:
+     * /{locale?}/login → GET (form)
+     * /{locale?}/register → GET (register tab)
+     */
+    Route::get('/login', [AuthController::class, 'show'])
+        ->defaults('tab', 'login')
+        ->name('login');
+
+    Route::get('/register', [AuthController::class, 'show'])
+        ->defaults('tab', 'register')
+        ->name('register');
+
+    /** POST login/register/logout */
     Route::post('/login',    [AuthController::class, 'login'])->name('login.post');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
     Route::post('/logout',   [AuthController::class, 'webLogout'])->name('logout');
 
-    /** Köhnə yönləndirmələr */
+    /** Köhnə yönləndirmələr (istəsən saxla) */
     Route::get('/signup', fn() => redirect()->route('auth.show', 'register'));
     Route::get('/signin', fn() => redirect()->route('auth.show', 'login'));
 
@@ -169,5 +179,4 @@ Route::group([
 
     Route::get('/unsubscribe/{token}', [SubscribeController::class, 'unsubscribe'])
         ->name('unsubscribe');
-        
 });
