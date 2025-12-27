@@ -2252,198 +2252,212 @@
 
     {{-- End Feature Section --}}
 
-
-
     {{-- Start Campus Life (settings-driven, fixed) --}}
-    @php
-        $campus = setting('home.campus', []);
-        $title = data_get($campus, 'title', 'Navigate');
-        $subtitle = data_get($campus, 'subtitle', null);
-        $ctaText = data_get($campus, 'cta.text');
-        $ctaUrl = data_get($campus, 'cta.url', '#');
+@php
+    $campus = setting('home.campus', []);
+    $title = data_get($campus, 'title', 'Navigate');
+    $subtitle = data_get($campus, 'subtitle', null);
 
-        // 4 kartla məhdudlaşdır
-        $cards = array_values(array_slice(data_get($campus, 'cards', []), 0, 4));
+    // ✅ Map CTA from settings
+    $ctaText = data_get($campus, 'cta.text', 'View All Program');
+    $ctaUrl = data_get($campus, 'cta.url', 'courses-grid-view.html');
 
-        // Yalnız URL qaytaran helper (HTML çıxarmır!)
-        $toUrl = function (?string $path, ?string $fallback = null) {
-            if (!$path && $fallback) {
-                return asset($fallback);
-            }
-            if (!$path) {
-                return '';
-            }
-            return Str::startsWith($path, ['http', '/storage', 'assets/'])
-                ? asset($path)
-                : asset('storage/' . ltrim($path, '/'));
-        };
-    @endphp
+    // 4 kartla məhdudlaşdır
+    $cards = array_values(array_slice(data_get($campus, 'cards', []), 0, 4));
 
-    <section id="home-campus" class="td_accent_bg td_shape_section_1">
-        <div class="td_shape_position_4 td_accent_color position-absolute">
-            {{-- dekorativ svg-lər eyni qalır --}}
-            <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <g opacity="0.4">
-                    <rect y="12.3906" width="23.6182" height="31.0709" rx="1"
-                        transform="rotate(-30.4551 0 12.3906)" fill="white" />
-                    <rect x="4" y="14.8125" width="18.5361" height="2.62207" rx="1.31104"
-                        transform="rotate(-30.4551 4 14.8125)" fill="currentColor" />
-                    <rect x="7" y="19.8125" width="18.5361" height="2.62207" rx="1.31104"
-                        transform="rotate(-30.4551 7 19.8125)" fill="currentColor" />
-                </g>
-            </svg>
-        </div>
+    // Yalnız URL qaytaran helper (HTML çıxarmır!)
+    $toUrl = function (?string $path, ?string $fallback = null) {
+        if (!$path && $fallback) {
+            return asset($fallback);
+        }
+        if (!$path) {
+            return '';
+        }
+        return Str::startsWith($path, ['http', '/storage', 'assets/'])
+            ? asset($path)
+            : asset('storage/' . ltrim($path, '/'));
+    };
 
-        <div class="td_height_120 td_height_lg_80"></div>
-        <div class="container">
-            <div class="row td_gap_y_40">
-                {{-- Sol: başlıq + altmətn + CTA --}}
-                <div class="col-lg-5 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s">
-                    <div class="td_height_57 td_height_lg_0"></div>
-                    <div class="td_section_heading td_style_1">
-                        <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ $title }}</h2>
-                        @if ($subtitle)
-                            <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
-                                {{ $subtitle }}
-                            </p>
+    // ✅ Page link normalize (cta + card urls)
+    $toLink = function (?string $url, string $fallback = '#') {
+        $url = trim((string) $url);
+        if ($url === '') return $fallback;
+
+        if (Str::startsWith($url, ['http://', 'https://', '#', '/'])) {
+            return $url;
+        }
+
+        return url($url);
+    };
+
+    $ctaHref = $toLink($ctaUrl, '#');
+@endphp
+
+<section id="home-campus" class="td_accent_bg td_shape_section_1">
+    <div class="td_shape_position_4 td_accent_color position-absolute">
+        {{-- dekorativ svg-lər eyni qalır --}}
+        <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <g opacity="0.4">
+                <rect y="12.3906" width="23.6182" height="31.0709" rx="1"
+                    transform="rotate(-30.4551 0 12.3906)" fill="white" />
+                <rect x="4" y="14.8125" width="18.5361" height="2.62207" rx="1.31104"
+                    transform="rotate(-30.4551 4 14.8125)" fill="currentColor" />
+                <rect x="7" y="19.8125" width="18.5361" height="2.62207" rx="1.31104"
+                    transform="rotate(-30.4551 7 19.8125)" fill="currentColor" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="td_height_120 td_height_lg_80"></div>
+    <div class="container">
+        <div class="row td_gap_y_40">
+            {{-- Sol: başlıq + altmətn + CTA --}}
+            <div class="col-lg-5 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s">
+                <div class="td_height_57 td_height_lg_0"></div>
+                <div class="td_section_heading td_style_1">
+                    <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ $title }}</h2>
+                    @if ($subtitle)
+                        <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
+                            {{ $subtitle }}
+                        </p>
+                    @endif
+                </div>
+
+                <div class="td_btn_box">
+                    <svg width="299" height="315" viewBox="0 0 299 315" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g opacity="0.75" clip-path="url(#clip0_34_2222)">
+                            <path
+                                d="M242.757 275.771C242.505 275.771 242.253 275.75 242.005 275.707C32.3684 239.98 0.342741 8.13005 0.0437414 5.79468C-0.108609 4.51176 0.22739 3.21754 0.9787 2.19335C1.73001 1.16916 2.8359 0.497795 4.05598 0.32519C5.27606 0.152585 6.5117 0.492693 7.4943 1.27158C8.4769 2.05047 9.12704 3.20518 9.3034 4.48471C9.59772 6.7514 40.7872 231.477 243.5 266.022C244.658 266.22 245.702 266.868 246.426 267.838C247.15 268.808 247.5 270.028 247.406 271.256C247.312 272.484 246.782 273.63 245.921 274.467C245.06 275.303 243.93 275.769 242.757 275.771Z"
+                                fill="white" />
+                            <path
+                                d="M299.002 275.455C271.709 283.305 237.446 297.872 215.562 314.617L235.465 269.602L223.318 221.648C242.099 242.137 273.428 262.728 299.002 275.455Z"
+                                fill="white" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_34_2222">
+                                <rect width="299" height="314" fill="white"
+                                    transform="translate(0 0.421875)" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                    <div class="td_btn_box_in">
+                        <a href="{{ $ctaHref }}"
+                            class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
+                            <span class="td_btn_in td_heading_color td_white_bg">
+                                <span>{{ $ctaText }}</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Sağ: kart grid (0,2 sol sütun; 1,3 sağ sütun) --}}
+            <div class="col-lg-6 offset-lg-1">
+                <div class="row">
+                    {{-- Sol sütun --}}
+                    <div class="col-sm-6">
+                        @if (isset($cards[0]))
+                            @php
+                                $c0 = $cards[0];
+                                $c0Title = data_get($c0, 'title', '');
+                                $c0Url = $toLink(data_get($c0, 'url', '#'), '#');
+                                $c0Img = $toUrl(data_get($c0, 'image'));
+                            @endphp
+                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                data-wow-delay="0.2s">
+                                <a href="{{ $c0Url }}" class="td_card_thumb d-block">
+                                    <img src="{{ $c0Img }}" alt="{{ $c0Title }}" class="w-100">
+                                </a>
+                                <div class="td_card_info">
+                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                        <a href="{{ $c0Url }}">{{ $c0Title }}</a>
+                                    </h2>
+                                    <a href="{{ $c0Url }}" class="td_card_btn"></a>
+                                </div>
+                            </div>
+                            <div class="td_height_40 td_height_lg_30"></div>
+                        @endif
+
+                        @if (isset($cards[2]))
+                            @php
+                                $c2 = $cards[2];
+                                $c2Title = data_get($c2, 'title', '');
+                                $c2Url = $toLink(data_get($c2, 'url', '#'), '#');
+                                $c2Img = $toUrl(data_get($c2, 'image'));
+                            @endphp
+                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                data-wow-delay="0.3s">
+                                <a href="{{ $c2Url }}" class="td_card_thumb d-block">
+                                    <img src="{{ $c2Img }}" alt="{{ $c2Title }}" class="w-100">
+                                </a>
+                                <div class="td_card_info">
+                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                        <a href="{{ $c2Url }}">{{ $c2Title }}</a>
+                                    </h2>
+                                    <a href="{{ $c2Url }}" class="td_card_btn"></a>
+                                </div>
+                            </div>
                         @endif
                     </div>
 
-                    <div class="td_btn_box">
-                        <svg width="299" height="315" viewBox="0 0 299 315" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g opacity="0.75" clip-path="url(#clip0_34_2222)">
-                                <path
-                                    d="M242.757 275.771C242.505 275.771 242.253 275.75 242.005 275.707C32.3684 239.98 0.342741 8.13005 0.0437414 5.79468C-0.108609 4.51176 0.22739 3.21754 0.9787 2.19335C1.73001 1.16916 2.8359 0.497795 4.05598 0.32519C5.27606 0.152585 6.5117 0.492693 7.4943 1.27158C8.4769 2.05047 9.12704 3.20518 9.3034 4.48471C9.59772 6.7514 40.7872 231.477 243.5 266.022C244.658 266.22 245.702 266.868 246.426 267.838C247.15 268.808 247.5 270.028 247.406 271.256C247.312 272.484 246.782 273.63 245.921 274.467C245.06 275.303 243.93 275.769 242.757 275.771Z"
-                                    fill="white" />
-                                <path
-                                    d="M299.002 275.455C271.709 283.305 237.446 297.872 215.562 314.617L235.465 269.602L223.318 221.648C242.099 242.137 273.428 262.728 299.002 275.455Z"
-                                    fill="white" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_34_2222">
-                                    <rect width="299" height="314" fill="white"
-                                        transform="translate(0 0.421875)" />
-                                </clipPath>
-                            </defs>
-                        </svg>
-                        <div class="td_btn_box_in">
-                            <a href="courses-grid-view.html"
-                                class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
-                                <span class="td_btn_in td_heading_color td_white_bg">
-                                    <span>View All Program</span>
-                                </span>
-                            </a>
-                        </div>
+                    {{-- Sağ sütun --}}
+                    <div class="col-sm-6">
+                        <div class="td_height_50 td_height_lg_30"></div>
+
+                        @if (isset($cards[1]))
+                            @php
+                                $c1 = $cards[1];
+                                $c1Title = data_get($c1, 'title', '');
+                                $c1Url = $toLink(data_get($c1, 'url', '#'), '#');
+                                $c1Img = $toUrl(data_get($c1, 'image'));
+                            @endphp
+                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                data-wow-delay="0.25s">
+                                <a href="{{ $c1Url }}" class="td_card_thumb d-block">
+                                    <img src="{{ $c1Img }}" alt="{{ $c1Title }}" class="w-100">
+                                </a>
+                                <div class="td_card_info">
+                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                        <a href="{{ $c1Url }}">{{ $c1Title }}</a>
+                                    </h2>
+                                    <a href="{{ $c1Url }}" class="td_card_btn"></a>
+                                </div>
+                            </div>
+                            <div class="td_height_40 td_height_lg_30"></div>
+                        @endif
+
+                        @if (isset($cards[3]))
+                            @php
+                                $c3 = $cards[3];
+                                $c3Title = data_get($c3, 'title', '');
+                                $c3Url = $toLink(data_get($c3, 'url', '#'), '#');
+                                $c3Img = $toUrl(data_get($c3, 'image'));
+                            @endphp
+                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                data-wow-delay="0.3s">
+                                <a href="{{ $c3Url }}" class="td_card_thumb d-block">
+                                    <img src="{{ $c3Img }}" alt="{{ $c3Title }}" class="w-100">
+                                </a>
+                                <div class="td_card_info">
+                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                        <a href="{{ $c3Url }}">{{ $c3Title }}</a>
+                                    </h2>
+                                    <a href="{{ $c3Url }}" class="td_card_btn"></a>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
-
-                {{-- Sağ: kart grid (0,2 sol sütun; 1,3 sağ sütun) --}}
-                <div class="col-lg-6 offset-lg-1">
-                    <div class="row">
-                        {{-- Sol sütun --}}
-                        <div class="col-sm-6">
-                            @if (isset($cards[0]))
-                                @php
-                                    $c0 = $cards[0];
-                                    $c0Title = data_get($c0, 'title', '');
-                                    $c0Url = data_get($c0, 'url', '#');
-                                    $c0Img = $toUrl(data_get($c0, 'image'));
-                                @endphp
-                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                    data-wow-delay="0.2s">
-                                    <a href="{{ $c0Url }}" class="td_card_thumb d-block">
-                                        <img src="{{ $c0Img }}" alt="{{ $c0Title }}" class="w-100">
-                                    </a>
-                                    <div class="td_card_info">
-                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                            <a href="{{ $c0Url }}">{{ $c0Title }}</a>
-                                        </h2>
-                                        <a href="{{ $c0Url }}" class="td_card_btn"></a>
-                                    </div>
-                                </div>
-                                <div class="td_height_40 td_height_lg_30"></div>
-                            @endif
-
-                            @if (isset($cards[2]))
-                                @php
-                                    $c2 = $cards[2];
-                                    $c2Title = data_get($c2, 'title', '');
-                                    $c2Url = data_get($c2, 'url', '#');
-                                    $c2Img = $toUrl(data_get($c2, 'image'));
-                                @endphp
-                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                    data-wow-delay="0.3s">
-                                    <a href="{{ $c2Url }}" class="td_card_thumb d-block">
-                                        <img src="{{ $c2Img }}" alt="{{ $c2Title }}" class="w-100">
-                                    </a>
-                                    <div class="td_card_info">
-                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                            <a href="{{ $c2Url }}">{{ $c2Title }}</a>
-                                        </h2>
-                                        <a href="{{ $c2Url }}" class="td_card_btn"></a>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        {{-- Sağ sütun --}}
-                        <div class="col-sm-6">
-                            <div class="td_height_50 td_height_lg_30"></div>
-
-                            @if (isset($cards[1]))
-                                @php
-                                    $c1 = $cards[1];
-                                    $c1Title = data_get($c1, 'title', '');
-                                    $c1Url = data_get($c1, 'url', '#');
-                                    $c1Img = $toUrl(data_get($c1, 'image'));
-                                @endphp
-                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                    data-wow-delay="0.25s">
-                                    <a href="{{ $c1Url }}" class="td_card_thumb d-block">
-                                        <img src="{{ $c1Img }}" alt="{{ $c1Title }}" class="w-100">
-                                    </a>
-                                    <div class="td_card_info">
-                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                            <a href="{{ $c1Url }}">{{ $c1Title }}</a>
-                                        </h2>
-                                        <a href="{{ $c1Url }}" class="td_card_btn"></a>
-                                    </div>
-                                </div>
-                                <div class="td_height_40 td_height_lg_30"></div>
-                            @endif
-
-                            @if (isset($cards[3]))
-                                @php
-                                    $c3 = $cards[3];
-                                    $c3Title = data_get($c3, 'title', '');
-                                    $c3Url = data_get($c3, 'url', '#');
-                                    $c3Img = $toUrl(data_get($c3, 'image'));
-                                @endphp
-                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                    data-wow-delay="0.3s">
-                                    <a href="{{ $c3Url }}" class="td_card_thumb d-block">
-                                        <img src="{{ $c3Img }}" alt="{{ $c3Title }}" class="w-100">
-                                    </a>
-                                    <div class="td_card_info">
-                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                            <a href="{{ $c3Url }}">{{ $c3Title }}</a>
-                                        </h2>
-                                        <a href="{{ $c3Url }}" class="td_card_btn"></a>
-                                    </div>
-                                </div>
-                            @endif
-
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
         </div>
-        <div class="td_height_112 td_height_lg_75"></div>
-    </section>
-    {{-- End Campus Life --}}
+    </div>
+    <div class="td_height_112 td_height_lg_75"></div>
+</section>
+{{-- End Campus Life --}}
 
 
 

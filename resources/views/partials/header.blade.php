@@ -738,7 +738,7 @@
                 color: #64748b;
             }
 
-            /* Desktop lang near search in this block too (in case of cascade) */
+            /* Desktop lang near search */
             .header-lang-desktop {
                 display: flex;
                 align-items: center;
@@ -772,8 +772,6 @@
             }
 
             @media (max-width: 992px) {
-
-                /* HEADER LAYOUT */
                 .td_main_header_in {
                     flex-direction: column;
                     align-items: center;
@@ -798,7 +796,6 @@
                     width: 100%;
                 }
 
-                /* NAV: vertical */
                 .td_nav_list {
                     width: 100%;
                     display: flex;
@@ -832,36 +829,10 @@
                     align-self: flex-end;
                 }
 
-                /* Submenu accordion */
-                .td_nav_list>li.has-submenu>ul {
-                    position: static;
-                    min-width: 0;
-                    width: 100%;
-                    box-shadow: none;
-                    background: transparent;
-                    padding: 4px 0 6px 14px;
-                    margin: 0;
-                    display: none;
-                }
-
-                .td_nav_list>li.has-submenu.is-open>ul {
-                    display: block;
-                }
-
-                .td_nav_list>li.has-submenu>ul>li>a {
-                    display: block;
-                    width: 100%;
-                    padding: 6px 0;
-                    font-size: 13px;
-                    text-align: left;
-                }
-
-                /* mobile: show nav utility row */
                 .nav-utility-row {
                     display: block;
                 }
 
-                /* search panel position for mobile */
                 .td_header_search_wrap {
                     position: fixed !important;
                     right: 12px !important;
@@ -872,9 +843,63 @@
                     z-index: 200 !important;
                 }
 
-                /* hide desktop lang container */
                 .header-lang-desktop {
                     display: none;
+                }
+
+                /* MOBILE submenu open/close */
+                .td_nav_list>li.has-submenu>ul {
+                    display: none !important;
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height .25s ease;
+                    position: static !important;
+                    min-width: 0 !important;
+                    width: 100% !important;
+                    box-shadow: none !important;
+                    background: transparent !important;
+                    padding: 4px 0 6px 14px !important;
+                    margin: 0 !important;
+                    list-style: none !important;
+                }
+
+                .td_nav_list>li.has-submenu.is-open>ul {
+                    display: block !important;
+                    max-height: 900px;
+                }
+
+                /* parent row layout */
+                .td_nav_list>li.has-submenu>a {
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                    gap: 12px !important;
+                }
+
+                /* PLUS/MINUS indicator with visible border */
+                .td_nav_list>li.has-submenu>a .submenu-indicator {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 8px;
+                    border: 2px solid #0f172a;
+                    background: #ffffff;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 900;
+                    font-size: 18px;
+                    line-height: 1;
+                    color: #0f172a;
+                    flex: 0 0 auto;
+                    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
+                }
+
+                .td_nav_list>li.has-submenu>a .submenu-indicator::before {
+                    content: "+";
+                }
+
+                .td_nav_list>li.has-submenu.is-open>a .submenu-indicator::before {
+                    content: "-";
                 }
             }
 
@@ -890,74 +915,9 @@
                 }
             }
 
-            .header-social-rail {
-                position: fixed;
-                right: 18px;
-                top: 40%;
-                transform: translateY(-50%);
-                z-index: 80;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .header-social-rail a {
-                width: 34px;
-                height: 34px;
-                border-radius: 999px;
-                background: rgba(15, 23, 42, 0.9);
-                color: #fff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-                box-shadow: 0 10px 24px rgba(15, 23, 42, .3);
-            }
-
-            .header-social-rail a:hover {
-                opacity: .9;
-            }
-
-            @media (max-width: 768px) {
-                .header-social-rail {
-                    display: none;
-                }
-            }
-
-            /* Ana menyuda öz submenu class-ımız */
+            /* Desktop submenu */
             .td_nav_list>li.has-submenu {
                 position: relative;
-            }
-
-            .td_nav_list>li.has-submenu>a {
-                position: relative;
-                padding-right: 24px;
-            }
-
-            .nav-arrow-toggle {
-                position: absolute;
-                right: 4px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 18px;
-                height: 18px;
-                border: 0;
-                background: transparent;
-                padding: 0;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                color: inherit;
-            }
-
-            .nav-arrow-toggle i {
-                font-size: 11px;
-                transition: transform .2s ease;
-            }
-
-            .td_nav_list>li.has-submenu.is-open .nav-arrow-toggle i {
-                transform: rotate(180deg);
             }
 
             .td_nav_list>li.has-submenu>ul {
@@ -986,12 +946,10 @@
             }
 
             @media (max-width: 992px) {
-                /* override desktop hover for mobile */
                 .td_nav_list>li.has-submenu:hover>ul {
                     display: none;
                 }
             }
-
         </style>
 
         {{-- ==== TOP STRIP ==== --}}
@@ -1032,155 +990,91 @@
                                                 {{ __('Faqs') }}
                                             </a>
                                         </li>
-                                        <li class="has-submenu">
-                                            <a href="{{ route('about') }}">{{ __('About Us') }}</a>
-                                            <ul>
-                                                <li>
-                                                    <a href="{{ route('about') }}#about-who">
-                                                        {{ __('Who we are') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('about') }}#about-vision-mission">
-                                                        {{ __('Vision & Mission') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('about') }}#about-accreditations">
-                                                        {{ __('Licenses & Accreditations') }}
-                                                    </a>
-                                                </li>
 
+                                        <li class="has-submenu">
+                                            <a href="{{ route('about') }}">
+                                                {{ __('About Us') }}
+                                                <span class="submenu-indicator" aria-hidden="true"></span>
+                                            </a>
+                                            <ul>
+                                                <li><a href="{{ route('about') }}#about-who">{{ __('Who we are') }}</a></li>
+                                                <li><a href="{{ route('about') }}#about-vision-mission">{{ __('Vision & Mission') }}</a></li>
+                                                <li><a href="{{ route('about') }}#about-accreditations">{{ __('Licenses & Accreditations') }}</a></li>
                                                 <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
                                                 <li><a href="{{ route('faqss') }}">{{ __('FAQ') }}</a></li>
                                             </ul>
                                         </li>
 
                                         <li class="has-submenu">
-                                            <a href="{{ route('courses-grid-view') }}">{{ __('Training') }}</a>
+                                            <a href="{{ route('courses-grid-view') }}">
+                                                {{ __('Training') }}
+                                                <span class="submenu-indicator" aria-hidden="true"></span>
+                                            </a>
                                             <ul>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=IOSH">{{ __('IOSH') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=NEBOSH">{{ __('NEBOSH') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=CIEH">{{ __('CIEH') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=IIRSM">{{ __('IIRSM') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=NSC">{{ __('NSC') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=Local%20Training">{{ __('Local Training') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('courses-grid-view') }}?q=E-learning">{{ __('E-learning') }}</a>
-                                                </li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=IOSH">{{ __('IOSH') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=NEBOSH">{{ __('NEBOSH') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=CIEH">{{ __('CIEH') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=IIRSM">{{ __('IIRSM') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=NSC">{{ __('NSC') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=Local%20Training">{{ __('Local Training') }}</a></li>
+                                                <li><a href="{{ route('courses-grid-view') }}?q=E-learning">{{ __('E-learning') }}</a></li>
                                             </ul>
                                         </li>
+
                                         <li class="has-submenu">
                                             <a href="{{ route('resources') }}">
                                                 {{ __('Resources') }}
+                                                <span class="submenu-indicator" aria-hidden="true"></span>
                                             </a>
                                             <ul>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Reading materials">
-                                                        {{ __('Reading materials') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Posters">
-                                                        {{ __('Posters') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=PPT training materials">
-                                                        {{ __('PPT training materials') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Checklists">
-                                                        {{ __('Checklists') }}
-                                                    </a>
-                                                </li>
+                                                <li><a href="{{ route('resources') }}?q=Reading materials">{{ __('Reading materials') }}</a></li>
+                                                <li><a href="{{ route('resources') }}?q=Posters">{{ __('Posters') }}</a></li>
+                                                <li><a href="{{ route('resources') }}?q=PPT training materials">{{ __('PPT training materials') }}</a></li>
+                                                <li><a href="{{ route('resources') }}?q=Checklists">{{ __('Checklists') }}</a></li>
                                             </ul>
                                         </li>
 
                                         <li class="has-submenu">
                                             <a href="{{ route('courses-grid-view') }}">
                                                 {{ __('Courses') }}
+                                                <span class="submenu-indicator" aria-hidden="true"></span>
                                             </a>
                                             <ul>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}">
-                                                        {{ __('Courses') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('services') }}">
-                                                        {{ __('Services') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('vacancies') }}">
-                                                        {{ __('Vacancies') }}
-                                                    </a>
-                                                </li>
+                                                <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
+                                                <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
+                                                <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                                             </ul>
                                         </li>
+
                                         <li class="has-submenu">
-                                            <a href="{{ route('topices') }}">{{ __('Topics') }}</a>
+                                            <a href="{{ route('topices') }}">
+                                                {{ __('Topics') }}
+                                                <span class="submenu-indicator" aria-hidden="true"></span>
+                                            </a>
                                             <ul>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Occupational safety">{{ __('Occupational safety') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Occupational health">{{ __('Occupational health') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Environemntal protection">{{ __('Environemntal protection') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Home safety">{{ __('Home safety') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Public safety">{{ __('Public safety') }}</a>
-                                                </li>
-                                                <li><a
-                                                        href="{{ route('topices') }}?q=Travel safety">{{ __('Travel safety') }}</a>
-                                                </li>
+                                                <li><a href="{{ route('topices') }}?q=Occupational safety">{{ __('Occupational safety') }}</a></li>
+                                                <li><a href="{{ route('topices') }}?q=Occupational health">{{ __('Occupational health') }}</a></li>
+                                                <li><a href="{{ route('topices') }}?q=Environemntal protection">{{ __('Environemntal protection') }}</a></li>
+                                                <li><a href="{{ route('topices') }}?q=Home safety">{{ __('Home safety') }}</a></li>
+                                                <li><a href="{{ route('topices') }}?q=Public safety">{{ __('Public safety') }}</a></li>
+                                                <li><a href="{{ route('topices') }}?q=Travel safety">{{ __('Travel safety') }}</a></li>
                                             </ul>
                                         </li>
-                                        <li>
-                                            <a href="{{ route('team') }}">
-                                                {{ __('Team') }}
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('contact') }}">
-                                                {{ __('Contact') }}
-                                            </a>
-                                        </li>
+
+                                        <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                                        <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
 
                                         {{-- MOBILE: search + language inside menu --}}
                                         <li class="nav-utility-row">
                                             <div class="nav-utility-content">
-                                                <button class="td_circle_btn td_center js-open-global-search"
-                                                    type="button" aria-label="Search">
+                                                <button class="td_circle_btn td_center js-open-global-search" type="button" aria-label="Search">
                                                     <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
                                                         style="width:16px!important;height:16px!important;">
                                                 </button>
                                                 <select class="top-lang-select nav-lang-select" aria-label="Language">
-                                                    <option value="en"
-                                                        {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
-                                                    <option value="az"
-                                                        {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
-                                                    <option value="ru"
-                                                        {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
+                                                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                                                    <option value="az" {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
+                                                    <option value="ru" {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
                                                 </select>
                                             </div>
                                         </li>
@@ -1191,8 +1085,7 @@
 
                         <div class="td_hero_icon_btns position-relative">
                             {{-- Desktop / tablet search --}}
-                            <div class="position-relative" id="globalSearch"
-                                style="position:relative!important;">
+                            <div class="position-relative" id="globalSearch" style="position:relative!important;">
                                 <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
                                     <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
                                         style="width:16px!important;height:16px!important;">
@@ -1216,15 +1109,12 @@
                                 </div>
                             </div>
 
-                            {{-- Desktop language selector (next to search) --}}
+                            {{-- Desktop language selector --}}
                             <div class="header-lang-desktop">
                                 <select class="top-lang-select" aria-label="Language">
-                                    <option value="en"
-                                        {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
-                                    <option value="az"
-                                        {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
-                                    <option value="ru"
-                                        {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
+                                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                                    <option value="az" {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
+                                    <option value="ru" {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
                                 </select>
                             </div>
 
@@ -1274,9 +1164,7 @@
                             }
                         })
                         .then(r => r.json())
-                        .then(({
-                            html
-                        }) => render(html))
+                        .then(({ html }) => render(html))
                         .catch(() => render('<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
                 }
 
@@ -1299,7 +1187,6 @@
 
                 const mainToggleBtn = root.querySelector('.td_search_tobble_btn');
 
-                // Desktop main toggle
                 mainToggleBtn?.addEventListener('click', () => {
                     if (!wrap) return;
                     wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
@@ -1308,7 +1195,6 @@
                     }
                 });
 
-                // Mobile search buttons inside menu (js-open-global-search)
                 const externalSearchBtns = document.querySelectorAll('.js-open-global-search');
                 externalSearchBtns.forEach(btn => {
                     btn.addEventListener('click', function(e) {
@@ -1322,6 +1208,90 @@
                     });
                 });
             })();
+        </script>
+
+        <!-- ✅ MOBILE DROPDOWN FIX: click parent toggles open/close (no navigation) -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const mq = window.matchMedia('(max-width: 992px)');
+
+                function isMobile() {
+                    return mq.matches;
+                }
+
+                const navList = document.querySelector('.td_nav_list');
+                if (!navList) return;
+
+                const submenuItems = Array.from(navList.querySelectorAll('li.has-submenu'));
+
+                function closeAll(exceptLi) {
+                    submenuItems.forEach(function(li) {
+                        if (exceptLi && li === exceptLi) return;
+                        li.classList.remove('is-open');
+                        const a = li.querySelector(':scope > a');
+                        if (a) a.setAttribute('aria-expanded', 'false');
+                    });
+                }
+
+                submenuItems.forEach(function(li) {
+                    const a = li.querySelector(':scope > a');
+                    if (a) a.setAttribute('aria-expanded', li.classList.contains('is-open') ? 'true' : 'false');
+                });
+
+                navList.addEventListener('click', function(e) {
+                    if (!isMobile()) return;
+
+                    const li = e.target.closest('li.has-submenu');
+                    if (!li) return;
+
+                    const link = li.querySelector(':scope > a');
+                    const dropdown = li.querySelector(':scope > ul');
+                    if (!link || !dropdown) return;
+
+                    // submenu link clicked, allow it
+                    if (dropdown.contains(e.target)) return;
+
+                    // parent clicked, always toggle (and prevent navigation)
+                    if (link.contains(e.target)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const isOpen = li.classList.contains('is-open');
+                        if (isOpen) {
+                            li.classList.remove('is-open');
+                            link.setAttribute('aria-expanded', 'false');
+                        } else {
+                            closeAll(li);
+                            li.classList.add('is-open');
+                            link.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!isMobile()) return;
+                    const nav = document.querySelector('.td_nav');
+                    if (!nav) return;
+                    if (!nav.contains(e.target)) closeAll();
+                });
+
+                function onMqChange() {
+                    if (!isMobile()) closeAll();
+                }
+                if (mq.addEventListener) mq.addEventListener('change', onMqChange);
+                if (mq.addListener) mq.addListener(onMqChange);
+
+                // Language switcher
+                const langSelects = document.querySelectorAll('.top-lang-select');
+                langSelects.forEach(function(select) {
+                    select.addEventListener('change', function() {
+                        const lang = this.value;
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('lang', lang);
+                        window.location.href = url.toString();
+                    });
+                });
+            });
         </script>
 
     </header>
@@ -1349,49 +1319,3 @@
 </body>
 
 </html>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const submenuItems = document.querySelectorAll('.td_nav_list > li.has-submenu');
-
-        submenuItems.forEach(function(li) {
-            const link = li.querySelector(':scope > a');
-            const dropdown = li.querySelector(':scope > ul');
-            if (!link || !dropdown) return;
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'nav-arrow-toggle';
-            btn.setAttribute('aria-label', 'Toggle submenu');
-            btn.innerHTML = '<i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
-
-            link.appendChild(btn);
-
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                li.classList.toggle('is-open');
-            });
-        });
-
-        document.addEventListener('click', function(e) {
-            document.querySelectorAll('.td_nav_list > li.has-submenu.is-open').forEach(function(li) {
-                if (!li.contains(e.target)) {
-                    li.classList.remove('is-open');
-                }
-            });
-        });
-
-        // ==== LANGUAGE SWITCHER: both desktop and mobile selects ====
-        const langSelects = document.querySelectorAll('.top-lang-select');
-
-        langSelects.forEach(function(select) {
-            select.addEventListener('change', function() {
-                const lang = this.value;
-                const url = new URL(window.location.href);
-                url.searchParams.set('lang', lang);
-                window.location.href = url.toString();
-            });
-        });
-    });
-</script>
