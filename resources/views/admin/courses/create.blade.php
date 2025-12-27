@@ -64,6 +64,12 @@
             <trix-editor input="description" class="trix-content border rounded p-2"></trix-editor>
             <div class="form-text"><small>Məzmun daxilində şəkil əlavə etmək üçün sürükleyib buraxın və ya editor alətlərində fayl ikonundan istifadə edin. (limit: 3MB)</small></div>
           </div>
+            {{-- YENİ: info (optional) --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $course->info ?? '') }}</textarea>
+    @error('info')<div class="text-danger small">{{ $message }}</div>@enderror
+  </div>
 
           <div class="col-md-6">
             <label class="form-label">Course Link (optional)</label>

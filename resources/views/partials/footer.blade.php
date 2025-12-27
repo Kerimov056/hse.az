@@ -1,10 +1,10 @@
 @php
     // Sosial şəbəkələr
-    $fb  = setting('social.facebook');
-    $tw  = setting('social.twitter');
-    $ig  = setting('social.instagram');
+    $fb = setting('social.facebook');
+    $tw = setting('social.twitter');
+    $ig = setting('social.instagram');
     $pin = setting('social.pinterest'); // fallback üçün saxlayırıq
-    $wa  = setting('social.whatsapp');  // tercihen wa.me/…
+    $wa = setting('social.whatsapp'); // tercihen wa.me/…
 
     // LinkedIn: varsa onu götür, yoxdursa Pinterest URL-ni istifadə et
     $li = setting('social.linkedin', $pin);
@@ -14,12 +14,12 @@
 
     // Sayt məlumatları
     $siteName = setting('site.name', 'Educve');
-    $phone    = setting('site.phone');
-    $email    = setting('site.email');
-    $address  = setting('site.address');
-    $tagline  = setting(
+    $phone = setting('site.phone');
+    $email = setting('site.email');
+    $address = setting('site.address');
+    $tagline = setting(
         'site.tagline',
-        'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.'
+        'Far far away, behind the word mountains, far from the Consonantia, there live the blind texts.',
     );
 
     // 1) site.logo üstünlük; 2) branding.logo fallback
@@ -36,14 +36,14 @@
     $telHref = $phone ? 'tel:' . preg_replace('/[^0-9\+]+/', '', $phone) : null;
 
     // Footer qalereyası üçün son şəkillər (gallery_images cədvəlindən)
-    $footerGallery = \App\Models\GalleryImage::query()
-        ->latest()
-        ->take(6)
-        ->get();
+    $footerGallery = \App\Models\GalleryImage::query()->latest()->take(6)->get();
 @endphp
 
 <!-- Start Footer Section -->
 <footer class="td_footer td_style_1">
+
+
+
     <div class="container">
         <div class="td_footer_row">
             {{-- 1. Sütun: Logo, mətn, kontakt, sosial ikonlar --}}
@@ -69,10 +69,6 @@
                             <li>
                                 <i class="fa-solid fa-phone-volume"></i>
                                 <a href="{{ $telHref }}">{{ $phone }}</a>
-                            </li>
-                            <li>
-                                <i class="fa-solid fa-phone-volume"></i>
-                                <a href="{{ $telHref }}">(+994) 10 253 23 88</a>
                             </li>
                         @endif
 
@@ -161,7 +157,7 @@
                 </div>
             </div>
 
-            {{-- 4. Sütun: Subscribe + Gallery images --}}
+            {{-- 4. Sütun: Subscribe + Copyright --}}
             <div class="td_footer_col">
                 <div class="td_footer_widget">
                     <h2 class="td_footer_widget_title td_fs_32 td_white_color td_medium td_mb_30">
@@ -174,8 +170,8 @@
                         <form class="td_newsletter_form" action="{{ route('subscribe') }}" method="POST"
                             id="newsletterForm">
                             @csrf
-                            <input type="email" name="email" class="td_newsletter_input"
-                                placeholder="Email address" required>
+                            <input type="email" name="email" class="td_newsletter_input" placeholder="Email address"
+                                required>
                             <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
                                 <span class="td_btn_in td_white_color td_accent_bg">
                                     <span>{{ __('Subscribe now') }}</span>
@@ -186,69 +182,68 @@
                         @if (session('sub_ok'))
                             <div class="alert alert-success mt-2">{{ session('sub_ok') }}</div>
                         @endif
-
-                        <script>
-                            // İstəsən AJAX
-                            document.getElementById('newsletterForm')?.addEventListener('submit', async function(e) {
-                                if (!this.hasAttribute('data-ajax')) return;
-                                e.preventDefault();
-                                const formData = new FormData(this);
-                                const res = await fetch(this.action, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: formData
-                                });
-                                const json = await res.json().catch(() => ({}));
-                                alert(json?.message || 'Subscribed.');
-                                this.reset();
-                            });
-                        </script>
                     </div>
 
-                    {{-- GalleryImages qalereyası: bütün şəkillər eyni blok ölçüsündə, kəsilmədən görünür --}}
-                    @if ($footerGallery->count())
-                        <div class="td_footer_gallery mt-4">
-                            <h3 class="td_fs_20 td_white_color td_medium mb-3">
-                            </h3>
-                            <div class="row g-2">
-                                @foreach ($footerGallery as $g)
-                                    <div class="col-4">
-                                        <a href="{{ $g->image }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ $g->image }}"
-                                                 alt="Gallery image {{ $loop->iteration }}"
-                                                 class="img-fluid"
-                                                 style="
-                                                    width: 100%;
-                                                    height: 90px;
-                                                    object-fit: contain;
-                                                    background: #111;
-                                                    padding: 4px;
-                                                    border-radius: 10px;
-                                                 ">
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
+                    {{-- Burada əvvəl qalereya vardı, indi onun yerinə footer_bottom kontenti gəlir --}}
+                    <div class="td_footer_bottom_widget td_fs_18 mt-4">
+                        <div class="td_footer_bottom_in d-flex flex-wrap gap-2 align-items-center">
+                            <p class="td_copyright mb-0">
+                                © {{ date('Y') }} {{ $siteName }} · {{ __('All rights reserved') }}
+                            </p>
+                            <ul class="td_footer_widget_menu d-flex flex-wrap gap-3 mb-0">
+                                <li><a href="#">{{ __('Terms & Conditions') }}</a></li>
+                                <li><a href="#">{{ __('Privacy & Policy') }}</a></li>
+                            </ul>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="td_footer_bottom td_fs_18">
-        <div class="container">
-            <div class="td_footer_bottom_in">
-                <p class="td_copyright mb-0">{{ __('Copyright') }}</p>
-                <ul class="td_footer_widget_menu">
-                    <li><a href="#">{{ __('Terms & Conditions') }}</a></li>
-                    <li><a href="#">{{ __('Privacy & Policy') }}</a></li>
-                </ul>
+
+
+        </div> {{-- .td_footer_row --}}
+        {{-- GalleryImages qalereyası: bütün şəkillər eyni blok ölçüsündə, kəsilmədən görünür (artıq full-width bar) --}}
+        @if ($footerGallery->count())
+            <div class="td_footer_gallery_bar py-4">
+                <div class="container">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+
+                        {{-- Sol tərəf: mətn --}}
+                        <div class="td_footer_gallery_text">
+                            <h3 class="td_fs_20 td_white_color td_medium mb-1">
+                                Lisenziyası qəbul olunan şirkətlər
+                            </h3>
+                            <p class="mb-0 td_opacity_7 td_fs_16">
+                                Təlim və sertifikatlarımız aşağıdakı təşkilatlar tərəfindən tanınır.
+                            </p>
+                        </div>
+
+                        {{-- Sağ tərəf: şəkillər --}}
+                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                            @foreach ($footerGallery as $g)
+                                <a href="{{ $g->image }}" target="_blank" rel="noopener noreferrer"
+                                    class="td_footer_gallery_item">
+                                    <img src="{{ $g->image }}" alt="Gallery image {{ $loop->iteration }}"
+                                        style="
+                                    width: 110px;
+                                    height: 80px;
+                                    object-fit: contain;
+                                    background: #111;
+                                    padding: 4px;
+                                    border-radius: 10px;
+                                 ">
+                                </a>
+                            @endforeach
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        @endif
+
+
+
+    </div> {{-- .container --}}
 </footer>
 <!-- End Footer Section -->
 
@@ -268,4 +263,5 @@
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
+
 </html>

@@ -9,7 +9,7 @@ if (! function_exists('setting')) {
      * setting('site.name'), setting('social.instagram'), setting('home.about.title')
      * Key boş qalarsa bütünləşdirilmiş array qaytarır.
      */
-    function setting(string $key = null, $default = null)
+    function setting(?string $key = null, $default = null)
     {
         $merged = Cache::rememberForever('settings:merged', function () {
             $all = Setting::query()->get(['key', 'value']);

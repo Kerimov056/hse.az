@@ -420,76 +420,102 @@
                 </div>
             </div>
 
-            {{-- HOME: FEATURES --}}
-            <div class="card shadow-sm">
-                <div class="card-header fw-semibold">Home – Features (max 4)</div>
-                <div class="card-body row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Kicker</label>
-                        <input class="form-control" name="home[features][kicker]"
-                            value="{{ data_get($settings, 'home.features.kicker') }}" placeholder="CAMPUS">
-                    </div>
-                    <div class="col-md-9">
-                        <label class="form-label">Title</label>
-                        <input class="form-control" name="home[features][title]"
-                            value="{{ data_get($settings, 'home.features.title') }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Main Image</label>
-                        <input type="file" class="form-control" name="home[features][image_file]">
-                        @php
-                            $p = data_get($settings, 'home.features.image');
-                            $url = $toUrl($p);
-                        @endphp
-                        @if ($url)
-                            <div class="form-help mt-1">Mövcud:</div>
-                            <img src="{{ $url }}" class="thumb-prev mt-1" alt="Features Main Image">
-                        @endif
-                    </div>
-                    <div class="col-12">
-                        <hr>
-                    </div>
-                    @php $featuresList = data_get($settings,'home.features.list', []); @endphp
-                    @for ($i = 0; $i < 4; $i++)
-                        @php $row = $featuresList[$i] ?? []; @endphp
-                        <div class="col-12">
-                            <div class="repeater-row">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Item {{ $i + 1 }} Title</label>
-                                        <input class="form-control"
-                                            name="home[features][list][{{ $i }}][title]"
-                                            value="{{ data_get($row, 'title') }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Item {{ $i + 1 }} Text (optional)</label>
-                                        <input class="form-control"
-                                            name="home[features][list][{{ $i }}][text]"
-                                            value="{{ data_get($row, 'text') }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">Icon</label>
-                                        <input type="file" class="form-control"
-                                            name="home[features][list][{{ $i }}][icon_file]">
-                                        @php
-                                            $icon = data_get($row, 'icon');
-                                            $iconUrl = $toUrl($icon);
-                                        @endphp
-                                        @if ($iconUrl)
-                                            <img src="{{ $iconUrl }}" class="thumb-prev mt-1" alt="Feature Icon">
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+        {{-- HOME: FEATURES --}}
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">Home – Features (max 4)</div>
+    <div class="card-body row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Kicker</label>
+            <input class="form-control" name="home[features][kicker]"
+                value="{{ data_get($settings, 'home.features.kicker') }}" placeholder="CAMPUS">
+        </div>
+        <div class="col-md-9">
+            <label class="form-label">Title</label>
+            <input class="form-control" name="home[features][title]"
+                value="{{ data_get($settings, 'home.features.title') }}">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Main Image</label>
+            <input type="file" class="form-control" name="home[features][image_file]">
+            @php
+                $p = data_get($settings, 'home.features.image');
+                $url = $toUrl($p);
+            @endphp
+            @if ($url)
+                <div class="form-help mt-1">Mövcud:</div>
+                <img src="{{ $url }}" class="thumb-prev mt-1" alt="Features Main Image">
+            @endif
+        </div>
+
+        <div class="col-12">
+            <hr>
+        </div>
+
+        @php $featuresList = data_get($settings,'home.features.list', []); @endphp
+
+        @for ($i = 0; $i < 4; $i++)
+            @php $row = $featuresList[$i] ?? []; @endphp
+
+            <div class="col-12">
+                <div class="repeater-row">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Item {{ $i + 1 }} Title</label>
+                            <input class="form-control"
+                                name="home[features][list][{{ $i }}][title]"
+                                value="{{ data_get($row, 'title') }}">
                         </div>
-                    @endfor
+
+                        <div class="col-md-5">
+                            <label class="form-label">Item {{ $i + 1 }} Text (optional)</label>
+                            <input class="form-control"
+                                name="home[features][list][{{ $i }}][text]"
+                                value="{{ data_get($row, 'text') }}">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Link (optional)</label>
+                            <input class="form-control"
+                                name="home[features][list][{{ $i }}][url]"
+                                value="{{ data_get($row, 'url') }}"
+                                placeholder="/services/smart-hostel or https://...">
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Icon</label>
+                            <input type="file" class="form-control"
+                                name="home[features][list][{{ $i }}][icon_file]">
+                            @php
+                                $icon = data_get($row, 'icon');
+                                $iconUrl = $toUrl($icon);
+                            @endphp
+                            @if ($iconUrl)
+                                <img src="{{ $iconUrl }}" class="thumb-prev mt-1" alt="Feature Icon">
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- quick preview --}}
+                    @if (data_get($row, 'url'))
+                        <div class="form-text mt-1">
+                            Link preview:
+                            <a href="{{ data_get($row, 'url') }}" target="_blank" rel="noopener">
+                                {{ data_get($row, 'url') }}
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
+        @endfor
+    </div>
+</div>
+
 
             {{-- HOME: DEPARTMENTS --}}
             <div class="card shadow-sm">
                 <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
-                    <span>Home – Departments (max 8)</span>
+                    <span>Home – Departments (max 20)</span>
                     <button type="button" class="btn btn-sm btn-outline-primary" id="addDepartment">+ Add
                         department</button>
                 </div>
@@ -1000,7 +1026,7 @@
             if (addDepBtn) {
                 addDepBtn.addEventListener('click', () => {
                     const idx = depWrap.children.length;
-                    if (idx >= 8) return;
+                    if (idx >= 20) return;
                     const div = document.createElement('div');
                     div.className = 'repeater-row';
                     div.innerHTML = `

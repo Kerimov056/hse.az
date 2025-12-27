@@ -20,6 +20,13 @@
     <div class="form-text"><small>Editor içində şəkil əlavə etmək üçün faylı sürükləyib buraxın. (limit: 3MB)</small></div>
   </div>
 
+  {{-- YENİ: info --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $topic->info ?? '') }}</textarea>
+    @error('info')<div class="text-danger small">{{ $message }}</div>@enderror
+  </div>
+
   <div class="col-md-6">
     <label class="form-label">Şəkil (upload)</label>
     <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">

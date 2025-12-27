@@ -1,11 +1,9 @@
 @props([
-    // İstəsən yazıları burdan lokallaşdırarsan
     'label' => 'Mesaj göndərin',
     'title' => 'Bizə yazın',
 ])
 
 <style>
-/* ====== Chat Widget ====== */
 :root {
     --cw-accent: #e31b23;
     --cw-ink: #0f172a;
@@ -16,7 +14,6 @@
     --cw-radius: 16px;
 }
 
-/* FAB (button) */
 .cw-fab {
     position: fixed;
     right: 18px; bottom: 18px;
@@ -36,7 +33,6 @@
     width: 22px; height: 22px; display: inline-block;
 }
 
-/* Panel (drawer-card) */
 .cw-panel {
     position: fixed;
     right: 18px; bottom: 82px;
@@ -70,7 +66,38 @@
 
 .cw-body { padding: 12px; overflow: auto; }
 
-/* Form styles (sənin contact formunun yüngül versiyası) */
+/* INFO BANNER */
+.cw-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: #fffbeb;              /* açıq sarı */
+    border: 1px solid #facc15;        /* sarı kontur */
+}
+.cw-info-icon {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #facc15;
+    color: #713f12;
+}
+.cw-info-text {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #713f12;
+}
+.cw-info-text strong {
+    font-weight: 700;
+}
+
+/* Form */
 .cw-form .fields {
     display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
 }
@@ -99,7 +126,6 @@
     text-align:center; font-size:12px; color:var(--cw-muted); margin-top:6px;
 }
 
-/* Small screens: FAB mərkəzə bir az yaxın olsun */
 @media (max-width: 575.98px) {
     .cw-fab { right: 12px; bottom: 12px; }
     .cw-panel { right: 12px; bottom: 72px; }
@@ -108,12 +134,11 @@
 
 <button type="button" class="cw-fab" id="cwToggle" aria-expanded="false" aria-controls="cwPanel">
     <span class="cw-icon" aria-hidden="true">
-        {{-- Paper-plane icon --}}
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 12L20 4l-5 16-4-6-7-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
         </svg>
     </span>
-    <span>{{ __("Mesaj göndərin") }}</span>
+    <span>{{ __($label) }}</span>
 </button>
 
 <div class="cw-panel" id="cwPanel" role="dialog" aria-labelledby="cwTitle" aria-modal="true">
@@ -127,6 +152,22 @@
     </div>
 
     <div class="cw-body">
+
+        {{-- INFO BANNER --}}
+        <div class="cw-info">
+            <div class="cw-info-icon">
+                {{-- lamp / idea icon --}}
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18h6M10 21h4M9 10a3 3 0 0 1 6 0c0 1.657-1 2.5-1.5 3.5-.21.42-.37.83-.47 1.5h-2.06c-.1-.67-.26-1.08-.47-1.5C10 12.5 9 11.657 9 10Z"
+                          stroke="#713f12" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 10a7 7 0 1 1 14 0" stroke="#713f12" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+            </div>
+       <div class="cw-info-text">
+    {!! __('chat.info_block') !!}
+</div>
+        </div>
+
         <form class="cw-form" method="POST" action="{{ route('contact.send') }}" id="cwForm" novalidate>
             @csrf
             <div class="fields">
@@ -143,7 +184,9 @@
             </button>
         </form>
 
-        <div class="cw-footer-hint">{{ __("Bu forma") }} <b>{{ __("Əlaqə") }}</b> {{ __("bölməsinə göndəriləcək.") }}</div>
+        <div class="cw-footer-hint">
+            {{ __("Bu forma") }} <b>{{ __("Əlaqə") }}</b> {{ __("bölməsinə göndəriləcək.") }}
+        </div>
     </div>
 </div>
 
@@ -161,12 +204,10 @@
     });
     close?.addEventListener('click', closeP);
 
-    // ESC ilə bağla
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && panel.classList.contains('is-open')) closeP();
     });
 
-    // Form submit loading
     const form = document.getElementById('cwForm');
     form?.addEventListener('submit', function () {
         const btn  = document.getElementById('cwSubmit');

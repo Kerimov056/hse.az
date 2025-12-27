@@ -65,6 +65,13 @@
             <div class="form-text"><small>Şəkilləri birbaşa editor-a sürükləyib buraxa bilərsiniz. (limit: 3MB)</small></div>
           </div>
 
+            {{-- YENİ: info (optional) --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $course->info ?? '') }}</textarea>
+    @error('info')<div class="text-danger small">{{ $message }}</div>@enderror
+  </div>
+
           <div class="col-md-6">
             <label class="form-label">Course Link (optional)</label>
             <input type="url" name="courseUrl" class="form-control"

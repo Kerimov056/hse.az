@@ -13,6 +13,7 @@
 
 <div class="mb-3">
   <label class="form-label">Açıqlama</label>
+  <span class="text-danger">Burda daxil etdiyiniz ilk soz Accreditations adi kimi qeyd olunacaq.</span>
   {{-- Trix: hidden input + editor --}}
   <input id="description" type="hidden" name="description" value="{{ old('description', $item->description) }}">
   <trix-editor input="description" class="form-control"></trix-editor>

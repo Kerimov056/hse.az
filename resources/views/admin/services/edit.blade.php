@@ -57,6 +57,11 @@
             <div class="form-text"><small>Şəkilləri birbaşa editor-a sürükləyib buraxa bilərsiniz. (limit: 3MB)</small></div>
           </div>
 
+  {{-- YENİ: info --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>
+  </div>
           <div class="col-md-6">
             <label class="form-label">Service Link (optional)</label>
             <input type="url" name="courseUrl" class="form-control"

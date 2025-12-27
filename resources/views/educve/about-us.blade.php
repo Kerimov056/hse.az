@@ -520,7 +520,7 @@
 
             <div class="td_height_40"></div>
 
-            <div class="row td_gap_y_24">
+            <div class="row td_gap_y_24"id="about-vision-mission">
                 <div class="col-lg-12 fly fly-up stagger-2">
                     <div class="who-card">
                         <p class="who-text">{{ $whoWeAre }}</p>
@@ -607,53 +607,76 @@
         </div>
     </section>
 
-    <!-- Blog (unchanged) -->
-    <section>
-        <div class="td_height_112 td_height_lg_75"></div>
-        <div class="container">
-            <div class="td_section_heading td_style_1 text-center">
-                <p
-                    class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                    {{ __("BLOG & ARTICLES") }}</p>
-                <h2 class="td_section_title td_fs_48 mb-0">{{ __("Take A Look At The Latest Articles") }}</h2>
-            </div>
-            <div class="td_height_50 td_height_lg_40"></div>
+<section>
+    <style>
+        /* BLOG card fix */
+        .td_post {
+            height: 100%;
+        }
 
-            <div class="row td_gap_y_30">
-                @forelse($courses as $course)
-                    <div class="col-lg-4">
-                        <div class="td_post td_style_1">
-                            <a href="{{ route('course-details', $course) }}" class="td_post_thumb d-block">
-                                <img src="{{ $course->imageUrl ?: asset('assets/img/home_1/post_1.jpg') }}"
-                                    alt="">
-                                <i class="fa-solid fa-link"></i>
-                            </a>
-                            <div class="td_post_info">
-                                <div class="td_post_meta td_fs_14 td_medium td_mb_20">
-                                    <span><img src="{{ asset('assets/img/icons/calendar.svg') }}"
-                                            alt="">{{ optional($course->created_at)->format('M d , Y') }}</span>
-                                    <span><img src="{{ asset('assets/img/icons/user.svg') }}"
-                                            alt="">HSE.AZ</span>
-                                </div>
-                                <h2 class="td_post_title td_fs_24 td_medium td_mb_16">
-                                    <a href="{{ route('course-details', $course) }}">{{ $course->name }}</a>
-                                </h2>
-                                <p class="td_post_subtitle td_mb_24 td_heading_color td_opacity_7">
-                                    {{ \Illuminate\Support\Str::limit(strip_tags($course->description), 120) }}</p>
-                                <a href="{{ route('course-details', $course) }}"
-                                    class="td_btn td_style_1 td_type_3 td_radius_30 td_medium">
-                                    <span class="td_btn_in td_accent_color"><span>Read More</span></span>
-                                </a>
+        .td_post_thumb {
+            position: relative;
+            width: 100%;
+            padding-top: 60%; /* təxmini 16:9, istəsən 70-80 eləyə bilərsən */
+            overflow: hidden;
+        }
+
+        .td_post_thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* şəkil kəsilsə də kart ölçüsü sabit qalır */
+        }
+    </style>
+
+    <div class="td_height_112 td_height_lg_75"></div>
+    <div class="container">
+        <div class="td_section_heading td_style_1 text-center">
+            <p
+                class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
+                {{ __("BLOG & ARTICLES") }}</p>
+            <h2 class="td_section_title td_fs_48 mb-0">{{ __("Take A Look At The Latest Articles") }}</h2>
+        </div>
+        <div class="td_height_50 td_height_lg_40"></div>
+
+        <div class="row td_gap_y_30">
+            @forelse($courses as $course)
+                <div class="col-lg-4">
+                    <div class="td_post td_style_1">
+                        <a href="{{ route('course-details', $course) }}" class="td_post_thumb d-block">
+                            <img src="{{ $course->imageUrl ?: asset('assets/img/home_1/post_1.jpg') }}"
+                                alt="">
+                            <i class="fa-solid fa-link"></i>
+                        </a>
+                        <div class="td_post_info">
+                            <div class="td_post_meta td_fs_14 td_medium td_mb_20">
+                                <span><img src="{{ asset('assets/img/icons/calendar.svg') }}"
+                                        alt="">{{ optional($course->created_at)->format('M d , Y') }}</span>
+                                <span><img src="{{ asset('assets/img/icons/user.svg') }}"
+                                        alt="">HSE.AZ</span>
                             </div>
+                            <h2 class="td_post_title td_fs_24 td_medium td_mb_16">
+                                <a href="{{ route('course-details', $course) }}">{{ $course->name }}</a>
+                            </h2>
+                            <p class="td_post_subtitle td_mb_24 td_heading_color td_opacity_7">
+                                {{ \Illuminate\Support\Str::limit(strip_tags($course->description), 120) }}</p>
+                            <a href="{{ route('course-details', $course) }}"
+                                class="td_btn td_style_1 td_type_3 td_radius_30 td_medium">
+                                <span class="td_btn_in td_accent_color"><span>Read More</span></span>
+                            </a>
                         </div>
                     </div>
-                @empty
-                    <div class="col-12 text-center text-muted">No courses found.</div>
-                @endforelse
-            </div>
+                </div>
+            @empty
+                <div class="col-12 text-center text-muted">No courses found.</div>
+            @endforelse
         </div>
-        <div class="td_height_120 td_height_lg_80"></div>
-    </section>
+    </div>
+    <div class="td_height_120 td_height_lg_80"></div>
+</section>
+
 
     {{-- ===== Scroll-driven GUIDE (Settings-based for About) ===== --}}
     @php

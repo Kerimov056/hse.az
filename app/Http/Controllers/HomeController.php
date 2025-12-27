@@ -23,7 +23,7 @@ class HomeController extends Controller
             ->get();
 
         // Event bölməsi üçün 4 akkreditasiya (1 böyük + 3 kiçik)
-        $accreds = Accreditation::query()->latest()->take(4)->get();
+        $accreds = Accreditation::query()->latest()->take(5)->get();
 
         // Event bölməsinin yerinə göstəriləcək “Latest Resources”
         $resources = ResourceItem::query()

@@ -5,16 +5,17 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Controllers\Admin\NewsController;
 
-use App\Http\Controllers\Admin\CourseController   as AdminCourseController;
-use App\Http\Controllers\Admin\ServiceController  as AdminServiceController;
-use App\Http\Controllers\Admin\TopicesController  as AdminTopicesController;
+use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\TopicesController as AdminTopicesController;
 use App\Http\Controllers\Admin\VacanciesController as AdminVacanciesController;
-
-use App\Http\Controllers\CourseController         as FrontendCourseController;
-use App\Http\Controllers\ServiceController        as FrontendServiceController;
-use App\Http\Controllers\TopicesController        as FrontendTopicesController;
-use App\Http\Controllers\VacanciesController      as FrontendVacanciesController;
+use App\Http\Controllers\NewsController as FrontendNewsController;
+use App\Http\Controllers\CourseController as FrontendCourseController;
+use App\Http\Controllers\ServiceController as FrontendServiceController;
+use App\Http\Controllers\TopicesController as FrontendTopicesController;
+use App\Http\Controllers\VacanciesController as FrontendVacanciesController;
 use App\Http\Controllers\Admin\ResourcesController as AdminResourcesController;
 use App\Http\Controllers\Admin\ResourceTypesController as AdminResourceTypesController;
 use App\Http\Controllers\ResourcesController as FrontResourcesController;
@@ -61,9 +62,10 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
     ->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('courses',   AdminCourseController::class);
-        Route::resource('services',  AdminServiceController::class);
-        Route::resource('topices',   AdminTopicesController::class);
+        Route::resource('news', NewsController::class);
+        Route::resource('courses', AdminCourseController::class);
+        Route::resource('services', AdminServiceController::class);
+        Route::resource('topices', AdminTopicesController::class);
         Route::resource('vacancies', AdminVacanciesController::class);
         Route::resource('resources', AdminResourcesController::class);
         Route::resource('resource-types', AdminResourceTypesController::class)
@@ -73,11 +75,11 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
         Route::resource('teams', TeamController::class);
         Route::resource('gallery-images', GalleryImageController::class);
 
-        Route::get('settings',         [SettingController::class, 'index'])->name('settings.index');
-        Route::get('settings/edit',    [SettingController::class, 'edit'])->name('settings.edit');
+        Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('settings/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
 
-        Route::post('uploads/trix',    [UploadController::class, 'trix'])->name('uploads.trix');
+        Route::post('uploads/trix', [UploadController::class, 'trix'])->name('uploads.trix');
     });
 
 /**
@@ -87,7 +89,7 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
  */
 Route::group([
     'prefix' => '{locale?}',
-    'where'  => ['locale' => 'az|en|ru'],
+    'where' => ['locale' => 'az|en|ru'],
     'middleware' => [SetLocale::class],
 ], function () {
 
@@ -110,9 +112,9 @@ Route::group([
         ->name('register');
 
     /** POST login/register/logout */
-    Route::post('/login',    [AuthController::class, 'login'])->name('login.post');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-    Route::post('/logout',   [AuthController::class, 'webLogout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'webLogout'])->name('logout');
 
     /** Köhnə yönləndirmələr (istəsən saxla) */
     Route::get('/signup', fn() => redirect()->route('auth.show', 'register'));
@@ -134,20 +136,25 @@ Route::group([
         ->name('contact.send');
 
     /** COURSES – FRONTEND */
-    Route::get('/courses',          [FrontendCourseController::class, 'index'])->name('courses-grid-view');
+    Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses-grid-view');
     Route::get('/courses/{course}', [FrontendCourseController::class, 'show'])->name('course-details');
 
     /** SERVICES – FRONTEND */
-    Route::get('/services',           [FrontendServiceController::class, 'index'])->name('services');
+    Route::get('/services', [FrontendServiceController::class, 'index'])->name('services');
     Route::get('/services/{service}', [FrontendServiceController::class, 'show'])->name('service-details');
 
+    /** NEWS – FRONTEND */
+    Route::get('/news', [FrontendNewsController::class, 'index'])->name('news');
+    Route::get('/news/{news}', [FrontendNewsController::class, 'show'])->name('news-details');
+
+
     /** TOPICES – FRONTEND */
-    Route::get('/topices',         [FrontendTopicesController::class, 'index'])->name('topices');
+    Route::get('/topices', [FrontendTopicesController::class, 'index'])->name('topices');
     Route::get('/topices/{topic}', [FrontendTopicesController::class, 'show'])
         ->whereNumber('topic')->name('topices-details');
 
     /** VACANCIES – FRONTEND */
-    Route::get('/vacancies',           [FrontendVacanciesController::class, 'index'])->name('vacancies');
+    Route::get('/vacancies', [FrontendVacanciesController::class, 'index'])->name('vacancies');
     Route::get('/vacancies/{vacancy}', [FrontendVacanciesController::class, 'show'])
         ->whereNumber('vacancy')->name('vacancies-details');
 
@@ -160,7 +167,7 @@ Route::group([
     Route::get('/resources/{resource}', [FrontResourcesController::class, 'show'])->name('resources-details');
 
     /** Team – users */
-    Route::get('/team',        [FrontTeam::class, 'index'])->name('team');
+    Route::get('/team', [FrontTeam::class, 'index'])->name('team');
     Route::get('/team/{team}', [FrontTeam::class, 'show'])->name('team-details');
 
     /** Faqs (controller versiyası) */

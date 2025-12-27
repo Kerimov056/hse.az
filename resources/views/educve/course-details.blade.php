@@ -172,23 +172,6 @@
               </div>
             </div>
           @endif
-
-          <h2 class="td_fs_36 td_mb_20">What you’ll learn</h2>
-          <ul class="td_list td_style_2 td_type_2 td_fs_18 td_medium td_heading_color td_mp_0">
-            @forelse(($course->bullets ?? []) as $bullet)
-              <li>
-                <svg class="td_accent_color" width="24" height="24"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="12" fill="currentColor"></circle>
-                  <path d="M7.5 14.1136C7.5 14.1136 8.52273 14.1136 9.88636 16.5C9.88636 16.5 13.6765 10.25 17.0455 9" stroke="white" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-                {{ $bullet }}
-              </li>
-            @empty
-              <li>Practical, project-based learning</li>
-              <li>Up-to-date tools and workflows</li>
-              <li>Career-oriented guidance</li>
-            @endforelse
-          </ul>
         </div>
       </div>
     </div>
@@ -266,3 +249,5 @@
   </div>
   <div class="td_height_120 td_height_lg_80"></div>
 </section>
+{{-- INFO TOAST – course üçün --}}
+@include('partials.info-toast', ['text' => $course->info ?? null])

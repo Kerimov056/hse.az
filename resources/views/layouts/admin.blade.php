@@ -295,9 +295,13 @@
                         href="{{ route('admin.courses.index') }}">
                         <i class="bi bi-journal-text"></i><span>Courses</span>
                     </a>
+                    <a class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}"
+                        href="{{ route('admin.news.index') }}">
+                        <i class="bi bi-newspaper"></i><span>News</span>
+                    </a>
                     <a class="nav-link {{ request()->routeIs('admin.gallery-images.*') ? 'active' : '' }}"
                         href="{{ route('admin.gallery-images.index') }}">
-                        <i class="bi bi-images"></i><span>Gallery Images</span>
+                        <i class="bi bi-images"></i><span>Lisenziya Holding</span>
                     </a>
                 </nav>
             </div>

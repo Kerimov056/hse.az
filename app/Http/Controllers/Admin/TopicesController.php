@@ -44,6 +44,8 @@ class TopicesController extends Controller
             'courseUrl'   => ['nullable', 'url'],
             'description' => ['nullable', 'string'],
             'image'       => ['nullable', 'image', 'max:3072'],
+            'info' => ['nullable', 'string'],
+
             'twitterurl'  => ['nullable', 'url'],
             'facebookurl' => ['nullable', 'url'],
             'linkedinurl' => ['nullable', 'url'],
@@ -66,6 +68,7 @@ class TopicesController extends Controller
                 'courseUrl'   => $data['courseUrl'] ?? null,
                 'description' => $data['description'] ?? null,
                 'imageUrl'    => $imageUrl,
+                    'info'        => $data['info'] ?? null, 
             ]);
 
             SocialLink::create([
@@ -104,6 +107,8 @@ class TopicesController extends Controller
             'courseUrl'   => ['nullable', 'url'],
             'description' => ['nullable', 'string'],
             'image'       => ['nullable', 'image', 'max:3072'],
+            'info' => ['nullable', 'string'],
+
             'twitterurl'  => ['nullable', 'url'],
             'facebookurl' => ['nullable', 'url'],
             'linkedinurl' => ['nullable', 'url'],
@@ -125,6 +130,7 @@ class TopicesController extends Controller
                 'courseUrl'   => $data['courseUrl'] ?? null,
                 'description' => $data['description'] ?? null,
                 'imageUrl'    => $imageUrl,
+                    'info'        => $data['info'] ?? null, 
             ]);
 
             $link = $topice->socialLink ?: new SocialLink(['course_id' => $topice->id]);

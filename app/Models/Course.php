@@ -13,22 +13,24 @@ class Course extends Model
         'name',
         'courseUrl',
         'description',
+        'info',       // YENİ SƏTİR
         'imageUrl',
         'views',
         // digər sütunların...
     ];
 
-    // Faydalı sabitlər
-    public const TYPE_COURSE    = 'course';
-    public const TYPE_SERVICE   = 'service';
-    public const TYPE_TOPIC     = 'topic';
-    public const TYPE_VACANCY   = 'vacancy';
+    public const TYPE_COURSE  = 'course';
+    public const TYPE_SERVICE = 'service';
+    public const TYPE_TOPIC   = 'topic';
+    public const TYPE_VACANCY = 'vacancy';
+    public const TYPE_NEWS    = 'news';
 
     public const TYPES = [
         self::TYPE_COURSE,
         self::TYPE_SERVICE,
         self::TYPE_TOPIC,
         self::TYPE_VACANCY,
+        self::TYPE_NEWS,
     ];
 
     /** scope: müəyyən type üçün filtrlə */
@@ -42,5 +44,4 @@ class Course extends Model
     {
         return $this->hasOne(SocialLink::class, 'course_id');
     }
-
 }

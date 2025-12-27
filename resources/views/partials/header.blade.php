@@ -224,11 +224,6 @@
 
         /* ================== MAIN HEADER ================== */
 
-        .td_main_header {
-            padding-top: 10px;
-            padding-bottom: 12px;
-        }
-
         .td_main_header_in {
             display: flex;
             align-items: flex-end;
@@ -291,29 +286,6 @@
         .td_nav_list>li>a {
             display: inline-block;
             padding: 10px 4px;
-        }
-
-        .td_nav_list>li.menu-item-has-children>ul {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #fff;
-            min-width: 220px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-            padding: 8px 0;
-            margin: 0;
-            list-style: none;
-            display: none;
-            z-index: 50;
-        }
-
-        .td_nav_list>li.menu-item-has-children:hover>ul {
-            display: block;
-        }
-
-        .td_nav_list>li.menu-item-has-children>ul>li>a {
-            display: block;
-            padding: 10px 14px;
         }
 
         .td_hero_icon_btns {
@@ -418,6 +390,19 @@
             color: #64748b;
         }
 
+        /* Desktop language next to search */
+        .header-lang-desktop {
+            display: flex;
+            align-items: center;
+            margin-left: 4px;
+        }
+
+        .header-lang-desktop .top-lang-select {
+            background: rgba(15, 23, 42, .04);
+            color: #0f172a;
+            border: 1px solid rgba(15, 23, 42, .10);
+        }
+
         @media (max-width: 992px) {
             .td_main_header_in {
                 flex-direction: column;
@@ -449,6 +434,11 @@
 
             .td_hero_icon_btns {
                 align-self: flex-end;
+            }
+
+            /* hide desktop lang on mobile */
+            .header-lang-desktop {
+                display: none;
             }
         }
 
@@ -569,11 +559,6 @@
                 }
             }
 
-            .td_main_header {
-                padding-top: 10px;
-                padding-bottom: 12px;
-            }
-
             .td_main_header_in {
                 display: flex;
                 flex-wrap: wrap;
@@ -653,29 +638,6 @@
             .td_nav_list>li:hover>a::after,
             .td_nav_list>li>a.active::after {
                 width: 100%;
-            }
-
-            .td_nav_list>li.menu-item-has-children>ul {
-                position: absolute;
-                left: 0;
-                background: #fff;
-                min-width: 220px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-                padding: 8px 0;
-                margin: 0;
-                list-style: none;
-                display: none;
-                z-index: 50;
-            }
-
-            .td_nav_list>li.menu-item-has-children:hover>ul {
-                display: block;
-            }
-
-            .td_nav_list>li.menu-item-has-children>ul>li>a {
-                display: block;
-                padding: 10px 14px;
-                font-size: 14px;
             }
 
             .td_hero_icon_btns {
@@ -776,21 +738,59 @@
                 color: #64748b;
             }
 
+            /* Desktop lang near search in this block too (in case of cascade) */
+            .header-lang-desktop {
+                display: flex;
+                align-items: center;
+                margin-left: 4px;
+            }
+
+            .header-lang-desktop .top-lang-select {
+                background: rgba(15, 23, 42, .04);
+                color: #0f172a;
+                border: 1px solid rgba(15, 23, 42, .10);
+            }
+
+            /* Mobile only row inside nav for search + lang */
+            .nav-utility-row {
+                display: none;
+                width: 100%;
+            }
+
+            .nav-utility-content {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 8px;
+                padding: 4px 0;
+            }
+
+            .nav-utility-content .top-lang-select {
+                background: rgba(15, 23, 42, .04);
+                color: #0f172a;
+                border: 1px solid rgba(15, 23, 42, .10);
+            }
+
             @media (max-width: 992px) {
+
+                /* HEADER LAYOUT */
                 .td_main_header_in {
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
                 }
 
                 .td_main_header_left {
                     width: 100%;
-                    justify-content: space-between;
+                    justify-content: center;
+                    margin-bottom: 6px;
                 }
 
                 .td_main_header_right {
                     width: 100%;
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: stretch;
                     gap: 10px;
                 }
 
@@ -798,23 +798,95 @@
                     width: 100%;
                 }
 
+                /* NAV: vertical */
                 .td_nav_list {
                     width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 4px;
+                    margin: 0;
+                    padding: 0;
+                    list-style: none;
+                    overflow-x: visible;
+                    white-space: normal;
+                }
+
+                .td_nav_list>li {
+                    width: 100%;
+                }
+
+                .td_nav_list>li>a {
+                    display: block;
+                    width: 100%;
+                    text-align: left;
+                    padding: 10px 4px;
+                    font-size: 14px;
+                }
+
+                .td_nav_list>li>a::after {
+                    bottom: 0;
                 }
 
                 .td_hero_icon_btns {
                     align-self: flex-end;
+                }
+
+                /* Submenu accordion */
+                .td_nav_list>li.has-submenu>ul {
+                    position: static;
+                    min-width: 0;
+                    width: 100%;
+                    box-shadow: none;
+                    background: transparent;
+                    padding: 4px 0 6px 14px;
+                    margin: 0;
+                    display: none;
+                }
+
+                .td_nav_list>li.has-submenu.is-open>ul {
+                    display: block;
+                }
+
+                .td_nav_list>li.has-submenu>ul>li>a {
+                    display: block;
+                    width: 100%;
+                    padding: 6px 0;
+                    font-size: 13px;
+                    text-align: left;
+                }
+
+                /* mobile: show nav utility row */
+                .nav-utility-row {
+                    display: block;
+                }
+
+                /* search panel position for mobile */
+                .td_header_search_wrap {
+                    position: fixed !important;
+                    right: 12px !important;
+                    left: 12px !important;
+                    top: 70px !important;
+                    width: auto !important;
+                    max-width: none !important;
+                    z-index: 200 !important;
+                }
+
+                /* hide desktop lang container */
+                .header-lang-desktop {
+                    display: none;
                 }
             }
 
             @media (max-width: 576px) {
                 .td_site_branding img {
                     height: 44px;
+                    margin-top: 0;
                 }
 
                 .td_nav_list>li>a {
-                    padding: 8px 2px;
-                    font-size: 14px;
+                    padding: 8px 4px;
+                    font-size: 13px;
                 }
             }
 
@@ -851,178 +923,79 @@
                     display: none;
                 }
             }
+
+            /* Ana menyuda öz submenu class-ımız */
+            .td_nav_list>li.has-submenu {
+                position: relative;
+            }
+
+            .td_nav_list>li.has-submenu>a {
+                position: relative;
+                padding-right: 24px;
+            }
+
+            .nav-arrow-toggle {
+                position: absolute;
+                right: 4px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 18px;
+                height: 18px;
+                border: 0;
+                background: transparent;
+                padding: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: inherit;
+            }
+
+            .nav-arrow-toggle i {
+                font-size: 11px;
+                transition: transform .2s ease;
+            }
+
+            .td_nav_list>li.has-submenu.is-open .nav-arrow-toggle i {
+                transform: rotate(180deg);
+            }
+
+            .td_nav_list>li.has-submenu>ul {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: #fff;
+                min-width: 220px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+                padding: 8px 0;
+                margin: 0;
+                list-style: none;
+                display: none;
+                z-index: 50;
+            }
+
+            .td_nav_list>li.has-submenu:hover>ul,
+            .td_nav_list>li.has-submenu.is-open>ul {
+                display: block;
+            }
+
+            .td_nav_list>li.has-submenu>ul>li>a {
+                display: block;
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+
+            @media (max-width: 992px) {
+                /* override desktop hover for mobile */
+                .td_nav_list>li.has-submenu:hover>ul {
+                    display: none;
+                }
+            }
+
         </style>
 
         {{-- ==== TOP STRIP ==== --}}
-        <div class="td_top_header td_heading_bg td_white_color">
-            <div class="container" style="max-width:1400px!important;padding:0 16px!important;margin:0 auto!important;">
-                <div class="td_top_header_in"
-                    style="display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;width:100%!important;">
-
-                    {{-- LEFT: ticker --}}
-                    <div class="td_top_header_left"
-                        style="flex:1 1 220px!important;min-width:0!important;overflow:hidden!important;">
-                        <div id="tickerLine"
-                            style="position:relative!important;overflow:hidden!important;white-space:nowrap!important;font-size:14px!important;font-weight:600!important;color:#ffffff!important;">
-                            <span id="tickerInner">
-                                The Constitution of the Republic of Azerbaijan, Article 35/VI - Everyone has right to
-                                work
-                                in safe and healthy workplace. Welcome to the first health, safety, environment
-                                education
-                                platform of Azerbaijan.
-                            </span>
-                        </div>
-                    </div>
-
-                    {{-- RIGHT: auth + lang + flag button (opens search) --}}
-                    <div class="td_top_header_right"
-                        style="display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;flex:0 0 auto!important;">
-                        <div
-                            style="display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important;">
-                            @guest
-                                <span style="font-size:14px!important;">
-                                    <a href="{{ route('auth.show', 'login') }}"
-                                        style="color:#ffffff!important;text-decoration:none!important;">{{ __('Sign in') }}</a>
-                                    /
-                                    <a href="{{ route('auth.show', 'register') }}"
-                                        style="color:#ffffff!important;text-decoration:none!important;">{{ __('Sign up') }}</a>
-                                </span>
-                            @endguest
-
-                            @auth
-                                <span class="td_medium"
-                                    style="color:#ffffff!important;font-size:14px!important;">{{ Auth::user()->name }}</span>
-                                <form method="POST" action="{{ route('logout') }}" class="d-inline"
-                                    style="margin:0!important;">
-                                    @csrf
-                                    <button type="submit" class="td_btn td_style_1 td_medium"
-                                        style="border-radius:999px!important;border:none!important;padding:4px 14px!important;font-size:13px!important;">
-                                        <span class="td_btn_in td_white_color td_accent_bg">
-                                            <span>{{ __('Log out') }}</span>
-                                        </span>
-                                    </button>
-                                </form>
-                            @endauth
-                        </div>
-
-                        <div
-                            style="
-                                display:flex!important;
-                                align-items:center!important;
-                                gap:8px!important;
-                                flex-wrap:nowrap!important;
-                                padding:4px 10px!important;
-                                border-radius:999px!important;
-                                border:1px solid rgba(255,255,255,0.22)!important;
-                                background:rgba(15,23,42,0.32)!important;
-                                box-shadow:0 8px 20px rgba(15,23,42,0.35)!important;
-                                backdrop-filter:blur(10px)!important;
-                            ">
-                            <select
-                                id="topLangSelect"
-                                style="
-                                    border:none!important;
-                                    outline:none!important;
-                                    background:transparent!important;
-                                    color:#ffffff!important;
-                                    font-size:13px!important;
-                                    font-weight:600!important;
-                                    padding:4px 8px 4px 0!important;
-                                    cursor:pointer!important;
-                                    min-width:60px!important;
-                                    border-right:1px solid rgba(255,255,255,0.25)!important;
-                                ">
-                                <option value="az"
-                                    data-flag="{{ asset('assets/img/flags/az.svg') }}"
-                                    style="color:#000!important;">
-                                    AZ
-                                </option>
-                                <option value="en"
-                                    data-flag="{{ asset('assets/img/flags/en.svg') }}"
-                                    style="color:#000!important;">
-                                    EN
-                                </option>
-                                <option value="ru"
-                                    data-flag="{{ asset('assets/img/flags/ru.svg') }}"
-                                    style="color:#000!important;">
-                                    RU
-                                </option>
-                            </select>
-
-                            <button type="button"
-                                onclick="document.querySelector('.td_search_tobble_btn')?.click()"
-                                style="
-                                    width:30px!important;
-                                    height:30px!important;
-                                    border-radius:999px!important;
-                                    border:none!important;
-                                    background:rgba(255,255,255,0.16)!important;
-                                    display:flex!important;
-                                    align-items:center!important;
-                                    justify-content:center!important;
-                                    padding:0!important;
-                                    cursor:pointer!important;
-                                    flex-shrink:0!important;
-                                ">
-                                <img id="topLangFlag"
-                                    src="{{ asset('assets/img/flags/az.jpg') }}"
-                                    alt="AZ flag"
-                                    style="width:18px!important;height:18px!important;display:block!important;border-radius:999px!important;object-fit:cover!important;">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ticker scroll --}}
-        <script>
-            window.addEventListener('load', function() {
-                const line = document.getElementById('tickerLine');
-                const inner = document.getElementById('tickerInner');
-                if (!line || !inner) return;
-
-                setTimeout(() => {
-                    const textWidth = inner.offsetWidth;
-                    const containerWidth = line.offsetWidth;
-                    if (textWidth <= containerWidth) return;
-
-                    let offset = 0;
-
-                    function step() {
-                        offset -= 1;
-                        if (Math.abs(offset) > textWidth) offset = containerWidth;
-                        inner.style.transform = 'translateX(' + offset + 'px)';
-                        inner.style.whiteSpace = 'nowrap';
-                        inner.style.display = 'inline-block';
-                        requestAnimationFrame(step);
-                    }
-                    requestAnimationFrame(step);
-                }, 3000);
-            });
-        </script>
-
-        {{-- top language flag sync --}}
-        <script>
-            (function () {
-                const select = document.getElementById('topLangSelect');
-                const flagImg = document.getElementById('topLangFlag');
-                if (!select || !flagImg) return;
-
-                function updateFlag() {
-                    const opt = select.options[select.selectedIndex];
-                    if (!opt) return;
-                    const flagUrl = opt.getAttribute('data-flag');
-                    if (flagUrl) {
-                        flagImg.src = flagUrl;
-                        flagImg.alt = opt.value.toUpperCase() + ' flag';
-                    }
-                }
-
-                updateFlag();
-                select.addEventListener('change', updateFlag);
-            })();
-        </script>
+        @include('partials.top-strip')
 
         {{-- ==== MAIN HEADER ==== --}}
         <div class="td_main_header">
@@ -1035,7 +1008,7 @@
                         style="flex:0 0 auto!important;display:flex!important;align-items:center!important;">
                         <a class="td_site_branding td_accent_color" href="{{ route('home') }}"
                             style="display:inline-flex!important;align-items:center!important;text-decoration:none!important;">
-                            <img src="{{ $logoUrl ?: asset('assets/logoeng.png') }}" alt="{{ $siteName }}"
+                            <img src="{{ asset('assets/img/hse.png') }}" alt="{{ $siteName }}"
                                 style="height:54px!important;width:auto!important;display:block!important;margin-top:4px!important;">
                         </a>
                     </div>
@@ -1059,18 +1032,85 @@
                                                 {{ __('Faqs') }}
                                             </a>
                                         </li>
-                                        <li>
-                                            <a href="{{ route('about') }}">
-                                                {{ __('About Us') }}
-                                            </a>
+                                        <li class="has-submenu">
+                                            <a href="{{ route('about') }}">{{ __('About Us') }}</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-who">
+                                                        {{ __('Who we are') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-vision-mission">
+                                                        {{ __('Vision & Mission') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-accreditations">
+                                                        {{ __('Licenses & Accreditations') }}
+                                                    </a>
+                                                </li>
+
+                                                <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
+                                                <li><a href="{{ route('faqss') }}">{{ __('FAQ') }}</a></li>
+                                            </ul>
                                         </li>
-                                        <li>
+
+                                        <li class="has-submenu">
+                                            <a href="{{ route('courses-grid-view') }}">{{ __('Training') }}</a>
+                                            <ul>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=IOSH">{{ __('IOSH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=NEBOSH">{{ __('NEBOSH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=CIEH">{{ __('CIEH') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=IIRSM">{{ __('IIRSM') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=NSC">{{ __('NSC') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=Local%20Training">{{ __('Local Training') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('courses-grid-view') }}?q=E-learning">{{ __('E-learning') }}</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="has-submenu">
                                             <a href="{{ route('resources') }}">
                                                 {{ __('Resources') }}
                                             </a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Reading materials">
+                                                        {{ __('Reading materials') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Posters">
+                                                        {{ __('Posters') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=PPT training materials">
+                                                        {{ __('PPT training materials') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Checklists">
+                                                        {{ __('Checklists') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </li>
 
-                                        <li class="menu-item-has-children">
+                                        <li class="has-submenu">
                                             <a href="{{ route('courses-grid-view') }}">
                                                 {{ __('Courses') }}
                                             </a>
@@ -1086,18 +1126,35 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('topices') }}">
-                                                        {{ __('Topics') }}
-                                                    </a>
-                                                </li>
-                                                <li>
                                                     <a href="{{ route('vacancies') }}">
                                                         {{ __('Vacancies') }}
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
-
+                                        <li class="has-submenu">
+                                            <a href="{{ route('topices') }}">{{ __('Topics') }}</a>
+                                            <ul>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Occupational safety">{{ __('Occupational safety') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Occupational health">{{ __('Occupational health') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Environemntal protection">{{ __('Environemntal protection') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Home safety">{{ __('Home safety') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Public safety">{{ __('Public safety') }}</a>
+                                                </li>
+                                                <li><a
+                                                        href="{{ route('topices') }}?q=Travel safety">{{ __('Travel safety') }}</a>
+                                                </li>
+                                            </ul>
+                                        </li>
                                         <li>
                                             <a href="{{ route('team') }}">
                                                 {{ __('Team') }}
@@ -1108,13 +1165,34 @@
                                                 {{ __('Contact') }}
                                             </a>
                                         </li>
+
+                                        {{-- MOBILE: search + language inside menu --}}
+                                        <li class="nav-utility-row">
+                                            <div class="nav-utility-content">
+                                                <button class="td_circle_btn td_center js-open-global-search"
+                                                    type="button" aria-label="Search">
+                                                    <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
+                                                        style="width:16px!important;height:16px!important;">
+                                                </button>
+                                                <select class="top-lang-select nav-lang-select" aria-label="Language">
+                                                    <option value="en"
+                                                        {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                                                    <option value="az"
+                                                        {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
+                                                    <option value="ru"
+                                                        {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
+                                                </select>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </nav>
 
                         <div class="td_hero_icon_btns position-relative">
-                            <div class="position-relative" id="globalSearch" style="position:relative!important;">
+                            {{-- Desktop / tablet search --}}
+                            <div class="position-relative" id="globalSearch"
+                                style="position:relative!important;">
                                 <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
                                     <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
                                         style="width:16px!important;height:16px!important;">
@@ -1136,6 +1214,18 @@
 
                                     <div id="globalSearchResults" style="display:none;"></div>
                                 </div>
+                            </div>
+
+                            {{-- Desktop language selector (next to search) --}}
+                            <div class="header-lang-desktop">
+                                <select class="top-lang-select" aria-label="Language">
+                                    <option value="en"
+                                        {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                                    <option value="az"
+                                        {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
+                                    <option value="ru"
+                                        {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
+                                </select>
                             </div>
 
                             @auth
@@ -1184,7 +1274,9 @@
                             }
                         })
                         .then(r => r.json())
-                        .then(({ html }) => render(html))
+                        .then(({
+                            html
+                        }) => render(html))
                         .catch(() => render('<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
                 }
 
@@ -1205,12 +1297,29 @@
                     }
                 });
 
-                root.querySelector('.td_search_tobble_btn')?.addEventListener('click', () => {
+                const mainToggleBtn = root.querySelector('.td_search_tobble_btn');
+
+                // Desktop main toggle
+                mainToggleBtn?.addEventListener('click', () => {
                     if (!wrap) return;
                     wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
                     if (wrap.style.display === 'block') {
                         setTimeout(() => input?.focus(), 50);
                     }
+                });
+
+                // Mobile search buttons inside menu (js-open-global-search)
+                const externalSearchBtns = document.querySelectorAll('.js-open-global-search');
+                externalSearchBtns.forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!wrap) return;
+                        wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
+                        if (wrap.style.display === 'block') {
+                            setTimeout(() => input?.focus(), 50);
+                        }
+                    });
                 });
             })();
         </script>
@@ -1238,4 +1347,51 @@
         @endif
     </div>
 </body>
+
 </html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const submenuItems = document.querySelectorAll('.td_nav_list > li.has-submenu');
+
+        submenuItems.forEach(function(li) {
+            const link = li.querySelector(':scope > a');
+            const dropdown = li.querySelector(':scope > ul');
+            if (!link || !dropdown) return;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'nav-arrow-toggle';
+            btn.setAttribute('aria-label', 'Toggle submenu');
+            btn.innerHTML = '<i class="fa-solid fa-chevron-down" aria-hidden="true"></i>';
+
+            link.appendChild(btn);
+
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                li.classList.toggle('is-open');
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('.td_nav_list > li.has-submenu.is-open').forEach(function(li) {
+                if (!li.contains(e.target)) {
+                    li.classList.remove('is-open');
+                }
+            });
+        });
+
+        // ==== LANGUAGE SWITCHER: both desktop and mobile selects ====
+        const langSelects = document.querySelectorAll('.top-lang-select');
+
+        langSelects.forEach(function(select) {
+            select.addEventListener('change', function() {
+                const lang = this.value;
+                const url = new URL(window.location.href);
+                url.searchParams.set('lang', lang);
+                window.location.href = url.toString();
+            });
+        });
+    });
+</script>

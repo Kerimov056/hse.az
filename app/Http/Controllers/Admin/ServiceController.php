@@ -45,6 +45,7 @@ class ServiceController extends Controller
             'courseUrl'   => ['nullable', 'url'],
             'description' => ['nullable', 'string'],
             'image'       => ['nullable', 'image', 'max:3072'],
+            'info' => ['nullable', 'string'],
 
             'twitterurl'  => ['nullable', 'url'],
             'facebookurl' => ['nullable', 'url'],
@@ -68,6 +69,8 @@ class ServiceController extends Controller
                 'courseUrl'   => $data['courseUrl'] ?? null,
                 'description' => $data['description'] ?? null,
                 'imageUrl'    => $imageUrl,
+                                    'info'        => $data['info'] ?? null, 
+
             ]);
 
             SocialLink::create([
@@ -106,6 +109,7 @@ class ServiceController extends Controller
             'courseUrl'   => ['nullable', 'url'],
             'description' => ['nullable', 'string'],
             'image'       => ['nullable', 'image', 'max:3072'],
+            'info' => ['nullable', 'string'],
 
             'twitterurl'  => ['nullable', 'url'],
             'facebookurl' => ['nullable', 'url'],
@@ -128,6 +132,8 @@ class ServiceController extends Controller
                 'courseUrl'   => $data['courseUrl'] ?? null,
                 'description' => $data['description'] ?? null,
                 'imageUrl'    => $imageUrl,
+                                    'info'        => $data['info'] ?? null, 
+
             ]);
 
             $link = $service->socialLink ?: new SocialLink(['course_id' => $service->id]);

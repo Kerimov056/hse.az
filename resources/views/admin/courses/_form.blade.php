@@ -19,6 +19,13 @@
     @error('description')<div class="text-danger small">{{ $message }}</div>@enderror
   </div>
 
+  {{-- YENİ: info (optional) --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $course->info ?? '') }}</textarea>
+    @error('info')<div class="text-danger small">{{ $message }}</div>@enderror
+  </div>
+
   <div class="col-md-6">
     <label class="form-label">Şəkil (upload)</label>
     <input type="file" name="image" class="form-control" accept="image/*">

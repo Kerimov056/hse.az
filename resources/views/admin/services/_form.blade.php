@@ -17,6 +17,12 @@
     <trix-editor input="desc-input" class="trix-content border rounded p-2"></trix-editor>
   </div>
 
+  {{-- YENİ: info --}}
+  <div class="col-12">
+    <label class="form-label">Əlavə info (optional)</label>
+    <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>
+  </div>
+
   <div class="col-md-6">
     <label class="form-label">Service URL</label>
     <input type="url" name="courseUrl" class="form-control" value="{{ old('courseUrl', $service->courseUrl ?? '') }}">

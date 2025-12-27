@@ -1,6 +1,13 @@
-
 @include('partials.header')
 
 @yield('content')
-<x-chat-widget label="Mesaj göndərin" title="Bizə yazın" />
+
+@include('partials.chat-switcher')
+
+@auth
+    @if(auth()->user()->isAdmin())
+        @include('partials.admin-shortcut')
+    @endif
+@endauth
+
 @include('partials.footer')
