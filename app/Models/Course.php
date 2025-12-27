@@ -19,11 +19,11 @@ class Course extends Model
         // digər sütunların...
     ];
 
-    public const TYPE_COURSE  = 'course';
+    public const TYPE_COURSE = 'course';
     public const TYPE_SERVICE = 'service';
-    public const TYPE_TOPIC   = 'topic';
+    public const TYPE_TOPIC = 'topic';
     public const TYPE_VACANCY = 'vacancy';
-    public const TYPE_NEWS    = 'news';
+    public const TYPE_NEWS = 'news';
 
     public const TYPES = [
         self::TYPE_COURSE,
@@ -43,5 +43,10 @@ class Course extends Model
     public function socialLink(): HasOne
     {
         return $this->hasOne(SocialLink::class, 'course_id');
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(\App\Models\CourseRegistration::class, 'course_id');
     }
 }

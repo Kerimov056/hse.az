@@ -34,26 +34,23 @@
 @endphp
 
 <style>
-  /* STANDART ŞƏKİL VİTRİNİ (sabit hündürlük, şəkil contain ilə miqyaslanır) */
   .course-thumb{
     position: relative;
     border-radius: 10px;
     background:#f6f7f9;
-    height: 520px;             /* Desktop üçün vitrin hündürlüyü */
+    height: 520px;
     overflow: hidden;
   }
-  @media (max-width: 991.98px){ .course-thumb{ height: 380px; } }  /* Tablet */
-  @media (max-width: 575.98px){ .course-thumb{ height: 260px; } }  /* Mobil  */
+  @media (max-width: 991.98px){ .course-thumb{ height: 380px; } }
+  @media (max-width: 575.98px){ .course-thumb{ height: 260px; } }
 
-  /* Şəkil kəsilmədən vitrinin içinə sığsın */
   .course-thumb img{
     width: 100%;
     height: 100%;
-    object-fit: contain;       /* KƏSMƏDƏN sığdırır */
+    object-fit: contain;
     display: block;
   }
 
-  /* Video da vitrinə sığsın – maksimum hündürlük 100% */
   .course-thumb iframe{
     width: 100%;
     aspect-ratio: 16/9;
@@ -70,7 +67,6 @@
   }
   .views-badge svg{ width:16px; height:16px; }
 
-  /* Sosial butonlar */
   .social-btns{display:flex; flex-wrap:wrap; gap:.6rem;}
   .social-btns a{
     display:inline-flex; align-items:center; gap:.5rem;
@@ -78,7 +74,6 @@
     text-decoration:none; border:1px solid var(--td-border, #e8e8e8);
   }
 
-  /* Related – eyni hündürlük */
   .equal-card{display:flex;flex-direction:column;height:100%;}
   .equal-card .td_card_thumb{display:block;position:relative;overflow:hidden;border-radius:10px}
   .equal-card .td_card_info{flex:1;display:flex;flex-direction:column}
@@ -86,11 +81,21 @@
   .equal-card .td_card_title{min-height:56px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .td_card_subtitle{min-height:72px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .btn-row{margin-top:auto;display:flex;gap:.5rem;align-items:center}
+
+  /* Register block */
+  .register-box{
+    border:1px solid rgba(0,0,0,.08);
+    border-radius: 12px;
+    padding: 18px;
+    background: #fff;
+  }
+  .register-box .mini{
+    opacity:.8;
+    font-size: 14px;
+    margin:0;
+  }
 </style>
 
-{{-- ====== HEADER, PAGE HEADING eynidir (sənəddə saxlanılıb) ====== --}}
-
-<!-- Course Details -->
 <section style="margin-top: 50px">
   <div class="td_height_120 td_height_lg_80"></div>
   <div class="container">
@@ -141,7 +146,7 @@
 
           {{-- Social links --}}
           @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
-            <div class="td_mb_50">
+            <div class="td_mb_40">
               <h3 class="td_fs_24 td_semibold td_mb_15">Follow / Contact</h3>
               <div class="social-btns">
                 @if($twitter)
@@ -172,6 +177,28 @@
               </div>
             </div>
           @endif
+
+          {{-- ✅ Register block --}}
+          @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
+            <div class="td_mb_50">
+              <div class="register-box">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                  <div>
+                    <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
+                    <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
+                  </div>
+
+                  <a href="{{ route('courses.register', $course->id) }}"
+                     class="td_btn td_style_1 td_radius_10 td_medium">
+                    <span class="td_btn_in td_white_color td_accent_bg">
+                      <span>Register</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          @endif
+
         </div>
       </div>
     </div>
@@ -249,5 +276,84 @@
   </div>
   <div class="td_height_120 td_height_lg_80"></div>
 </section>
+
 {{-- INFO TOAST – course üçün --}}
 @include('partials.info-toast', ['text' => $course->info ?? null])
+
+{{-- Success Toast (after registration) --}}
+@if(session('ok'))
+  <div id="regToastBackdrop" style="
+      position:fixed; inset:0; background:rgba(0,0,0,.35);
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; padding:16px;
+  ">
+    <div id="regToast" style="
+        width:min(520px, 100%);
+        background:#fff; border-radius:14px;
+        box-shadow:0 20px 70px rgba(0,0,0,.25);
+        overflow:hidden;
+        border:1px solid rgba(0,0,0,.08);
+    ">
+      <div style="padding:18px 18px 10px 18px; display:flex; gap:12px; align-items:flex-start;">
+        <div style="
+            width:42px; height:42px; border-radius:12px;
+            background:#e9f7ef; display:flex; align-items:center; justify-content:center;
+            flex:0 0 auto;
+        ">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6L9 17L4 12" stroke="#1e8e3e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div style="flex:1 1 auto;">
+          <div style="font-weight:900; font-size:18px; margin-bottom:4px;">Registration received</div>
+          <div style="opacity:.8; font-size:14px; line-height:1.4;">
+            {{ session('ok') }}
+          </div>
+        </div>
+
+        <button type="button" id="regToastCloseBtn" aria-label="Close" style="
+            border:0; background:transparent; font-size:22px; line-height:1;
+            padding:0 4px; cursor:pointer; opacity:.65;
+        ">×</button>
+      </div>
+
+      <div style="padding:0 18px 18px 18px; display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" id="regToastOkBtn" class="td_btn td_style_1 td_radius_10 td_medium">
+          <span class="td_btn_in td_white_color td_accent_bg">
+            <span>OK</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const backdrop = document.getElementById('regToastBackdrop');
+      const closeBtn = document.getElementById('regToastCloseBtn');
+      const okBtn = document.getElementById('regToastOkBtn');
+
+      function closeToast() {
+        if (!backdrop) return;
+        backdrop.style.opacity = '0';
+        backdrop.style.transition = 'opacity .18s ease';
+        setTimeout(() => backdrop.remove(), 180);
+      }
+
+      // close by buttons
+      if (closeBtn) closeBtn.addEventListener('click', closeToast);
+      if (okBtn) okBtn.addEventListener('click', closeToast);
+
+      // close by click outside
+      if (backdrop) {
+        backdrop.addEventListener('click', function (e) {
+          if (e.target === backdrop) closeToast();
+        });
+      }
+
+      // auto close after 4.5s
+      setTimeout(closeToast, 4500);
+    })();
+  </script>
+@endif

@@ -32,6 +32,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AccreditationController;
 use App\Http\Controllers\Admin\GalleryImageController;
+use App\Http\Controllers\CourseRegistrationController;
+use App\Http\Controllers\Admin\CourseRegistrationAdminController;
 
 use App\Http\Middleware\SetLocale;
 
@@ -80,6 +82,15 @@ Route::middleware(['auth', EnsureUserIsAdmin::class, SetLocale::class])
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
 
         Route::post('uploads/trix', [UploadController::class, 'trix'])->name('uploads.trix');
+
+         Route::get('/course-registrations', [CourseRegistrationAdminController::class, 'index'])
+        ->name('course-registrations.index');
+
+    Route::get('/course-registrations/{courseRegistration}', [CourseRegistrationAdminController::class, 'show'])
+        ->name('course-registrations.show');
+
+    Route::delete('/course-registrations/{courseRegistration}', [CourseRegistrationAdminController::class, 'destroy'])
+        ->name('course-registrations.destroy');
     });
 
 /**
@@ -92,6 +103,11 @@ Route::group([
     'where' => ['locale' => 'az|en|ru'],
     'middleware' => [SetLocale::class],
 ], function () {
+Route::get('/courses/{course}/register', [CourseRegistrationController::class, 'create'])
+    ->name('courses.register');
+
+Route::post('/courses/{course}/register', [CourseRegistrationController::class, 'store'])
+    ->name('courses.register.store');
 
     /** AUTH: əsas auth route-u */
     Route::get('/auth/{tab?}', [AuthController::class, 'show'])

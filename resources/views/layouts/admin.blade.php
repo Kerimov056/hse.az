@@ -303,6 +303,11 @@
                         href="{{ route('admin.gallery-images.index') }}">
                         <i class="bi bi-images"></i><span>Lisenziya Holding</span>
                     </a>
+                    <a class="nav-link {{ request()->routeIs('admin.course-registrations.*') ? 'active' : '' }}"
+                        href="{{ route('admin.course-registrations.index') }}">
+                        <i class="bi bi-people"></i><span>Course Registrations</span>
+                    </a>
+
                 </nav>
             </div>
 
