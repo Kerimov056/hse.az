@@ -9,23 +9,34 @@ use Illuminate\Http\Request;
 class TopicesController extends Controller
 {
     // Grid + Search
-    public function index(Request $request)
-    {
-        $q = trim((string) $request->query('q', ''));
+public function index(Request $request)
+{
+    $q = trim((string) $request->query('q', ''));
 
-        $query = Course::query()->type(Course::TYPE_TOPIC);
+    // YENI: holding
+    $holding = trim((string) $request->query('holding', ''));
 
-        if ($q !== '') {
-            $query->where(function ($qq) use ($q) {
-                $qq->where('name', 'like', "%{$q}%")
-                   ->orWhere('description', 'like', "%{$q}%");
-            });
-        }
+    $query = Course::query()->type(Course::TYPE_TOPIC);
 
-        $topices = $query->latest()->paginate(9)->appends(['q' => $q]);
-
-        return view('educve.topices', compact('topices', 'q'));
+    // YENI: holding filter (exact)
+    if ($holding !== '') {
+        $query->where('courseHoldingName', $holding);
     }
+
+    if ($q !== '') {
+        $query->where(function ($qq) use ($q) {
+            $qq->where('name', 'like', "%{$q}%")
+               ->orWhere('description', 'like', "%{$q}%");
+        });
+    }
+
+    $topices = $query->latest()
+        ->paginate(9)
+        ->appends(['q' => $q, 'holding' => $holding]);
+
+    return view('educve.topices', compact('topices', 'q', 'holding'));
+}
+
 
     // Details (param adı {topic} ilə eyni OLMALIDIR)
     public function show(Course $topic)

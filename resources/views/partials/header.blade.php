@@ -51,7 +51,7 @@
     <!-- End Preloader -->
 
     {{-- ================= HEADER ================= --}}
-        <header style="font-size: 14px !important"
+     <header style="font-size: 14px !important"
         class="td_site_header td_style_1 td_type_3 td_sticky_header td_medium td_heading_color">
         <style>
             .container {
@@ -889,74 +889,37 @@
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('services') }}">{{ __('Services') }}</a>
                                             <ul>
-                                                <li>
-                                                    <a href="{{ route('services') }}?q=Training">
-                                                        {{ __('Training') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('services') }}?q=Consultancy">
-                                                        {{ __('Consultancy') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('services') }}?q=Evacuation%20Map">
-                                                        {{ __('Evacuation Map') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('services') }}?q=Instruction%20Books">
-                                                        {{ __('Instruction Books') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('services') }}?q=Safety%20Signs">
-                                                        {{ __('Safety Signs') }}
-                                                    </a>
-                                                </li>
+                                                @forelse(($serviceHoldings ?? []) as $h)
+                                                    <li>
+                                                        <a href="{{ route('services', ['holding' => $h]) }}">
+                                                            {{ $h }}
+                                                        </a>
+                                                    </li>
+                                                @empty
+                                                    <li><a href="{{ route('services') }}">{{ __('All services') }}</a>
+                                                    </li>
+                                                @endforelse
                                             </ul>
                                         </li>
+
 
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('courses-grid-view') }}">{{ __('Training') }}</a>
                                             <ul>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=IOSH">
-                                                        {{ __('IOSH') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=NEBOSH">
-                                                        {{ __('NEBOSH') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=CIEH">
-                                                        {{ __('CIEH') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=IIRSM">
-                                                        {{ __('IIRSM') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=NSC">
-                                                        {{ __('NSC') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=Local%20Training">
-                                                        {{ __('Local Training') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('courses-grid-view') }}?q=E-learning">
-                                                        {{ __('E-learning') }}
-                                                    </a>
-                                                </li>
+                                                @forelse(($courseHoldings ?? []) as $h)
+                                                    <li>
+                                                        <a href="{{ route('courses-grid-view', ['holding' => $h]) }}">
+                                                            {{ $h }}
+                                                        </a>
+                                                    </li>
+                                                @empty
+                                                    <li><a
+                                                            href="{{ route('courses-grid-view') }}">{{ __('All trainings') }}</a>
+                                                    </li>
+                                                @endforelse
                                             </ul>
                                         </li>
+
 
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('resources') }}">{{ __('Resources') }}</a>
@@ -987,38 +950,19 @@
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('topices') }}">{{ __('Topics') }}</a>
                                             <ul>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Occupational safety">
-                                                        {{ __('Occupational safety') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Occupational health">
-                                                        {{ __('Occupational health') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Environemntal protection">
-                                                        {{ __('Environemntal protection') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Home safety">
-                                                        {{ __('Home safety') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Public safety">
-                                                        {{ __('Public safety') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('topices') }}?q=Travel safety">
-                                                        {{ __('Travel safety') }}
-                                                    </a>
-                                                </li>
+                                                @forelse(($topicHoldings ?? []) as $h)
+                                                    <li>
+                                                        <a href="{{ route('topices', ['holding' => $h]) }}">
+                                                            {{ $h }}
+                                                        </a>
+                                                    </li>
+                                                @empty
+                                                    <li><a href="{{ route('topices') }}">{{ __('All topics') }}</a>
+                                                    </li>
+                                                @endforelse
                                             </ul>
                                         </li>
+
 
                                         <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
                                         <li><a href="{{ route('news') }}">{{ __('News') }}</a></li>
@@ -1454,9 +1398,9 @@
                 setupSubmenuToggles(document);
             })();
         </script>
-        
 
     </header>
+
 
     <div class="td_side_header" id="sideHeader">
         <button class="td_close" type="button" aria-label="Close"></button>
@@ -1602,7 +1546,7 @@
     {{-- ================= END HEADER ================= --}}
 
     {{-- VERTICAL SOCIAL RAIL --}}
- 
+
 </body>
 
 

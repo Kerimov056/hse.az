@@ -11,26 +11,47 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // “Popular Courses” üçün hər tipdən ən yenilər
         $courses   = Course::query()->type(Course::TYPE_COURSE)->latest()->take(6)->get();
         $services  = Course::query()->type(Course::TYPE_SERVICE)->latest()->take(6)->get();
         $topics    = Course::query()->type(Course::TYPE_TOPIC)->latest()->take(6)->get();
         $vacancies = Course::query()->type(Course::TYPE_VACANCY)->latest()->get();
 
-        // Team highlight – bütün komanda üzvləri (slider üçün)
-        $teamMembers = Team::query()
-            ->latest()
-            ->get();
-
-        // Event bölməsi üçün 4 akkreditasiya (1 böyük + 3 kiçik)
+        $teamMembers = Team::query()->latest()->get();
         $accreds = Accreditation::query()->latest()->take(5)->get();
 
-        // Event bölməsinin yerinə göstəriləcək “Latest Resources”
         $resources = ResourceItem::query()
             ->with('type')
             ->latest()
-            ->take(4)   // 1 böyük + 3 kiçik
+            ->take(4)
             ->get();
+
+        // YENI: dropdown üçün unique holding list-lər
+        $courseHoldings = Course::query()
+            ->type(Course::TYPE_COURSE)
+            ->whereNotNull('courseHoldingName')
+            ->where('courseHoldingName', '!=', '')
+            ->select('courseHoldingName')
+            ->distinct()
+            ->orderBy('courseHoldingName')
+            ->pluck('courseHoldingName');
+
+        $serviceHoldings = Course::query()
+            ->type(Course::TYPE_SERVICE)
+            ->whereNotNull('courseHoldingName')
+            ->where('courseHoldingName', '!=', '')
+            ->select('courseHoldingName')
+            ->distinct()
+            ->orderBy('courseHoldingName')
+            ->pluck('courseHoldingName');
+
+        $topicHoldings = Course::query()
+            ->type(Course::TYPE_TOPIC)
+            ->whereNotNull('courseHoldingName')
+            ->where('courseHoldingName', '!=', '')
+            ->select('courseHoldingName')
+            ->distinct()
+            ->orderBy('courseHoldingName')
+            ->pluck('courseHoldingName');
 
         return view('educve.index', compact(
             'courses',
@@ -39,7 +60,10 @@ class HomeController extends Controller
             'vacancies',
             'teamMembers',
             'accreds',
-            'resources'
+            'resources',
+            'courseHoldings',
+            'serviceHoldings',
+            'topicHoldings'
         ));
     }
 }

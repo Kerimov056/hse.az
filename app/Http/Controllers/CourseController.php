@@ -8,53 +8,53 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index(Request $request)
-    {
-        // Sorğunu götür və səliqəyə sal
-        $q = trim((string) $request->query('q', ''));
-        $normalized = $q !== '' ? preg_replace('/\s+/u', ' ', $q) : '';
+  public function index(Request $request)
+{
+    $q = trim((string) $request->query('q', ''));
+    $normalized = $q !== '' ? preg_replace('/\s+/u', ' ', $q) : '';
 
-        // Yalnız kurs tipləri
-        $query = Course::query()->type(Course::TYPE_COURSE);
+    // YENI: holding
+    $holding = trim((string) $request->query('holding', ''));
 
-        if ($q !== '') {
-            // Yazılış fərqləri üçün kiçik sinonim/alias dəstəyi
-            $aliases = collect([$normalized]);
+    $query = Course::query()->type(Course::TYPE_COURSE);
 
-            // E-learning variasiyaları
-            if (preg_match('/^e[\s\-]?learning$/i', $normalized)) {
-                $aliases = $aliases->merge(['E-learning', 'Elearning', 'E learning']);
-            }
+    // YENI: holding filter (exact)
+    if ($holding !== '') {
+        $query->where('courseHoldingName', $holding);
+    }
 
-            // Local Training variasiyası
-            if (strcasecmp($normalized, 'Local Training') === 0) {
-                $aliases = $aliases->merge(['Local', 'Local Training']);
-            }
+    // əvvəlki q search qalır
+    if ($q !== '') {
+        $aliases = collect([$normalized]);
 
-            // Məşhur sertifikat adları üçün heç nə etməyə də bilərdik,
-            // amma bərkidək ki, böyük-kiçik hərf fərqi problem olmasın:
-            $known = ['IOSH', 'NEBOSH', 'CIEH', 'IIRSM', 'NSC'];
-            if (in_array(strtoupper($normalized), $known, true)) {
-                $aliases->push(strtoupper($normalized))->push(ucfirst(strtolower($normalized)));
-            }
-
-            // Axtarışı tək bir qrupda saxlayırıq (WHERE (... OR ...))
-            $query->where(function ($wrap) use ($aliases, $normalized) {
-                // Ad və təsvir üzrə axtarış
-                foreach ($aliases->unique() as $term) {
-                    $wrap->orWhere('name', 'like', '%' . $term . '%')
-                        ->orWhere('description', 'like', '%' . $term . '%');
-                }
-            });
+        if (preg_match('/^e[\s\-]?learning$/i', $normalized)) {
+            $aliases = $aliases->merge(['E-learning', 'Elearning', 'E learning']);
         }
 
-        // Sıralama + səhifələmə; q parametri linklərdə saxlanır
-        $courses = $query->latest()
-            ->paginate(9)
-            ->appends(['q' => $q]);
+        if (strcasecmp($normalized, 'Local Training') === 0) {
+            $aliases = $aliases->merge(['Local', 'Local Training']);
+        }
 
-        return view('educve.courses-grid-view', compact('courses', 'q'));
+        $known = ['IOSH', 'NEBOSH', 'CIEH', 'IIRSM', 'NSC'];
+        if (in_array(strtoupper($normalized), $known, true)) {
+            $aliases->push(strtoupper($normalized))->push(ucfirst(strtolower($normalized)));
+        }
+
+        $query->where(function ($wrap) use ($aliases) {
+            foreach ($aliases->unique() as $term) {
+                $wrap->orWhere('name', 'like', '%' . $term . '%')
+                    ->orWhere('description', 'like', '%' . $term . '%');
+            }
+        });
     }
+
+    $courses = $query->latest()
+        ->paginate(9)
+        ->appends(['q' => $q, 'holding' => $holding]);
+
+    return view('educve.courses-grid-view', compact('courses', 'q', 'holding'));
+}
+
 
     public function show(\App\Models\Course $course)
     {
