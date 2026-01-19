@@ -12,24 +12,46 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
-    // Grid + Search: yalnız SERVICE-ləri göstər
+    // Grid + Search + Holding filter: yalnız SERVICE-ləri göstər
     public function index(Request $request)
     {
         $q = trim((string) $request->get('q', ''));
+        $holding = trim((string) $request->get('holding', ''));
 
-        $services = Course::query()
-            ->type(Course::TYPE_SERVICE) // <-- ƏSAS FİLTİR
+        // base query
+        $base = Course::query()->type(Course::TYPE_SERVICE);
+
+        // Holding-lərin map (count)
+        // Qeyd: filter tətbiq olunmamış query-dən hesablayırıq ki, yuxarı bar həmişə bütün holding-ləri göstərsin.
+        $holdings = (clone $base)
+            ->selectRaw('courseHoldingName as name, COUNT(*) as count')
+            ->whereNotNull('courseHoldingName')
+            ->where('courseHoldingName', '!=', '')
+            ->groupBy('courseHoldingName')
+            ->orderBy('courseHoldingName')
+            ->get()
+            ->map(fn($r) => ['name' => $r->name, 'count' => (int) $r->count])
+            ->values()
+            ->all();
+
+        $services = $base
+            // ✅ HOLDING FILTER
+            ->when($holding !== '', function ($query) use ($holding) {
+                $query->where('courseHoldingName', $holding);
+            })
+            // ✅ SEARCH
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($qq) use ($q) {
                     $qq->where('name', 'like', "%{$q}%")
-                        ->orWhere('description', 'like', "%{$q}%");
+                        ->orWhere('description', 'like', "%{$q}%")
+                        ->orWhere('courseHoldingName', 'like', "%{$q}%");
                 });
             })
             ->latest()
             ->paginate(9)
             ->withQueryString();
 
-        return view('admin.services.index', compact('services', 'q'));
+        return view('admin.services.index', compact('services', 'q', 'holding', 'holdings'));
     }
 
     public function create()
@@ -41,17 +63,20 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'courseUrl'   => ['nullable', 'url'],
-            'description' => ['nullable', 'string'],
-            'image'       => ['nullable', 'image', 'max:3072'],
-            'info' => ['nullable', 'string'],
+            'name'              => ['required', 'string', 'max:255'],
+            'courseUrl'         => ['nullable', 'url'],
+            'description'       => ['nullable', 'string'],
+            'image'             => ['nullable', 'image', 'max:3072'],
+            'info'              => ['nullable', 'string'],
 
-            'twitterurl'  => ['nullable', 'url'],
-            'facebookurl' => ['nullable', 'url'],
-            'linkedinurl' => ['nullable', 'url'],
-            'emailurl'    => ['nullable', 'string', 'max:255'],
-            'whatsappurl' => ['nullable', 'string', 'max:255'],
+            // ✅ NEW: holding name
+            'courseHoldingName' => ['nullable', 'string', 'max:120'],
+
+            'twitterurl'        => ['nullable', 'url'],
+            'facebookurl'       => ['nullable', 'url'],
+            'linkedinurl'       => ['nullable', 'url'],
+            'emailurl'          => ['nullable', 'string', 'max:255'],
+            'whatsappurl'       => ['nullable', 'string', 'max:255'],
         ]);
 
         $imageUrl = null;
@@ -64,13 +89,15 @@ class ServiceController extends Controller
 
         DB::transaction(function () use ($data, $imageUrl) {
             $service = Course::create([
-                'type'        => Course::TYPE_SERVICE, // <-- MƏCBURİ
-                'name'        => $data['name'],
-                'courseUrl'   => $data['courseUrl'] ?? null,
-                'description' => $data['description'] ?? null,
-                'imageUrl'    => $imageUrl,
-                                    'info'        => $data['info'] ?? null, 
+                'type'             => Course::TYPE_SERVICE,
+                'name'             => $data['name'],
+                'courseUrl'        => $data['courseUrl'] ?? null,
+                'description'      => $data['description'] ?? null,
+                'imageUrl'         => $imageUrl,
+                'info'             => $data['info'] ?? null,
 
+                // ✅ NEW
+                'courseHoldingName'=> $data['courseHoldingName'] ?? null,
             ]);
 
             SocialLink::create([
@@ -105,17 +132,20 @@ class ServiceController extends Controller
         abort_unless($service->type === Course::TYPE_SERVICE, 404);
 
         $data = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'courseUrl'   => ['nullable', 'url'],
-            'description' => ['nullable', 'string'],
-            'image'       => ['nullable', 'image', 'max:3072'],
-            'info' => ['nullable', 'string'],
+            'name'              => ['required', 'string', 'max:255'],
+            'courseUrl'         => ['nullable', 'url'],
+            'description'       => ['nullable', 'string'],
+            'image'             => ['nullable', 'image', 'max:3072'],
+            'info'              => ['nullable', 'string'],
 
-            'twitterurl'  => ['nullable', 'url'],
-            'facebookurl' => ['nullable', 'url'],
-            'linkedinurl' => ['nullable', 'url'],
-            'emailurl'    => ['nullable', 'string', 'max:255'],
-            'whatsappurl' => ['nullable', 'string', 'max:255'],
+            // ✅ NEW: holding name
+            'courseHoldingName' => ['nullable', 'string', 'max:120'],
+
+            'twitterurl'        => ['nullable', 'url'],
+            'facebookurl'       => ['nullable', 'url'],
+            'linkedinurl'       => ['nullable', 'url'],
+            'emailurl'          => ['nullable', 'string', 'max:255'],
+            'whatsappurl'       => ['nullable', 'string', 'max:255'],
         ]);
 
         $imageUrl = $service->imageUrl;
@@ -128,12 +158,14 @@ class ServiceController extends Controller
 
         DB::transaction(function () use ($service, $data, $imageUrl) {
             $service->update([
-                'name'        => $data['name'],
-                'courseUrl'   => $data['courseUrl'] ?? null,
-                'description' => $data['description'] ?? null,
-                'imageUrl'    => $imageUrl,
-                                    'info'        => $data['info'] ?? null, 
+                'name'             => $data['name'],
+                'courseUrl'        => $data['courseUrl'] ?? null,
+                'description'      => $data['description'] ?? null,
+                'imageUrl'         => $imageUrl,
+                'info'             => $data['info'] ?? null,
 
+                // ✅ NEW
+                'courseHoldingName'=> $data['courseHoldingName'] ?? null,
             ]);
 
             $link = $service->socialLink ?: new SocialLink(['course_id' => $service->id]);

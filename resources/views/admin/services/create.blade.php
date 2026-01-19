@@ -50,6 +50,14 @@
             <input type="text" name="name" class="form-control" required value="{{ old('name') }}" placeholder="Məs: UI/UX Consulting">
           </div>
 
+          {{-- ✅ NEW: Holding name --}}
+          <div class="col-md-6">
+            <label class="form-label">Holding adı (optional)</label>
+            <input type="text" name="courseHoldingName" class="form-control"
+                   value="{{ old('courseHoldingName') }}"
+                   placeholder="Məs: Xezer / A / B">
+          </div>
+
           <div class="col-12">
             <label class="form-label">Açıqlama</label>
             <input id="description" type="hidden" name="description" value="{{ old('description') }}">
@@ -57,11 +65,12 @@
             <div class="form-text"><small>Şəkilləri birbaşa editor-a sürükləyib buraxa bilərsiniz. (limit: 3MB)</small></div>
           </div>
 
-  {{-- YENİ: info --}}
-  <div class="col-12">
-    <label class="form-label">Əlavə info (optional)</label>
-    <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>
-  </div>
+          {{-- info --}}
+          <div class="col-12">
+            <label class="form-label">Əlavə info (optional)</label>
+            <textarea name="info" class="form-control" rows="3">{{ old('info') }}</textarea>
+          </div>
+
           <div class="col-md-6">
             <label class="form-label">Service Link (optional)</label>
             <input type="url" name="courseUrl" class="form-control" value="{{ old('courseUrl') }}" placeholder="https://...">

@@ -50,6 +50,14 @@
                    value="{{ old('name', $service->name) }}" placeholder="Məs: UI/UX Consulting">
           </div>
 
+          {{-- ✅ NEW: Holding name --}}
+          <div class="col-md-6">
+            <label class="form-label">Holding adı (optional)</label>
+            <input type="text" name="courseHoldingName" class="form-control"
+                   value="{{ old('courseHoldingName', $service->courseHoldingName ?? '') }}"
+                   placeholder="Məs: Xezer / A / B">
+          </div>
+
           <div class="col-12">
             <label class="form-label">Açıqlama</label>
             <input id="description" type="hidden" name="description" value="{{ old('description', $service->description) }}">
@@ -57,11 +65,12 @@
             <div class="form-text"><small>Şəkilləri birbaşa editor-a sürükləyib buraxa bilərsiniz. (limit: 3MB)</small></div>
           </div>
 
-  {{-- YENİ: info --}}
-  <div class="col-12">
-    <label class="form-label">Əlavə info (optional)</label>
-    <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>
-  </div>
+          {{-- info --}}
+          <div class="col-12">
+            <label class="form-label">Əlavə info (optional)</label>
+            <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>
+          </div>
+
           <div class="col-md-6">
             <label class="form-label">Service Link (optional)</label>
             <input type="url" name="courseUrl" class="form-control"
@@ -128,7 +137,10 @@
         @endif
         <div class="mt-3 small text-muted">
           Baxış sayı: <b>{{ $service->views }}</b><br>
-          Son yenilənmə: <b>{{ optional($service->updated_at)->format('d.m.Y H:i') }}</b>
+          Son yenilənmə: <b>{{ optional($service->updated_at)->format('d.m.Y H:i') }}</b><br>
+          @if(!empty($service->courseHoldingName))
+            Holding: <b>{{ $service->courseHoldingName }}</b>
+          @endif
         </div>
       </div>
     </div>

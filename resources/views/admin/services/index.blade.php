@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title','Services')
 
-@section('content')
+@push('styles')
 <style>
   .page-actions{gap:.75rem}
   .search-wrap{position:relative}
@@ -14,21 +14,35 @@
   .line-1{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden}
   .line-2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
   .table-sticky thead th{position:sticky;top:0;z-index:5;background:var(--bs-body-bg)}
+  .meta-mini{font-size:.85rem;color:#64748b;display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.25rem}
+  .meta-chip{background:#f1f5f9;border:1px solid #e5e7eb;padding:.15rem .45rem;border-radius:999px;color:#0f172a}
+  .holding-bar{display:flex;flex-wrap:wrap;gap:.5rem}
+  .holding-pill{display:inline-flex;align-items:center;padding:.25rem .6rem;border-radius:999px;border:1px solid #e5e7eb;background:#fff;text-decoration:none;color:#0f172a;font-weight:600;font-size:.85rem}
+  .holding-pill.active{background:rgba(25,135,84,.10);border-color:rgba(25,135,84,.35);color:#198754}
   @media (max-width:575.98px){.actions-wide{display:none!important}}
   @media (min-width:576px){.actions-compact{display:none!important}}
 </style>
+@endpush
+
+@section('content')
+@php
+  $q = $q ?? request('q');
+  $activeHolding = $holding ?? request('holding', '');
+  $holdings = $holdings ?? [];
+@endphp
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center page-actions mb-3">
   <h1 class="mb-0 fw-semibold">Services</h1>
 
   <form action="{{ route('admin.services.index') }}" method="GET" class="flex-grow-1" style="max-width:540px">
+    <input type="hidden" name="holding" value="{{ $activeHolding }}">
     <div class="input-group">
       <div class="search-wrap w-100">
         <i class="bi bi-search"></i>
         <input type="search" name="q" value="{{ $q ?? '' }}" class="form-control"
                placeholder="Ada və ya açıqlamaya görə axtar…" aria-label="Search services">
       </div>
-      @if(!empty($q))
+      @if(!empty($q) || !empty($activeHolding))
         <a href="{{ route('admin.services.index') }}" class="btn btn-outline-secondary">Təmizlə</a>
       @endif
       <button class="btn btn-success" type="submit">Axtar</button>
@@ -44,9 +58,53 @@
   <div class="alert alert-success">{{ session('ok') }}</div>
 @endif
 
-@if(!empty($q))
+{{-- Holding filter bar --}}
+@if(count($holdings))
+  <div class="card shadow-sm mb-3">
+    <div class="card-body py-2">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="small text-muted">Holding filter</div>
+        @if(!empty($activeHolding))
+          <a class="small text-decoration-none"
+             href="{{ route('admin.services.index', array_filter(['q'=>$q])) }}">
+            Filteri sıfırla
+          </a>
+        @endif
+      </div>
+
+      <div class="holding-bar mt-2">
+        <a class="holding-pill {{ empty($activeHolding) ? 'active' : '' }}"
+           href="{{ route('admin.services.index', array_filter(['q'=>$q])) }}">
+          Hamısı
+        </a>
+
+        @foreach($holdings as $h)
+          @php
+            $hName = $h['name'] ?? '';
+            $hCount = $h['count'] ?? null;
+          @endphp
+          @continue(empty($hName))
+
+          <a class="holding-pill {{ $activeHolding === $hName ? 'active' : '' }}"
+             href="{{ route('admin.services.index', array_filter(['q'=>$q, 'holding'=>$hName])) }}">
+            {{ $hName }}
+            @if($hCount !== null)
+              <span class="ms-1 text-muted">({{ $hCount }})</span>
+            @endif
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+@endif
+
+@if(!empty($q) || !empty($activeHolding))
   <div class="alert alert-info py-2">
-    Axtarış: <strong>{{ $q }}</strong> — <span class="text-muted">{{ $services->total() }} nəticə</span>
+    @if(!empty($q)) Axtarış: <strong>{{ $q }}</strong> @endif
+    @if(!empty($activeHolding))
+      <span class="ms-2">Holding: <strong>{{ $activeHolding }}</strong></span>
+    @endif
+    <span class="text-muted ms-2">{{ $services->total() }} nəticə</span>
   </div>
 @endif
 
@@ -78,14 +136,21 @@
                   @if(!empty($s->description))
                     <div class="small text-muted line-2">{{ strip_tags($s->description) }}</div>
                   @endif
-                  @if($s->courseUrl)
-                    <a href="{{ $s->courseUrl }}" target="_blank" rel="noopener" class="small text-decoration-none">
-                      <i class="bi bi-box-arrow-up-right"></i> aç
-                    </a>
-                  @endif
+
+                  <div class="meta-mini">
+                    @if(!empty($s->courseHoldingName))
+                      <span class="meta-chip">Holding: {{ $s->courseHoldingName }}</span>
+                    @endif
+                    @if($s->courseUrl)
+                      <a href="{{ $s->courseUrl }}" target="_blank" rel="noopener" class="small text-decoration-none">
+                        <i class="bi bi-box-arrow-up-right"></i> aç
+                      </a>
+                    @endif
+                  </div>
                 </div>
               </div>
             </td>
+
             <td>
               <span class="views-badge">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -95,11 +160,13 @@
                 {{ number_format($s->views) }}
               </span>
             </td>
+
             <td class="d-none d-md-table-cell text-center">
               @if($s->imageUrl)
                 <img src="{{ $s->imageUrl }}" alt="" class="thumb-lg">
               @endif
             </td>
+
             <td class="text-end">
               <div class="actions-wide btn-group" role="group">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.services.show',$s) }}">
@@ -134,7 +201,7 @@
         @empty
           <tr>
             <td colspan="5" class="text-center text-muted py-4">
-              @if(!empty($q)) “{{ $q }}” üzrə nəticə tapılmadı. @else Hələ service yoxdur. @endif
+              @if(!empty($q) || !empty($activeHolding)) Nəticə tapılmadı. @else Hələ service yoxdur. @endif
             </td>
           </tr>
         @endforelse
@@ -144,6 +211,6 @@
 </div>
 
 <div class="mt-3">
-  {{ $services->links() }}
+  {{ $services->appends(['q'=>$q, 'holding'=>$activeHolding])->links() }}
 </div>
 @endsection

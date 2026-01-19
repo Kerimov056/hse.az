@@ -11,13 +11,21 @@
     <input type="text" name="name" class="form-control" required value="{{ old('name', $service->name ?? '') }}">
   </div>
 
+  {{-- ✅ NEW: Holding name --}}
+  <div class="col-md-6">
+    <label class="form-label">Holding adı (optional)</label>
+    <input type="text" name="courseHoldingName" class="form-control"
+           value="{{ old('courseHoldingName', $service->courseHoldingName ?? '') }}"
+           placeholder="Məs: Xezer / A / B">
+  </div>
+
   <div class="col-12">
     <label class="form-label">Açıqlama</label>
     <input id="desc-input" type="hidden" name="description" value="{{ old('description', $service->description ?? '') }}">
     <trix-editor input="desc-input" class="trix-content border rounded p-2"></trix-editor>
   </div>
 
-  {{-- YENİ: info --}}
+  {{-- info --}}
   <div class="col-12">
     <label class="form-label">Əlavə info (optional)</label>
     <textarea name="info" class="form-control" rows="3">{{ old('info', $service->info ?? '') }}</textarea>

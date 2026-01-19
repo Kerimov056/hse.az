@@ -9,14 +9,28 @@
     <div class="row">
       <div class="col-md-8">
         <p><strong>Views:</strong> {{ $service->views }}</p>
+
+        @if(!empty($service->courseHoldingName))
+          <p><strong>Holding:</strong> {{ $service->courseHoldingName }}</p>
+        @endif
+
         <p><strong>Service URL:</strong>
           @if($service->courseUrl)
             <a href="{{ $service->courseUrl }}" target="_blank" rel="noopener">{{ $service->courseUrl }}</a>
+          @else
+            <span class="text-muted">—</span>
           @endif
         </p>
+
         <p class="mb-1"><strong>Təsvir:</strong></p>
         <div class="border rounded p-3">{!! $service->description !!}</div>
+
+        @if(!empty($service->info))
+          <p class="mt-3 mb-1"><strong>Əlavə info:</strong></p>
+          <div class="border rounded p-3">{{ $service->info }}</div>
+        @endif
       </div>
+
       <div class="col-md-4">
         @if($service->imageUrl)
           <img src="{{ $service->imageUrl }}" alt="" class="img-fluid rounded">

@@ -3,18 +3,33 @@
 
 @section('content')
 <h1 class="mb-3">{{ $topic->name }}</h1>
+
 <div class="card mb-3"><div class="card-body">
   <div class="row">
     <div class="col-md-8">
       <p><strong>Views:</strong> {{ $topic->views }}</p>
+
+      @if(!empty($topic->courseHoldingName))
+        <p><strong>Holding:</strong> {{ $topic->courseHoldingName }}</p>
+      @endif
+
       <p><strong>External URL:</strong>
         @if($topic->courseUrl)
           <a href="{{ $topic->courseUrl }}" target="_blank" rel="noopener">{{ $topic->courseUrl }}</a>
+        @else
+          <span class="text-muted">—</span>
         @endif
       </p>
+
       <p class="mb-1"><strong>Təsvir:</strong></p>
       <div class="border rounded p-3">{!! $topic->description !!}</div>
+
+      @if(!empty($topic->info))
+        <p class="mt-3 mb-1"><strong>Əlavə info:</strong></p>
+        <div class="border rounded p-3">{{ $topic->info }}</div>
+      @endif
     </div>
+
     <div class="col-md-4">
       @if($topic->imageUrl)
         <img src="{{ $topic->imageUrl }}" alt="" class="img-fluid rounded">

@@ -12,6 +12,15 @@
     @error('courseUrl')<div class="text-danger small">{{ $message }}</div>@enderror
   </div>
 
+  {{-- ✅ NEW: Holding name --}}
+  <div class="col-md-6">
+    <label class="form-label">Holding adı (optional)</label>
+    <input type="text" name="courseHoldingName" class="form-control"
+           value="{{ old('courseHoldingName', $topic->courseHoldingName ?? '') }}"
+           placeholder="Məs: A / B / Xezer">
+    @error('courseHoldingName')<div class="text-danger small">{{ $message }}</div>@enderror
+  </div>
+
   <div class="col-12">
     <label class="form-label">Təsvir</label>
     <input id="desc-input" type="hidden" name="description" value="{{ old('description', $topic->description ?? '') }}">
@@ -20,7 +29,7 @@
     <div class="form-text"><small>Editor içində şəkil əlavə etmək üçün faylı sürükləyib buraxın. (limit: 3MB)</small></div>
   </div>
 
-  {{-- YENİ: info --}}
+  {{-- info --}}
   <div class="col-12">
     <label class="form-label">Əlavə info (optional)</label>
     <textarea name="info" class="form-control" rows="3">{{ old('info', $topic->info ?? '') }}</textarea>
