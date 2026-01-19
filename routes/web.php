@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\AccreditationController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\CourseRegistrationController;
 use App\Http\Controllers\Admin\CourseRegistrationAdminController;
+use App\Http\Controllers\Admin\HeroButtonController;
 
 use App\Http\Middleware\SetLocale;
 
@@ -108,6 +109,8 @@ Route::get('/courses/{course}/register', [CourseRegistrationController::class, '
 
 Route::post('/courses/{course}/register', [CourseRegistrationController::class, 'store'])
     ->name('courses.register.store');
+    Route::resource('hero-buttons', HeroButtonController::class)->names('admin.hero-buttons');
+
 
     /** AUTH: əsas auth route-u */
     Route::get('/auth/{tab?}', [AuthController::class, 'show'])

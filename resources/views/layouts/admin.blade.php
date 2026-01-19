@@ -307,6 +307,9 @@
                         href="{{ route('admin.course-registrations.index') }}">
                         <i class="bi bi-people"></i><span>Course Registrations</span>
                     </a>
+                    <a class="nav-link {{ request()->routeIs('admin.hero-buttons.*') ? 'active' : '' }}"
+                        href="{{ route('admin.hero-buttons.index') }}">
+                        <i class="bi bi-rocket-takeoff"></i><span>Hero Buttons</span>
 
                 </nav>
             </div>

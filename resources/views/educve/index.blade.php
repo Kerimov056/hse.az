@@ -544,7 +544,7 @@
                 transform: translateX(0);
             }
 
-            /* 1199–1724: əvvəlki qaydanı bir az dəyişirik – dil dropdown-unu gizlətmirik */
+            /* 1199–1724 */
             @media (min-width: 1199px) and (max-width: 1724px) {
 
                 .td_main_header_in,
@@ -557,7 +557,6 @@
                     margin-top: 0;
                 }
 
-                /* burda yalnız search və sosialları gizlədirik */
                 .td_main_header_right #globalSearch,
                 .td_main_header_right .td_header_social_btns {
                     display: none;
@@ -583,7 +582,6 @@
                 }
             }
 
-            /* Side head actions (lang near close btn) */
             .td_side_head_actions {
                 display: flex;
                 align-items: center;
@@ -609,7 +607,7 @@
                 text-decoration: underline;
             }
 
-            /* ==== NEW: inline language dropdown near search (<=1200px) ==== */
+            /* inline language dropdown near search (<=1200px) */
             .td_header_lang_inline {
                 display: none;
                 margin: 0 8px;
@@ -627,8 +625,8 @@
                 }
             }
 
-            /* Mobil menyu və alt menyular üçün düzəlişlər */
-            @media (max-width: 991px) {
+            /* Mobil */
+            @media (max-width: 1200px) {
 
                 .td_nav_list_wrap_in {
                     display: block;
@@ -657,7 +655,6 @@
                     box-shadow: none;
                     padding: 4px 0 4px 24px;
                     margin: 0;
-                    /* display: none;  // default display NONE yuxarıdakı qaydadan gəlir */
                 }
 
                 .td_nav_list>li.menu-item-has-children>ul>li>a {
@@ -673,6 +670,186 @@
                     padding-right: 25px !important;
                     padding-left: 25px !important;
                 }
+            }
+
+            /* ============================================================
+           FIX: Mobile submenu toggle (+ / -) + hover conflict on touch
+           ============================================================ */
+
+            .td_submenu_toggle {
+                display: none;
+                background: transparent;
+                border: 0;
+                padding: 0;
+                cursor: pointer;
+                line-height: 1;
+                user-select: none;
+                margin-right: 10px;
+            }
+
+            @media (max-width: 1200px) {
+                .td_nav_list>li.menu-item-has-children:hover>ul {
+                    display: none !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul {
+                    display: none !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children.is-open>ul {
+                    display: block !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>a {
+                    flex: 1 1 auto;
+                    order: 1;
+                    padding-right: 10px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 999px;
+                    background: rgba(255, 255, 255, .08);
+                    border: 1px solid rgba(255, 255, 255, .12);
+                    color: #fff;
+                    order: 2;
+                    margin-left: auto;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle::before {
+                    content: "+";
+                    font-size: 20px;
+                    font-weight: 700;
+                }
+
+                .td_nav_list>li.menu-item-has-children.is-open>.td_submenu_toggle::before {
+                    content: "−";
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul {
+                    width: 100%;
+                    order: 3;
+                }
+            }
+
+            /* Side panel üçün submenu davranışı */
+            @media (max-width: 1200px) {
+                .td_side_header_panel li.menu-item-has-children:hover>ul {
+                    display: none !important;
+                }
+
+                .td_side_header_panel li.menu-item-has-children>ul {
+                    display: none !important;
+                }
+
+                .td_side_header_panel li.menu-item-has-children.is-open>ul {
+                    display: block !important;
+                }
+            }
+
+            /* ============================================================
+           REMOVE OLD PLUS: td_munu_dropdown_toggle (non-circle +)
+           Theme inject edir, ona gore həm CSS-lə gizlədirik, həm JS-lə silirik.
+           ============================================================ */
+            @media (max-width: 1200px) {
+
+                /* Köhnə (dairəsiz) + hər yerdə gizlənsin (hansı konteynerdə olmağından asılı deyil) */
+                .td_munu_dropdown_toggle,
+                span.td_munu_dropdown_toggle {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+
+                .td_munu_dropdown_toggle::before,
+                .td_munu_dropdown_toggle::after,
+                .td_munu_dropdown_toggle span::before,
+                .td_munu_dropdown_toggle span::after {
+                    content: none !important;
+                    display: none !important;
+                }
+
+                /* Bizim dairəli toggle düzgün yerdə dayansın (flex olmayan menyularda da) */
+                .td_side_header_panel li.menu-item-has-children,
+                .td_side_header li.menu-item-has-children,
+                .td_mobile_menu li.menu-item-has-children {
+                    position: relative;
+                }
+
+                .td_side_header_panel li.menu-item-has-children>a,
+                .td_side_header li.menu-item-has-children>a,
+                .td_mobile_menu li.menu-item-has-children>a {
+                    padding-right: 46px;
+                    /* düymə üçün yer */
+                }
+
+                .td_side_header_panel li.menu-item-has-children>button.td_submenu_toggle,
+                .td_side_header li.menu-item-has-children>button.td_submenu_toggle,
+                .td_mobile_menu li.menu-item-has-children>button.td_submenu_toggle {
+                    display: inline-flex !important;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    margin: 0 !important;
+                }
+
+                /* parent li flex olsun, amma link 100% olmasın */
+                .td_nav_list>li.menu-item-has-children {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    /* submenu aşağıda qalsın */
+                    gap: 10px;
+                }
+
+                /* IMPORTANT: burada width:100% override edirik */
+                .td_nav_list>li.menu-item-has-children>a {
+                    width: auto !important;
+                    /* bunu qoymasan yenə aşağı düşəcək */
+                    flex: 1 1 auto;
+                    order: 1;
+                    padding-right: 12px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle {
+                    order: 2;
+                    margin-left: auto;
+                    flex: 0 0 auto;
+                    align-self: center;
+                }
+
+                /* submenu tam aşağı sətirdə qalsın */
+                .td_nav_list>li.menu-item-has-children>ul {
+                    width: 100%;
+                    order: 3;
+                }
+            }
+
+            .td_side_header_panel .td_munu_dropdown_toggle::before,
+            .td_side_header_panel .td_munu_dropdown_toggle::after,
+            .td_side_header_panel .td_munu_dropdown_toggle span::before,
+            .td_side_header_panel .td_munu_dropdown_toggle span::after {
+                content: none !important;
+                display: none !important;
+            }
+
+            /* Bizim dairəli toggle qalır */
+            .td_side_header_panel button.td_submenu_toggle {
+                display: inline-flex !important;
+            }
             }
         </style>
 
@@ -890,11 +1067,10 @@
                             </div>
                         </div>
 
-                        {{-- NEW: language dropdown near search (mobile / <=1200px) --}}
+                        {{-- language dropdown near search (mobile / <=1200px) --}}
                         <div style="margin-top:2px;" class="td_header_lang_inline">
                             <div class="position-relative td_language_wrap">
                                 <button class="td_header_dropdown_btn td_medium td_heading_color" type="button">
-                                    {{-- <span>{{ $labels[$currentLocale] ?? 'English' }}</span> --}}
                                     <img src="{{ asset('assets/img/icons/world.svg') }}" alt=""
                                         class="td_header_dropdown_btn_icon">
                                 </button>
@@ -1125,28 +1301,106 @@
         <script>
             (function() {
                 const side = document.querySelector('.td_side_header');
+                const panel = document.querySelector('.td_side_header_panel');
                 const btn = document.querySelector('.td_hamburger_btn');
                 const closers = document.querySelectorAll('[data-side-close]');
-                if (!side || !btn) return;
+                if (!side || !panel || !btn) return;
+
+                // --- helpers ---
+                function removeOldPluses(scope) {
+                    if (!scope) return;
+                    scope.querySelectorAll('.td_munu_dropdown_toggle').forEach(el => el.remove());
+                }
+
+                function setupSubmenuToggles(scope) {
+                    if (!scope) return;
+
+                    // köhnə + (theme) əvvəlcə silinsin
+                    removeOldPluses(scope);
+
+                    const items = scope.querySelectorAll('li.menu-item-has-children');
+                    items.forEach((li) => {
+                        const submenu = li.querySelector(':scope > ul');
+                        const link = li.querySelector(':scope > a');
+                        if (!submenu || !link) return;
+
+                        // bizim dairəli toggle
+                        let toggle = li.querySelector(':scope > button.td_submenu_toggle');
+                        if (!toggle) {
+                            toggle = document.createElement('button');
+                            toggle.type = 'button';
+                            toggle.className = 'td_submenu_toggle';
+                            toggle.setAttribute('aria-label', 'Toggle submenu');
+                            toggle.setAttribute('aria-expanded', 'false');
+                            link.insertAdjacentElement('afterend', toggle);
+                        }
+
+                        // initial state (default bağlı)
+                        li.classList.remove('is-open');
+                        toggle.setAttribute('aria-expanded', 'false');
+
+                        // click bind only once
+                        if (toggle.dataset.bound === '1') return;
+                        toggle.dataset.bound = '1';
+
+                        toggle.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            const isOpen = li.classList.toggle('is-open');
+                            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                        });
+                    });
+                }
+
+                // MutationObserver: tema menyunu sonradan inject edəndə də işləsin
+                let observer = null;
+
+                function startObserver() {
+                    if (observer) return;
+
+                    observer = new MutationObserver(() => {
+                        // inject olunan köhnə plusları sil + toggle-ları yenilə
+                        setupSubmenuToggles(panel);
+                    });
+
+                    observer.observe(panel, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+
+                function stopObserver() {
+                    if (!observer) return;
+                    observer.disconnect();
+                    observer = null;
+                }
 
                 function openSide() {
                     side.classList.add('is-open');
+
+                    // observer açıq olanda işləsin
+                    startObserver();
+
+                    // dərhal + bir az gecikmə ilə (inject varsa)
+                    setupSubmenuToggles(panel);
+                    setTimeout(() => setupSubmenuToggles(panel), 120);
+                    setTimeout(() => setupSubmenuToggles(panel), 350);
                 }
 
                 function closeSide() {
                     side.classList.remove('is-open');
+                    stopObserver();
                 }
 
                 btn.addEventListener('click', openSide);
                 closers.forEach(el => el.addEventListener('click', closeSide));
 
                 document.addEventListener('keyup', (e) => {
-                    if (e.key === 'Escape') {
-                        closeSide();
-                    }
+                    if (e.key === 'Escape') closeSide();
                 });
 
-                // Side language flag + redirect (select variant)
+                // Side language flag + redirect
                 const select = document.getElementById('sideLangSelect');
                 const flagImg = document.getElementById('sideLangFlag');
                 if (select && flagImg) {
@@ -1205,9 +1459,14 @@
                         sideSearch(input.value);
                     });
                 }
+
+                // səhifə yüklənəndə də: varsa köhnə plusları sil
+                setupSubmenuToggles(document);
             })();
         </script>
+
     </header>
+
 
 
     <div class="td_side_header" id="sideHeader">
@@ -1471,9 +1730,26 @@
                 @if ($subtitle)
                     <p class="td_hero_subtitle td_fs_18 td_white_color td_opacity_7 td_mb_30">{{ $subtitle }}</p>
                 @endif
+                @php
+                    // CTA URL düzəlt (DB-dən gələn url)
+                    $ctaHref = null;
 
-                @if ($ctaText && $ctaUrl)
-                    <a href="{{ 'en/courses' }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                    if (!empty($ctaUrl)) {
+                        // Absolute (http/https) və ya root (/) ilə başlayırsa olduğu kimi saxla
+                        if (\Illuminate\Support\Str::startsWith($ctaUrl, ['http://', 'https://', '/'])) {
+                            $ctaHref = $ctaUrl;
+                        } else {
+                            // nisbi url-dirsə "en/" əlavə elə
+                            $ctaHref = 'en/' . ltrim($ctaUrl, '/');
+                        }
+                    } else {
+                        // fallback
+                        $ctaHref = route('courses-grid-view');
+                    }
+                @endphp
+
+                @if ($ctaText && $ctaHref)
+                    <a href="{{ $ctaHref }}" class="td_btn td_style_1 td_radius_10 td_medium">
                         <span class="td_btn_in td_white_color td_accent_bg">
                             <span>{{ $ctaText }}</span>
                             <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
@@ -1488,6 +1764,9 @@
                         </span>
                     </a>
                 @endif
+
+
+
             </div>
         </div>
 
@@ -1590,30 +1869,72 @@
 
 
 
-    <div class="container">
-        <div class="td_hero_btn_group">
-            <a href="#apply" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
-                data-wow-duration="0.9s" data-wow-delay="0.35s">
-                <span class="td_btn_in td_white_color td_accent_bg">
-                    <span>{{ __('Subscribe now') }}</span>
-                </span>
-            </a>
+    @php
 
-            <a href="#request-info" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
-                data-wow-duration="0.9s" data-wow-delay="0.45s">
-                <span class="td_btn_in td_white_color td_accent_bg">
-                    <span>{{ __('Request info') }}</span>
-                </span>
-            </a>
+        $heroButtons = \App\Models\HeroButton::orderBy('order')->get();
+        $locale = app()->getLocale(); // az | en | ru
 
-            <a href="#chat" class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
-                data-wow-duration="0.9s" data-wow-delay="0.55s">
-                <span class="td_btn_in td_white_color td_accent_bg">
-                    <span>{{ __('Chat With Us') }}</span>
-                </span>
-            </a>
+        $normalizeHeroUrl = function (?string $raw) use ($locale) {
+            $raw = trim((string) $raw);
+
+            if ($raw === '') {
+                return '#';
+            }
+
+            // 1) external və ya xüsusi protokollar: toxunma
+            if (preg_match('~^(https?:)?//~i', $raw) || preg_match('~^(mailto:|tel:|whatsapp:|sms:)~i', $raw)) {
+                return $raw;
+            }
+
+            // 2) anchor (#...) toxunma
+            if (Str::startsWith($raw, '#')) {
+                return $raw;
+            }
+
+            // raw daxilində query/fragment ola bilər, onları saxlayırıq
+            // məsələn: contact?x=1#y
+            $path = $raw;
+            $qs = '';
+            $hash = '';
+
+            if (str_contains($path, '#')) {
+                [$path, $hash] = explode('#', $path, 2);
+                $hash = '#' . $hash;
+            }
+            if (str_contains($path, '?')) {
+                [$path, $qs] = explode('?', $path, 2);
+                $qs = '?' . $qs;
+            }
+
+            $path = '/' . ltrim($path, '/'); // həmişə / ilə başlasın
+
+            // 3) artıq locale prefix varsa toxunma
+            // /en/..., /az/..., /ru/...
+            if (preg_match('~^/(az|en|ru)(/|$)~i', $path)) {
+                return $path . $qs . $hash;
+            }
+
+            // 4) locale əlavə et
+            return '/' . $locale . $path . $qs . $hash;
+        };
+    @endphp
+
+    @if ($heroButtons->count())
+        <div class="container">
+            <div class="td_hero_btn_group">
+                @foreach ($heroButtons as $b)
+                    <a href="{{ $normalizeHeroUrl($b->url) }}"
+                        class="td_btn td_style_1 td_radius_10 td_medium td_fs_20 wow fadeInUp"
+                        data-wow-duration="0.9s" data-wow-delay="{{ number_format(0.35 + $loop->index * 0.1, 2) }}">
+                        <span class="td_btn_in td_white_color td_accent_bg">
+                            <span>{{ $b->text }}</span>
+                        </span>
+                    </a>
+                @endforeach
+            </div>
         </div>
-    </div>
+    @endif
+
 
 
     <!-- End Hero Section -->
@@ -1641,11 +1962,13 @@
                 ? asset($img1)
                 : asset('storage/' . $img1))
             : asset('assets/img/home_1/about_img_1.jpg');
+
         $img2Url = $img2
             ? (Str::startsWith($img2, ['http', '/storage', 'assets/'])
                 ? asset($img2)
                 : asset('storage/' . $img2))
             : asset('assets/img/home_1/about_img_2.jpg');
+
         $circleUrl = $circle
             ? (Str::startsWith($circle, ['http', '/storage', 'assets/'])
                 ? asset($circle)
@@ -1653,6 +1976,9 @@
             : asset('assets/img/home_1/about_circle_text.svg');
 
         $cta = setting('home.about.cta', ['text' => 'More About', 'url' => '/']);
+
+        // ✅ FIX: button href must come from CTA url
+        $ctaUrl = data_get($cta, 'url', '/');
     @endphp
 
     <section id="home-about">
@@ -1682,7 +2008,8 @@
                         <div class="td_section_heading td_style_1 td_mb_30">
                             <p
                                 class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                                {{ $kicker }}</p>
+                                {{ $kicker }}
+                            </p>
                             <h2 class="td_section_title td_fs_48 mb-0">{{ $title }}</h2>
                             <p class="td_section_subtitle td_fs_18 mb-0">{{ $subtitle }}</p>
                         </div>
@@ -1698,7 +2025,7 @@
                             </ul>
                         </div>
 
-                        <a href="{{ data_get($cta, '', '') }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                        <a href="{{ $ctaUrl }}" class="td_btn td_style_1 td_radius_10 td_medium">
                             <span class="td_btn_in td_white_color td_accent_bg">
                                 <span>{{ data_get($cta, 'text', 'More About') }}</span>
                                 <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
@@ -2253,211 +2580,212 @@
     {{-- End Feature Section --}}
 
     {{-- Start Campus Life (settings-driven, fixed) --}}
-@php
-    $campus = setting('home.campus', []);
-    $title = data_get($campus, 'title', 'Navigate');
-    $subtitle = data_get($campus, 'subtitle', null);
+    @php
+        $campus = setting('home.campus', []);
+        $title = data_get($campus, 'title', 'Navigate');
+        $subtitle = data_get($campus, 'subtitle', null);
 
-    // ✅ Map CTA from settings
-    $ctaText = data_get($campus, 'cta.text', 'View All Program');
-    $ctaUrl = data_get($campus, 'cta.url', 'courses-grid-view.html');
+        // ✅ Map CTA from settings
+        $ctaText = data_get($campus, 'cta.text', 'View All Program');
+        $ctaUrl = data_get($campus, 'cta.url', 'courses-grid-view.html');
 
-    // 4 kartla məhdudlaşdır
-    $cards = array_values(array_slice(data_get($campus, 'cards', []), 0, 4));
+        // 4 kartla məhdudlaşdır
+        $cards = array_values(array_slice(data_get($campus, 'cards', []), 0, 4));
 
-    // Yalnız URL qaytaran helper (HTML çıxarmır!)
-    $toUrl = function (?string $path, ?string $fallback = null) {
-        if (!$path && $fallback) {
-            return asset($fallback);
-        }
-        if (!$path) {
-            return '';
-        }
-        return Str::startsWith($path, ['http', '/storage', 'assets/'])
-            ? asset($path)
-            : asset('storage/' . ltrim($path, '/'));
-    };
+        // Yalnız URL qaytaran helper (HTML çıxarmır!)
+        $toUrl = function (?string $path, ?string $fallback = null) {
+            if (!$path && $fallback) {
+                return asset($fallback);
+            }
+            if (!$path) {
+                return '';
+            }
+            return Str::startsWith($path, ['http', '/storage', 'assets/'])
+                ? asset($path)
+                : asset('storage/' . ltrim($path, '/'));
+        };
 
-    // ✅ Page link normalize (cta + card urls)
-    $toLink = function (?string $url, string $fallback = '#') {
-        $url = trim((string) $url);
-        if ($url === '') return $fallback;
+        // ✅ Page link normalize (cta + card urls)
+        $toLink = function (?string $url, string $fallback = '#') {
+            $url = trim((string) $url);
+            if ($url === '') {
+                return $fallback;
+            }
 
-        if (Str::startsWith($url, ['http://', 'https://', '#', '/'])) {
-            return $url;
-        }
+            if (Str::startsWith($url, ['http://', 'https://', '#', '/'])) {
+                return $url;
+            }
 
-        return url($url);
-    };
+            return url($url);
+        };
 
-    $ctaHref = $toLink($ctaUrl, '#');
-@endphp
+        $ctaHref = $toLink($ctaUrl, '#');
+    @endphp
 
-<section id="home-campus" class="td_accent_bg td_shape_section_1">
-    <div class="td_shape_position_4 td_accent_color position-absolute">
-        {{-- dekorativ svg-lər eyni qalır --}}
-        <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <g opacity="0.4">
-                <rect y="12.3906" width="23.6182" height="31.0709" rx="1"
-                    transform="rotate(-30.4551 0 12.3906)" fill="white" />
-                <rect x="4" y="14.8125" width="18.5361" height="2.62207" rx="1.31104"
-                    transform="rotate(-30.4551 4 14.8125)" fill="currentColor" />
-                <rect x="7" y="19.8125" width="18.5361" height="2.62207" rx="1.31104"
-                    transform="rotate(-30.4551 7 19.8125)" fill="currentColor" />
-            </g>
-        </svg>
-    </div>
-
-    <div class="td_height_120 td_height_lg_80"></div>
-    <div class="container">
-        <div class="row td_gap_y_40">
-            {{-- Sol: başlıq + altmətn + CTA --}}
-            <div class="col-lg-5 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s">
-                <div class="td_height_57 td_height_lg_0"></div>
-                <div class="td_section_heading td_style_1">
-                    <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ $title }}</h2>
-                    @if ($subtitle)
-                        <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
-                            {{ $subtitle }}
-                        </p>
-                    @endif
-                </div>
-
-                <div class="td_btn_box">
-                    <svg width="299" height="315" viewBox="0 0 299 315" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <g opacity="0.75" clip-path="url(#clip0_34_2222)">
-                            <path
-                                d="M242.757 275.771C242.505 275.771 242.253 275.75 242.005 275.707C32.3684 239.98 0.342741 8.13005 0.0437414 5.79468C-0.108609 4.51176 0.22739 3.21754 0.9787 2.19335C1.73001 1.16916 2.8359 0.497795 4.05598 0.32519C5.27606 0.152585 6.5117 0.492693 7.4943 1.27158C8.4769 2.05047 9.12704 3.20518 9.3034 4.48471C9.59772 6.7514 40.7872 231.477 243.5 266.022C244.658 266.22 245.702 266.868 246.426 267.838C247.15 268.808 247.5 270.028 247.406 271.256C247.312 272.484 246.782 273.63 245.921 274.467C245.06 275.303 243.93 275.769 242.757 275.771Z"
-                                fill="white" />
-                            <path
-                                d="M299.002 275.455C271.709 283.305 237.446 297.872 215.562 314.617L235.465 269.602L223.318 221.648C242.099 242.137 273.428 262.728 299.002 275.455Z"
-                                fill="white" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_34_2222">
-                                <rect width="299" height="314" fill="white"
-                                    transform="translate(0 0.421875)" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                    <div class="td_btn_box_in">
-                        <a href="{{ $ctaHref }}"
-                            class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
-                            <span class="td_btn_in td_heading_color td_white_bg">
-                                <span>{{ $ctaText }}</span>
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Sağ: kart grid (0,2 sol sütun; 1,3 sağ sütun) --}}
-            <div class="col-lg-6 offset-lg-1">
-                <div class="row">
-                    {{-- Sol sütun --}}
-                    <div class="col-sm-6">
-                        @if (isset($cards[0]))
-                            @php
-                                $c0 = $cards[0];
-                                $c0Title = data_get($c0, 'title', '');
-                                $c0Url = $toLink(data_get($c0, 'url', '#'), '#');
-                                $c0Img = $toUrl(data_get($c0, 'image'));
-                            @endphp
-                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                data-wow-delay="0.2s">
-                                <a href="{{ $c0Url }}" class="td_card_thumb d-block">
-                                    <img src="{{ $c0Img }}" alt="{{ $c0Title }}" class="w-100">
-                                </a>
-                                <div class="td_card_info">
-                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                        <a href="{{ $c0Url }}">{{ $c0Title }}</a>
-                                    </h2>
-                                    <a href="{{ $c0Url }}" class="td_card_btn"></a>
-                                </div>
-                            </div>
-                            <div class="td_height_40 td_height_lg_30"></div>
-                        @endif
-
-                        @if (isset($cards[2]))
-                            @php
-                                $c2 = $cards[2];
-                                $c2Title = data_get($c2, 'title', '');
-                                $c2Url = $toLink(data_get($c2, 'url', '#'), '#');
-                                $c2Img = $toUrl(data_get($c2, 'image'));
-                            @endphp
-                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                data-wow-delay="0.3s">
-                                <a href="{{ $c2Url }}" class="td_card_thumb d-block">
-                                    <img src="{{ $c2Img }}" alt="{{ $c2Title }}" class="w-100">
-                                </a>
-                                <div class="td_card_info">
-                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                        <a href="{{ $c2Url }}">{{ $c2Title }}</a>
-                                    </h2>
-                                    <a href="{{ $c2Url }}" class="td_card_btn"></a>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Sağ sütun --}}
-                    <div class="col-sm-6">
-                        <div class="td_height_50 td_height_lg_30"></div>
-
-                        @if (isset($cards[1]))
-                            @php
-                                $c1 = $cards[1];
-                                $c1Title = data_get($c1, 'title', '');
-                                $c1Url = $toLink(data_get($c1, 'url', '#'), '#');
-                                $c1Img = $toUrl(data_get($c1, 'image'));
-                            @endphp
-                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                data-wow-delay="0.25s">
-                                <a href="{{ $c1Url }}" class="td_card_thumb d-block">
-                                    <img src="{{ $c1Img }}" alt="{{ $c1Title }}" class="w-100">
-                                </a>
-                                <div class="td_card_info">
-                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                        <a href="{{ $c1Url }}">{{ $c1Title }}</a>
-                                    </h2>
-                                    <a href="{{ $c1Url }}" class="td_card_btn"></a>
-                                </div>
-                            </div>
-                            <div class="td_height_40 td_height_lg_30"></div>
-                        @endif
-
-                        @if (isset($cards[3]))
-                            @php
-                                $c3 = $cards[3];
-                                $c3Title = data_get($c3, 'title', '');
-                                $c3Url = $toLink(data_get($c3, 'url', '#'), '#');
-                                $c3Img = $toUrl(data_get($c3, 'image'));
-                            @endphp
-                            <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
-                                data-wow-delay="0.3s">
-                                <a href="{{ $c3Url }}" class="td_card_thumb d-block">
-                                    <img src="{{ $c3Img }}" alt="{{ $c3Title }}" class="w-100">
-                                </a>
-                                <div class="td_card_info">
-                                    <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
-                                        <a href="{{ $c3Url }}">{{ $c3Title }}</a>
-                                    </h2>
-                                    <a href="{{ $c3Url }}" class="td_card_btn"></a>
-                                </div>
-                            </div>
-                        @endif
-
-                    </div>
-                </div>
-            </div>
-
+    <section id="home-campus" class="td_accent_bg td_shape_section_1">
+        <div class="td_shape_position_4 td_accent_color position-absolute">
+            {{-- dekorativ svg-lər eyni qalır --}}
+            <svg width="37" height="40" viewBox="0 0 37 40" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <g opacity="0.4">
+                    <rect y="12.3906" width="23.6182" height="31.0709" rx="1"
+                        transform="rotate(-30.4551 0 12.3906)" fill="white" />
+                    <rect x="4" y="14.8125" width="18.5361" height="2.62207" rx="1.31104"
+                        transform="rotate(-30.4551 4 14.8125)" fill="currentColor" />
+                    <rect x="7" y="19.8125" width="18.5361" height="2.62207" rx="1.31104"
+                        transform="rotate(-30.4551 7 19.8125)" fill="currentColor" />
+                </g>
+            </svg>
         </div>
-    </div>
-    <div class="td_height_112 td_height_lg_75"></div>
-</section>
-{{-- End Campus Life --}}
+
+        <div class="td_height_120 td_height_lg_80"></div>
+        <div class="container">
+            <div class="row td_gap_y_40">
+                {{-- Sol: başlıq + altmətn + CTA --}}
+                <div class="col-lg-5 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s">
+                    <div class="td_height_57 td_height_lg_0"></div>
+                    <div class="td_section_heading td_style_1">
+                        <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ $title }}</h2>
+                        @if ($subtitle)
+                            <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
+                                {{ $subtitle }}
+                            </p>
+                        @endif
+                    </div>
+
+                    <div class="td_btn_box">
+                        <svg width="299" height="315" viewBox="0 0 299 315" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g opacity="0.75" clip-path="url(#clip0_34_2222)">
+                                <path
+                                    d="M242.757 275.771C242.505 275.771 242.253 275.75 242.005 275.707C32.3684 239.98 0.342741 8.13005 0.0437414 5.79468C-0.108609 4.51176 0.22739 3.21754 0.9787 2.19335C1.73001 1.16916 2.8359 0.497795 4.05598 0.32519C5.27606 0.152585 6.5117 0.492693 7.4943 1.27158C8.4769 2.05047 9.12704 3.20518 9.3034 4.48471C9.59772 6.7514 40.7872 231.477 243.5 266.022C244.658 266.22 245.702 266.868 246.426 267.838C247.15 268.808 247.5 270.028 247.406 271.256C247.312 272.484 246.782 273.63 245.921 274.467C245.06 275.303 243.93 275.769 242.757 275.771Z"
+                                    fill="white" />
+                                <path
+                                    d="M299.002 275.455C271.709 283.305 237.446 297.872 215.562 314.617L235.465 269.602L223.318 221.648C242.099 242.137 273.428 262.728 299.002 275.455Z"
+                                    fill="white" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_34_2222">
+                                    <rect width="299" height="314" fill="white"
+                                        transform="translate(0 0.421875)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <div class="td_btn_box_in">
+                            <a href="{{ $ctaHref }}" class="td_btn td_style_1 td_radius_10 td_medium td_fs_18">
+                                <span class="td_btn_in td_heading_color td_white_bg">
+                                    <span>{{ $ctaText }}</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Sağ: kart grid (0,2 sol sütun; 1,3 sağ sütun) --}}
+                <div class="col-lg-6 offset-lg-1">
+                    <div class="row">
+                        {{-- Sol sütun --}}
+                        <div class="col-sm-6">
+                            @if (isset($cards[0]))
+                                @php
+                                    $c0 = $cards[0];
+                                    $c0Title = data_get($c0, 'title', '');
+                                    $c0Url = $toLink(data_get($c0, 'url', '#'), '#');
+                                    $c0Img = $toUrl(data_get($c0, 'image'));
+                                @endphp
+                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                    data-wow-delay="0.2s">
+                                    <a href="{{ $c0Url }}" class="td_card_thumb d-block">
+                                        <img src="{{ $c0Img }}" alt="{{ $c0Title }}" class="w-100">
+                                    </a>
+                                    <div class="td_card_info">
+                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                            <a href="{{ $c0Url }}">{{ $c0Title }}</a>
+                                        </h2>
+                                        <a href="{{ $c0Url }}" class="td_card_btn"></a>
+                                    </div>
+                                </div>
+                                <div class="td_height_40 td_height_lg_30"></div>
+                            @endif
+
+                            @if (isset($cards[2]))
+                                @php
+                                    $c2 = $cards[2];
+                                    $c2Title = data_get($c2, 'title', '');
+                                    $c2Url = $toLink(data_get($c2, 'url', '#'), '#');
+                                    $c2Img = $toUrl(data_get($c2, 'image'));
+                                @endphp
+                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                    data-wow-delay="0.3s">
+                                    <a href="{{ $c2Url }}" class="td_card_thumb d-block">
+                                        <img src="{{ $c2Img }}" alt="{{ $c2Title }}" class="w-100">
+                                    </a>
+                                    <div class="td_card_info">
+                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                            <a href="{{ $c2Url }}">{{ $c2Title }}</a>
+                                        </h2>
+                                        <a href="{{ $c2Url }}" class="td_card_btn"></a>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Sağ sütun --}}
+                        <div class="col-sm-6">
+                            <div class="td_height_50 td_height_lg_30"></div>
+
+                            @if (isset($cards[1]))
+                                @php
+                                    $c1 = $cards[1];
+                                    $c1Title = data_get($c1, 'title', '');
+                                    $c1Url = $toLink(data_get($c1, 'url', '#'), '#');
+                                    $c1Img = $toUrl(data_get($c1, 'image'));
+                                @endphp
+                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                    data-wow-delay="0.25s">
+                                    <a href="{{ $c1Url }}" class="td_card_thumb d-block">
+                                        <img src="{{ $c1Img }}" alt="{{ $c1Title }}" class="w-100">
+                                    </a>
+                                    <div class="td_card_info">
+                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                            <a href="{{ $c1Url }}">{{ $c1Title }}</a>
+                                        </h2>
+                                        <a href="{{ $c1Url }}" class="td_card_btn"></a>
+                                    </div>
+                                </div>
+                                <div class="td_height_40 td_height_lg_30"></div>
+                            @endif
+
+                            @if (isset($cards[3]))
+                                @php
+                                    $c3 = $cards[3];
+                                    $c3Title = data_get($c3, 'title', '');
+                                    $c3Url = $toLink(data_get($c3, 'url', '#'), '#');
+                                    $c3Img = $toUrl(data_get($c3, 'image'));
+                                @endphp
+                                <div class="td_card td_style_2 wow fadeInUp" data-wow-duration="1s"
+                                    data-wow-delay="0.3s">
+                                    <a href="{{ $c3Url }}" class="td_card_thumb d-block">
+                                        <img src="{{ $c3Img }}" alt="{{ $c3Title }}" class="w-100">
+                                    </a>
+                                    <div class="td_card_info">
+                                        <h2 class="td_card_title mb-0 td_fs_18 td_semibold td_white_color">
+                                            <a href="{{ $c3Url }}">{{ $c3Title }}</a>
+                                        </h2>
+                                        <a href="{{ $c3Url }}" class="td_card_btn"></a>
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="td_height_112 td_height_lg_75"></div>
+    </section>
+    {{-- End Campus Life --}}
 
 
 
@@ -3017,128 +3345,101 @@
 
 
 
-<!-- Start Accreditation Showcase -->
-<section id="home-accreditations">
-    <div class="td_height_112 td_height_lg_75"></div>
+    <!-- Start Accreditation Showcase -->
+    <section id="home-accreditations">
+        <div class="td_height_112 td_height_lg_75"></div>
 
-    <style>
-        /* Sol tərəfdə 2 kart sığması üçün featured kartı kiçildir */
-        #home-accreditations .left-stack { display:flex; flex-direction:column; gap:24px; }
+        <style>
+            /* Sol tərəfdə 2 kart sığması üçün featured kartı kiçildir */
+            #home-accreditations .left-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
 
-        #home-accreditations .left-featured .td_card_thumb { margin-bottom: 18px !important; }
-        #home-accreditations .left-featured .td_card_thumb img {
-            height: 240px;           /* ƏVVƏL daha böyük idi, indi kiçildirik */
-            width: 100%;
-            object-fit: cover;
-        }
-        #home-accreditations .left-featured .td_card_title { margin-bottom: 10px !important; }
-        #home-accreditations .left-featured .td_mb_24 { margin-bottom: 14px !important; }
-        #home-accreditations .left-featured .td_fs_32 { font-size: 26px !important; } /* başlıq biraz kiçik */
+            #home-accreditations .left-featured .td_card_thumb {
+                margin-bottom: 18px !important;
+            }
 
-        /* 2-ci sol kart daha kompakt olsun */
-        #home-accreditations .left-second .td_card_thumb img {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-        }
-        #home-accreditations .left-second .td_fs_22 { font-size: 20px !important; }
-        #home-accreditations .left-second .td_mb_16 { margin-bottom: 10px !important; }
-    </style>
+            #home-accreditations .left-featured .td_card_thumb img {
+                height: 240px;
+                /* ƏVVƏL daha böyük idi, indi kiçildirik */
+                width: 100%;
+                object-fit: cover;
+            }
 
-    <div class="container">
+            #home-accreditations .left-featured .td_card_title {
+                margin-bottom: 10px !important;
+            }
 
-        <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
-            data-wow-delay="0.2s">
-            <p class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
-                {{ __('Accreditations') }}
-            </p>
-            <h2 class="td_section_title td_fs_48 mb-0">{{ __('Recognitions & Partnerships') }}</h2>
-        </div>
+            #home-accreditations .left-featured .td_mb_24 {
+                margin-bottom: 14px !important;
+            }
 
-        <div class="td_height_50 td_height_lg_50"></div>
+            #home-accreditations .left-featured .td_fs_32 {
+                font-size: 26px !important;
+            }
 
-        @if (isset($accreds) && $accreds->count())
-            @php
-                $hero = $accreds->first();
-                $leftSecond = $accreds->skip(1)->first();
-                $rightItems = $accreds->skip(1); // sağ tərəf əvvəlki kimi qalsın (sən dedin ora toxunmuruq)
+            /* başlıq biraz kiçik */
 
-                // description-un ilk sözünü çıxarma helper-i
-                $firstWordFromDesc = function ($item) {
-                    $txt = trim(strip_tags($item->description ?? ''));
-                    if ($txt === '') return 'Accreditation';
-                    // ilk söz (boşluğa qədər)
-                    return strtok($txt, " \n\r\t");
-                };
+            /* 2-ci sol kart daha kompakt olsun */
+            #home-accreditations .left-second .td_card_thumb img {
+                height: 200px;
+                width: 100%;
+                object-fit: cover;
+            }
 
-                $heroTitle = $firstWordFromDesc($hero);
-                $leftSecondTitle = $leftSecond ? $firstWordFromDesc($leftSecond) : null;
-            @endphp
+            #home-accreditations .left-second .td_fs_22 {
+                font-size: 20px !important;
+            }
 
-            <div class="row td_gap_y_30">
-                <!-- Left: 2 cards -->
-                <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
-                    <div class="left-stack">
+            #home-accreditations .left-second .td_mb_16 {
+                margin-bottom: 10px !important;
+            }
+        </style>
 
-                        <!-- Featured (but smaller) -->
-                        <div class="td_card td_style_1 td_radius_5 left-featured">
-                            <a href="{{ route('about') }}#accreditations" class="td_card_thumb d-block">
-                                <img src="{{ $hero->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
-                                    alt="Accreditation">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                <span class="td_card_location td_medium td_white_color td_fs_18">
-                                    <svg width="16" height="22" viewBox="0 0 16 22" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.0004 0.5C3.86669 0.5..." fill="currentColor" />
-                                    </svg>
-                                    {{ optional($hero->created_at)->format('M d, Y') }}
-                                </span>
-                            </a>
+        <div class="container">
 
-                            <div class="td_card_info">
-                                <div class="td_card_info_in">
-                                    <div class="td_mb_20">
-                                        <ul class="td_card_meta td_mp_0 td_fs_18 td_medium td_heading_color">
-                                            <li>
-                                                <svg class="td_accent_color" width="22" height="24"
-                                                    viewBox="0 0 22 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M17.3308 11.7869H19.0049..." fill="currentColor" />
-                                                </svg>
-                                                <span>{{ optional($hero->created_at)->format('M d, Y') }}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
+            <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
+                data-wow-delay="0.2s">
+                <p
+                    class="td_section_subtitle_up td_fs_18 td_semibold td_spacing_1 td_mb_10 text-uppercase td_accent_color">
+                    {{ __('Accreditations') }}
+                </p>
+                <h2 class="td_section_title td_fs_48 mb-0">{{ __('Recognitions & Partnerships') }}</h2>
+            </div>
 
-                                    <h2 class="td_card_title td_fs_32 td_semibold">
-                                        <a href="{{ route('about') }}#accreditations">{{ $heroTitle }}</a>
-                                    </h2>
+            <div class="td_height_50 td_height_lg_50"></div>
 
-                                    <p class="td_fs_18 td_mb_24">
-                                        {{ Str::limit(strip_tags($hero->description ?? ''), 180) ?: 'International recognition and partnership highlight.' }}
-                                    </p>
+            @if (isset($accreds) && $accreds->count())
+                @php
+                    $hero = $accreds->first();
+                    $leftSecond = $accreds->skip(1)->first();
+                    $rightItems = $accreds->skip(1); // sağ tərəf əvvəlki kimi qalsın (sən dedin ora toxunmuruq)
 
-                                    <a href="{{ route('about') }}#accreditations"
-                                        class="td_btn td_style_1 td_radius_10 td_medium">
-                                        <span class="td_btn_in td_white_color td_accent_bg">
-                                            <span>Learn More</span>
-                                            <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M15.1575 4.34302L3.84375 15.6567" stroke="currentColor"
-                                                    stroke-width="1.5" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    // description-un ilk sözünü çıxarma helper-i
+                    $firstWordFromDesc = function ($item) {
+                        $txt = trim(strip_tags($item->description ?? ''));
+                        if ($txt === '') {
+                            return 'Accreditation';
+                        }
+                        // ilk söz (boşluğa qədər)
+                        return strtok($txt, " \n\r\t");
+                    };
 
-                        <!-- Second card under it -->
-                        @if ($leftSecond)
-                            <div class="td_card td_style_1 td_radius_5 left-second">
+                    $heroTitle = $firstWordFromDesc($hero);
+                    $leftSecondTitle = $leftSecond ? $firstWordFromDesc($leftSecond) : null;
+                @endphp
+
+                <div class="row td_gap_y_30">
+                    <!-- Left: 2 cards -->
+                    <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                        <div class="left-stack">
+
+                            <!-- Featured (but smaller) -->
+                            <div class="td_card td_style_1 td_radius_5 left-featured">
                                 <a href="{{ route('about') }}#accreditations" class="td_card_thumb d-block">
-                                    <img src="{{ $leftSecond->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
+                                    <img src="{{ $hero->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
                                         alt="Accreditation">
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                     <span class="td_card_location td_medium td_white_color td_fs_18">
@@ -3146,20 +3447,109 @@
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8.0004 0.5C3.86669 0.5..." fill="currentColor" />
                                         </svg>
-                                        {{ optional($leftSecond->created_at)->format('M d, Y') }}
+                                        {{ optional($hero->created_at)->format('M d, Y') }}
                                     </span>
                                 </a>
 
                                 <div class="td_card_info">
                                     <div class="td_card_info_in">
-                                        <h3 class="td_fs_22 td_semibold td_mb_10">
-                                            <a href="{{ route('about') }}#accreditations">{{ $leftSecondTitle }}</a>
-                                        </h3>
+                                        <div class="td_mb_20">
+                                            <ul class="td_card_meta td_mp_0 td_fs_18 td_medium td_heading_color">
+                                                <li>
+                                                    <svg class="td_accent_color" width="22" height="24"
+                                                        viewBox="0 0 22 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M17.3308 11.7869H19.0049..." fill="currentColor" />
+                                                    </svg>
+                                                    <span>{{ optional($hero->created_at)->format('M d, Y') }}</span>
+                                                </li>
+                                            </ul>
+                                        </div>
 
-                                        <p class="td_fs_16 td_heading_color td_opacity_8 td_mb_16">
-                                            {{ Str::limit(strip_tags($leftSecond->description ?? ''), 110) ?: 'Recognition / partnership details.' }}
+                                        <h2 class="td_card_title td_fs_32 td_semibold">
+                                            <a href="{{ route('about') }}#accreditations">{{ $heroTitle }}</a>
+                                        </h2>
+
+                                        <p class="td_fs_18 td_mb_24">
+                                            {{ Str::limit(strip_tags($hero->description ?? ''), 180) ?: 'International recognition and partnership highlight.' }}
                                         </p>
 
+                                        <a href="{{ route('about') }}#accreditations"
+                                            class="td_btn td_style_1 td_radius_10 td_medium">
+                                            <span class="td_btn_in td_white_color td_accent_bg">
+                                                <span>Learn More</span>
+                                                <svg width="19" height="20" viewBox="0 0 19 20"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M15.1575 4.34302L3.84375 15.6567" stroke="currentColor"
+                                                        stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Second card under it -->
+                            @if ($leftSecond)
+                                <div class="td_card td_style_1 td_radius_5 left-second">
+                                    <a href="{{ route('about') }}#accreditations" class="td_card_thumb d-block">
+                                        <img src="{{ $leftSecond->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
+                                            alt="Accreditation">
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        <span class="td_card_location td_medium td_white_color td_fs_18">
+                                            <svg width="16" height="22" viewBox="0 0 16 22" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.0004 0.5C3.86669 0.5..." fill="currentColor" />
+                                            </svg>
+                                            {{ optional($leftSecond->created_at)->format('M d, Y') }}
+                                        </span>
+                                    </a>
+
+                                    <div class="td_card_info">
+                                        <div class="td_card_info_in">
+                                            <h3 class="td_fs_22 td_semibold td_mb_10">
+                                                <a
+                                                    href="{{ route('about') }}#accreditations">{{ $leftSecondTitle }}</a>
+                                            </h3>
+
+                                            <p class="td_fs_16 td_heading_color td_opacity_8 td_mb_16">
+                                                {{ Str::limit(strip_tags($leftSecond->description ?? ''), 110) ?: 'Recognition / partnership details.' }}
+                                            </p>
+
+                                            <a href="{{ route('about') }}#accreditations"
+                                                class="td_btn td_style_1 td_radius_10 td_medium">
+                                                <span class="td_btn_in td_white_color td_accent_bg">
+                                                    <span>Details</span>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+
+                    <!-- Right: əvvəlki kimi qalır (sən dedin ora toxunmuruq) -->
+                    <div class="col-lg-6 td_gap_y_30 flex-wrap d-flex wow fadeInRight" data-wow-duration="1s"
+                        data-wow-delay="0.3s">
+                        @foreach ($rightItems->skip(1) as $a)
+                            @php $rightTitle = $firstWordFromDesc($a); @endphp
+                            <div class="td_card td_style_1 td_type_1" style="flex:1 1 100%; max-width:100%;">
+                                <a href="{{ route('about') }}#accreditations" class="td_card_thumb d-block">
+                                    <img src="{{ $a->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
+                                        alt="Accreditation">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                                <div class="td_card_info">
+                                    <div class="td_card_info_in">
+                                        <h3 class="td_fs_22 td_semibold td_mb_10">
+                                            <a href="{{ route('about') }}#accreditations">{{ $rightTitle }}</a>
+                                        </h3>
+                                        <p class="td_fs_16 td_heading_color td_opacity_8 td_mb_16">
+                                            {{ Str::limit(strip_tags($a->description ?? ''), 110) ?: 'Recognition / partnership details.' }}
+                                        </p>
                                         <a href="{{ route('about') }}#accreditations"
                                             class="td_btn td_style_1 td_radius_10 td_medium">
                                             <span class="td_btn_in td_white_color td_accent_bg">
@@ -3169,52 +3559,19 @@
                                     </div>
                                 </div>
                             </div>
-                        @endif
-
+                        @endforeach
                     </div>
+
                 </div>
+            @else
+                <div class="text-center text-muted">No accreditations yet.</div>
+            @endif
 
-                <!-- Right: əvvəlki kimi qalır (sən dedin ora toxunmuruq) -->
-                <div class="col-lg-6 td_gap_y_30 flex-wrap d-flex wow fadeInRight" data-wow-duration="1s"
-                    data-wow-delay="0.3s">
-                    @foreach ($rightItems->skip(1) as $a)
-                        @php $rightTitle = $firstWordFromDesc($a); @endphp
-                        <div class="td_card td_style_1 td_type_1" style="flex:1 1 100%; max-width:100%;">
-                            <a href="{{ route('about') }}#accreditations" class="td_card_thumb d-block">
-                                <img src="{{ $a->imageUrl ?: asset('assets/img/others/faq_bg_1.jpg') }}"
-                                    alt="Accreditation">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </a>
-                            <div class="td_card_info">
-                                <div class="td_card_info_in">
-                                    <h3 class="td_fs_22 td_semibold td_mb_10">
-                                        <a href="{{ route('about') }}#accreditations">{{ $rightTitle }}</a>
-                                    </h3>
-                                    <p class="td_fs_16 td_heading_color td_opacity_8 td_mb_16">
-                                        {{ Str::limit(strip_tags($a->description ?? ''), 110) ?: 'Recognition / partnership details.' }}
-                                    </p>
-                                    <a href="{{ route('about') }}#accreditations"
-                                        class="td_btn td_style_1 td_radius_10 td_medium">
-                                        <span class="td_btn_in td_white_color td_accent_bg">
-                                            <span>Details</span>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+        </div>
 
-            </div>
-        @else
-            <div class="text-center text-muted">No accreditations yet.</div>
-        @endif
-
-    </div>
-
-    <div class="td_height_120 td_height_lg_80"></div>
-</section>
-<!-- End Accreditation Showcase -->
+        <div class="td_height_120 td_height_lg_80"></div>
+    </section>
+    <!-- End Accreditation Showcase -->
 
 
     <!-- Start Team Highlight (carousel) -->

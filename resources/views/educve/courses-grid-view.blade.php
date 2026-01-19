@@ -239,6 +239,52 @@
     .empty-desc {
         opacity: .75
     }
+
+    /* ===== PAGINATION FIX (IMPORTANT) ===== */
+    .courses-pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Laravel default Tailwind pagination nav-ı stretch edir, bunu söndürürük */
+    .courses-pagination nav[role="navigation"] {
+        width: auto !important;
+        /* display: inline-flex !important; */
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+
+    /* İçindəki bloklar bəzən justify-between olur */
+    .courses-pagination nav[role="navigation"] .flex {
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    /* Link və span-lar normal düymə kimi görünsün */
+    .courses-pagination a,
+    .courses-pagination span {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        font-size: 14px !important;
+    }
+
+    /* Əsas problem: SVG-lər böyüyür. Burda məcburi ölçü veririk */
+    .courses-pagination svg {
+        width: 18px !important;
+        height: 18px !important;
+        max-width: 18px !important;
+        max-height: 18px !important;
+        flex: 0 0 18px !important;
+    }
+
+    /* Əgər hansısa global css svg-ni 100% edirsə, bu da onu boğur */
+    .courses-pagination svg * {
+        vector-effect: non-scaling-stroke;
+    }
 </style>
 
 <!-- Header -->
@@ -317,10 +363,10 @@
         if (!root) return;
 
         const slides = Array.from(root.querySelectorAll('.hero-slide'));
-        if (slides.length <= 1) return; // Tək şəkil üçün animasiya lazım deyil
+        if (slides.length <= 1) return;
 
         let idx = 0, timer = null;
-        const INTERVAL = 2000; // 2s
+        const INTERVAL = 2000;
 
         function show(i){ slides.forEach((s,k)=>s.classList.toggle('is-active', k===i)); }
         function next(){ idx = (idx + 1) % slides.length; show(idx); }
@@ -339,7 +385,6 @@
         });
     })();
 </script>
-
 
 <!-- Courses Grid View -->
 <section style="background:var(--bg)">
@@ -415,8 +460,7 @@
                                 <div class="media-grad"></div>
 
                                 <div class="media-top">
-                                    <span
-                                        class="chip">{{ $course->category->name ?? ($course->category ?? 'General') }}</span>
+                                    <span class="chip">{{ $course->category->name ?? ($course->category ?? 'General') }}</span>
                                     <span class="chip chip-dark" title="Views">
                                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -467,8 +511,7 @@
                                     @if (!empty($course->courseUrl))
                                         <a href="{{ $course->courseUrl }}" target="_blank" rel="noopener"
                                             class="td_btn td_style_2 td_medium btn-soft btn-wide">
-                                            <span
-                                                class="td_btn_in td_heading_color td_white_bg"><span>Visit</span></span>
+                                            <span class="td_btn_in td_heading_color td_white_bg"><span>Visit</span></span>
                                         </a>
                                     @endif
                                 </div>
@@ -481,7 +524,7 @@
 
             @if (method_exists($courses, 'links'))
                 <div class="td_height_60 td_height_lg_40"></div>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center courses-pagination">
                     {{ $courses->appends(['q' => $q])->links() }}
                 </div>
             @endif
@@ -497,8 +540,7 @@
                         </svg>
                     </div>
                     <div class="empty-title">Axtardığınız üzrə nəticə tapılmadı</div>
-                    <div class="empty-desc">“{{ $q }}” üçün uyğun kurs tapılmadı. Başqa açar sözlə
-                        yoxlayın.</div>
+                    <div class="empty-desc">“{{ $q }}” üçün uyğun kurs tapılmadı. Başqa açar sözlə yoxlayın.</div>
                     <div class="td_height_20"></div>
                     <a href="{{ route('courses-grid-view') }}" class="td_btn td_style_2 td_radius_10 td_medium">
                         <span class="td_btn_in td_heading_color td_white_bg"><span>Hamısını göstər</span></span>
