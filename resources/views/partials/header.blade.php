@@ -50,491 +50,36 @@
     </div>
     <!-- End Preloader -->
 
-    <style>
-        /* ================== GLOBAL CONTAINER ================== */
-        .td_site_header .container {
-            max-width: 1400px;
-            padding-left: 100px;
-            padding-right: 100px;
-        }
-
-        @media (max-width: 1200px) {
-            .td_site_header .container {
-                padding-left: 24px;
-                padding-right: 24px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .td_site_header .container {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-        }
-
-        /* ================== TOP BAR ================== */
-
-        .td_top_header_in {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            width: 100%;
-        }
-
-        .td_top_header_left {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
-
-        .td_top_header_right {
-            flex: 0 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            white-space: nowrap;
-        }
-
-        .typed-text {
-            font-weight: 600;
-            font-size: 14px;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .ticker-line {
-            position: relative;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .ticker-inner {
-            display: inline-block;
-            will-change: transform;
-        }
-
-        .ticker-line.is-scrolling .ticker-inner {
-            animation: ticker-scroll 22s linear infinite;
-        }
-
-        @keyframes ticker-scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        .top-lang-search {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .top-lang-select {
-            padding: 4px 10px;
-            border-radius: 999px;
-            border: 0;
-            font-size: 13px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-        }
-
-        .top-lang-select:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, .4);
-        }
-
-        .top-search-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 999px;
-            border: 0;
-            background: rgba(255, 255, 255, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-        }
-
-        .top-search-btn img {
-            width: 15px;
-            height: 15px;
-        }
-
-        .top-quick-toggle {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 0;
-            background: rgba(255, 255, 255, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .top-quick-toggle span {
-            display: block;
-            width: 14px;
-            height: 2px;
-            border-radius: 999px;
-            background: #fff;
-            position: relative;
-        }
-
-        .top-quick-toggle span::before,
-        .top-quick-toggle span::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            border-radius: 999px;
-            background: #fff;
-        }
-
-        .top-quick-toggle span::before {
-            top: -4px;
-        }
-
-        .top-quick-toggle span::after {
-            top: 4px;
-        }
-
-        @media (max-width: 768px) {
-            .td_top_header_in {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .td_top_header_right {
-                width: 100%;
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-
-            .top-lang-search {
-                order: 2;
-            }
-        }
-
-        /* ================== MAIN HEADER ================== */
-
-        .td_main_header_in {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .td_main_header_left {
-            flex: 0 0 auto;
-            display: flex;
-            align-items: flex-end;
-        }
-
-        .td_site_branding {
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .td_site_branding img {
-            height: 54px;
-            width: auto;
-            display: block;
-            margin-top: 4px;
-        }
-
-        .td_main_header_right {
-            flex: 1 1 auto;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 18px;
-            min-width: 0;
-        }
-
-        .td_nav {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
-
-        .td_nav_list_wrap_in {
-            display: block;
-        }
-
-        .td_nav_list {
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            white-space: nowrap;
-            flex-wrap: wrap;
-        }
-
-        .td_nav_list>li {
-            position: relative;
-        }
-
-        .td_nav_list>li>a {
-            display: inline-block;
-            padding: 10px 4px;
-        }
-
-        .td_hero_icon_btns {
-            flex: 0 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .td_circle_btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, .06);
-            border: 1px solid rgba(15, 23, 42, .06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background .2s ease, border-color .2s ease, transform .15s ease;
-        }
-
-        .td_circle_btn:hover {
-            background: rgba(15, 23, 42, .10);
-            border-color: rgba(15, 23, 42, .12);
-            transform: translateY(-1px);
-        }
-
-        #globalSearch {
-            position: relative;
-        }
-
-        /* SEARCH DROPDOWN: bigger panel + full width results */
-        #globalSearchResults {
-            position: relative;
-            top: auto;
-            right: auto;
-            left: auto;
-            min-width: 100%;
-            max-width: 100%;
-            background: #f8fafc;
-            border-radius: 12px;
-            box-shadow: inset 0 0 0 1px #e2e8f0;
-            z-index: 70;
-            padding: 4px 0;
-            height: 320px;
-            overflow-y: auto;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-
-        #globalSearchResults .gsearch-dropdown {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        #globalSearchResults .gsearch-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 8px 12px;
-            border-bottom: 1px solid #e2e8f0;
-            cursor: pointer;
-            background: #ffffff;
-            transition: background .15s ease, box-shadow .15s ease, transform .1s ease;
-        }
-
-        #globalSearchResults .gsearch-item:last-child {
-            border-bottom: none;
-        }
-
-        #globalSearchResults .gsearch-item:hover {
-            background: #edf2ff;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
-            transform: translateY(-1px);
-        }
-
-        #globalSearchResults img {
-            max-width: 56px;
-            max-height: 56px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-            display: block;
-        }
-
-        #globalSearchResults .gsearch-title {
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 2px;
-        }
-
-        #globalSearchResults .gsearch-meta {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        #globalSearchResults .gsearch-empty {
-            padding: 8px 12px;
-            font-size: 13px;
-            color: #64748b;
-        }
-
-        /* Desktop language next to search */
-        .header-lang-desktop {
-            display: flex;
-            align-items: center;
-            margin-left: 4px;
-        }
-
-        .header-lang-desktop .top-lang-select {
-            background: rgba(15, 23, 42, .04);
-            color: #0f172a;
-            border: 1px solid rgba(15, 23, 42, .10);
-        }
-
-        @media (max-width: 992px) {
-            .td_main_header_in {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .td_main_header_left {
-                width: 100%;
-                justify-content: space-between;
-                margin-bottom: 6px;
-            }
-
-            .td_main_header_right {
-                width: 100%;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .td_nav {
-                width: 100%;
-            }
-
-            .td_nav_list {
-                width: 100%;
-                row-gap: 4px;
-                column-gap: 16px;
-            }
-
-            .td_hero_icon_btns {
-                align-self: flex-end;
-            }
-
-            /* hide desktop lang on mobile */
-            .header-lang-desktop {
-                display: none;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .td_site_branding img {
-                height: 44px;
-            }
-
-            .td_nav_list>li>a {
-                padding: 8px 2px;
-                font-size: 14px;
-            }
-
-            .td_nav_list {
-                overflow-x: auto;
-                white-space: nowrap;
-                flex-wrap: nowrap;
-            }
-        }
-
-        /* ================== VERTICAL SOCIAL BAR ================== */
-
-        .header-social-rail {
-            position: fixed;
-            right: 18px;
-            top: 40%;
-            transform: translateY(-50%);
-            z-index: 80;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .header-social-rail a {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.9);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, .3);
-        }
-
-        .header-social-rail a:hover {
-            opacity: .9;
-        }
-
-        @media (max-width: 768px) {
-            .header-social-rail {
-                display: none;
-            }
-        }
-
-        .td_header_search {
-            width: auto !important;
-        }
-    </style>
-
     {{-- ================= HEADER ================= --}}
-    <header class="td_site_header td_style_1 td_type_2 td_sticky_header td_medium td_heading_color">
-
+        <header style="font-size: 14px !important"
+        class="td_site_header td_style_1 td_type_3 td_sticky_header td_medium td_heading_color">
         <style>
-            .td_site_header .container {
-                max-width: 1400px;
-                padding-left: 100px;
-                padding-right: 100px;
-            }
-
-            @media (max-width: 1200px) {
-                .td_site_header .container {
-                    padding-left: 24px;
-                    padding-right: 24px;
-                }
-            }
-
-            @media (max-width: 768px) {
-                .td_site_header .container {
-                    padding-left: 16px;
-                    padding-right: 16px;
-                }
+            .container {
+                max-width: 100%;
+                padding-left: 50px;
+                padding-right: 50px;
             }
 
             .td_top_header_in {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
                 gap: 16px;
                 width: 100%;
             }
 
             .td_top_header_left {
                 flex: 1 1 auto;
-                min-width: 0;
+                max-width: calc(100% - 220px);
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .typed-text {
+                font-weight: 950;
+                font-size: 14px;
+                color: #fff;
+                white-space: pre;
+                display: inline-block;
             }
 
             .td_top_header_right {
@@ -542,36 +87,22 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                flex-wrap: wrap;
-                justify-content: flex-end;
+                white-space: nowrap;
             }
 
-            @media (max-width: 768px) {
-                .td_top_header_in {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 8px;
-                }
-
-                .td_top_header_right {
-                    width: 100%;
-                    justify-content: space-between;
-                }
-            }
-
+            /* MAIN HEADER */
             .td_main_header_in {
                 display: flex;
-                flex-wrap: wrap;
                 align-items: center;
                 justify-content: space-between;
-                gap: 16px;
-                width: 100%;
             }
 
-            .td_main_header_left {
-                flex: 0 0 auto;
+            .td_header_bar_left {
                 display: flex;
                 align-items: center;
+                gap: 28px;
+                flex: 1 1 auto;
+                min-width: 0;
             }
 
             .td_site_branding {
@@ -580,20 +111,17 @@
             }
 
             .td_site_branding img {
-                height: 54px;
+                height: 48px;
                 width: auto;
                 display: block;
-                margin-top: 4px;
             }
 
-            .td_main_header_right {
-                flex: 1 1 0%;
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-                min-width: 0;
+            .td_nav {
+                flex: 1 1 auto;
+            }
+
+            .td_nav_list_wrap {
+                overflow: visible;
             }
 
             .td_nav_list_wrap_in {
@@ -601,326 +129,29 @@
             }
 
             .td_nav_list {
-                display: flex;
-                flex-wrap: wrap;
+                display: inline-flex;
                 align-items: center;
-                gap: 16px 18px;
+                gap: 20px;
                 margin: 0;
                 padding: 0;
                 list-style: none;
+                white-space: nowrap;
             }
 
             .td_nav_list>li {
                 position: relative;
-                margin: 0;
+            }
+
+            .td_nav_list>li:first-child {
+                margin-left: 24px;
             }
 
             .td_nav_list>li>a {
                 display: inline-block;
-                padding: 10px 4px;
-                font-size: 15px;
-                position: relative;
-                text-decoration: none;
+                padding: 12px 0px;
             }
 
-            .td_nav_list>li>a::after {
-                content: "";
-                position: absolute;
-                left: 0;
-                bottom: 2px;
-                width: 0;
-                height: 2px;
-                border-radius: 999px;
-                background: #0f172a;
-                transition: width .18s ease;
-            }
-
-            .td_nav_list>li:hover>a::after,
-            .td_nav_list>li>a.active::after {
-                width: 100%;
-            }
-
-            .td_hero_icon_btns {
-                flex: 0 0 auto;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                position: relative;
-            }
-
-            .td_circle_btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 999px;
-                background: rgba(15, 23, 42, .06);
-                border: 1px solid rgba(15, 23, 42, .06);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background .2s ease, border-color .2s ease, transform .15s ease;
-            }
-
-            .td_circle_btn:hover {
-                background: rgba(15, 23, 42, .10);
-                border-color: rgba(15, 23, 42, .12);
-                transform: translateY(-1px);
-            }
-
-            #globalSearchResults {
-                position: relative;
-                top: auto;
-                right: auto;
-                left: auto;
-                min-width: 100%;
-                max-width: 100%;
-                background: #f8fafc;
-                border-radius: 12px;
-                box-shadow: inset 0 0 0 1px #e2e8f0;
-                z-index: 70;
-                padding: 4px 0;
-                height: 320px;
-                overflow-y: auto;
-                margin-top: 8px;
-                font-size: 14px;
-            }
-
-            #globalSearchResults .gsearch-dropdown {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-                top: 0% !important;
-            }
-
-            #globalSearchResults .gsearch-item {
-                display: flex;
-                align-items: flex-start;
-                gap: 10px;
-                padding: 8px 12px;
-                border-bottom: 1px solid #e2e8f0;
-                cursor: pointer;
-                background: #ffffff;
-                transition: background .15s ease, box-shadow .15s ease, transform .1s ease;
-            }
-
-            #globalSearchResults .gsearch-item:last-child {
-                border-bottom: none;
-            }
-
-            #globalSearchResults .gsearch-item:hover {
-                background: #edf2ff;
-                box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
-                transform: translateY(-1px);
-            }
-
-            #globalSearchResults img {
-                max-width: 56px;
-                max-height: 56px;
-                border-radius: 8px;
-                object-fit: cover;
-                flex-shrink: 0;
-                display: block;
-            }
-
-            #globalSearchResults .gsearch-title {
-                font-weight: 600;
-                color: #0f172a;
-                margin-bottom: 2px;
-            }
-
-            #globalSearchResults .gsearch-meta {
-                font-size: 12px;
-                color: #64748b;
-            }
-
-            #globalSearchResults .gsearch-empty {
-                padding: 8px 12px;
-                font-size: 13px;
-                color: #64748b;
-            }
-
-            /* Desktop lang near search */
-            .header-lang-desktop {
-                display: flex;
-                align-items: center;
-                margin-left: 4px;
-            }
-
-            .header-lang-desktop .top-lang-select {
-                background: rgba(15, 23, 42, .04);
-                color: #0f172a;
-                border: 1px solid rgba(15, 23, 42, .10);
-            }
-
-            /* Mobile only row inside nav for search + lang */
-            .nav-utility-row {
-                display: none;
-                width: 100%;
-            }
-
-            .nav-utility-content {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                gap: 8px;
-                padding: 4px 0;
-            }
-
-            .nav-utility-content .top-lang-select {
-                background: rgba(15, 23, 42, .04);
-                color: #0f172a;
-                border: 1px solid rgba(15, 23, 42, .10);
-            }
-
-            @media (max-width: 992px) {
-                .td_main_header_in {
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                }
-
-                .td_main_header_left {
-                    width: 100%;
-                    justify-content: center;
-                    margin-bottom: 6px;
-                }
-
-                .td_main_header_right {
-                    width: 100%;
-                    flex-direction: column;
-                    align-items: stretch;
-                    gap: 10px;
-                }
-
-                .td_nav {
-                    width: 100%;
-                }
-
-                .td_nav_list {
-                    width: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 4px;
-                    margin: 0;
-                    padding: 0;
-                    list-style: none;
-                    overflow-x: visible;
-                    white-space: normal;
-                }
-
-                .td_nav_list>li {
-                    width: 100%;
-                }
-
-                .td_nav_list>li>a {
-                    display: block;
-                    width: 100%;
-                    text-align: left;
-                    padding: 10px 4px;
-                    font-size: 14px;
-                }
-
-                .td_nav_list>li>a::after {
-                    bottom: 0;
-                }
-
-                .td_hero_icon_btns {
-                    align-self: flex-end;
-                }
-
-                .nav-utility-row {
-                    display: block;
-                }
-
-                .td_header_search_wrap {
-                    position: fixed !important;
-                    right: 12px !important;
-                    left: 12px !important;
-                    top: 70px !important;
-                    width: auto !important;
-                    max-width: none !important;
-                    z-index: 200 !important;
-                }
-
-                .header-lang-desktop {
-                    display: none;
-                }
-
-                /* MOBILE submenu open/close */
-                .td_nav_list>li.has-submenu>ul {
-                    display: none !important;
-                    max-height: 0;
-                    overflow: hidden;
-                    transition: max-height .25s ease;
-                    position: static !important;
-                    min-width: 0 !important;
-                    width: 100% !important;
-                    box-shadow: none !important;
-                    background: transparent !important;
-                    padding: 4px 0 6px 14px !important;
-                    margin: 0 !important;
-                    list-style: none !important;
-                }
-
-                .td_nav_list>li.has-submenu.is-open>ul {
-                    display: block !important;
-                    max-height: 900px;
-                }
-
-                /* parent row layout */
-                .td_nav_list>li.has-submenu>a {
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: space-between !important;
-                    gap: 12px !important;
-                }
-
-                /* PLUS/MINUS indicator with visible border */
-                .td_nav_list>li.has-submenu>a .submenu-indicator {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 8px;
-                    border: 2px solid #0f172a;
-                    background: #ffffff;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: 900;
-                    font-size: 18px;
-                    line-height: 1;
-                    color: #0f172a;
-                    flex: 0 0 auto;
-                    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
-                }
-
-                .td_nav_list>li.has-submenu>a .submenu-indicator::before {
-                    content: "+";
-                }
-
-                .td_nav_list>li.has-submenu.is-open>a .submenu-indicator::before {
-                    content: "-";
-                }
-            }
-
-            @media (max-width: 576px) {
-                .td_site_branding img {
-                    height: 44px;
-                    margin-top: 0;
-                }
-
-                .td_nav_list>li>a {
-                    padding: 8px 4px;
-                    font-size: 13px;
-                }
-            }
-
-            /* Desktop submenu */
-            .td_nav_list>li.has-submenu {
-                position: relative;
-            }
-
-            .td_nav_list>li.has-submenu>ul {
+            .td_nav_list>li.menu-item-has-children>ul {
                 position: absolute;
                 top: 100%;
                 left: 0;
@@ -934,205 +165,1064 @@
                 z-index: 50;
             }
 
-            .td_nav_list>li.has-submenu:hover>ul,
-            .td_nav_list>li.has-submenu.is-open>ul {
+            .td_nav_list>li.menu-item-has-children:hover>ul {
                 display: block;
             }
 
-            .td_nav_list>li.has-submenu>ul>li>a {
+            .td_nav_list>li.menu-item-has-children>ul>li>a {
                 display: block;
                 padding: 10px 14px;
-                font-size: 14px;
+            }
+
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+                flex: 0 0 auto;
+            }
+
+            @media (max-width: 1200px) {
+                .td_nav_list {
+                    gap: 14px;
+                }
+
+                .container {
+                    padding-left: 24px;
+                    padding-right: 24px;
+                }
             }
 
             @media (max-width: 992px) {
-                .td_nav_list>li.has-submenu:hover>ul {
+                .td_nav {
                     display: none;
                 }
+            }
+
+            .td_main_header_right {
+                display: flex;
+                align-items: center;
+            }
+
+            .td_language_wrap {
+                margin-right: 4px;
+            }
+
+            .td_header_social_btns {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .td_social_btn {
+                --btn-bg: rgba(15, 23, 42, .06);
+                --btn-icon: #0f172a;
+                --btn-ring: rgba(15, 23, 42, .25);
+
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: var(--btn-bg);
+                color: var(--btn-icon);
+                border: 1px solid rgba(15, 23, 42, .06);
+                box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
+                transition: background .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+            }
+
+            .td_social_btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(15, 23, 42, .10);
+                border-color: rgba(15, 23, 42, .10);
+            }
+
+            .td_social_btn:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px var(--btn-ring);
+            }
+
+            .td_social_btn--fb:hover {
+                background: #1877F2;
+                color: #fff;
+            }
+
+            .td_social_btn--tw:hover {
+                background: #111;
+                color: #fff;
+            }
+
+            .td_social_btn--ig:hover {
+                background: radial-gradient(120% 120% at 0% 100%, #feda75, #d62976 50%, #962fbf 75%, #4f5bd5);
+                color: #fff;
+            }
+
+            .td_social_btn--li:hover {
+                background: #0A66C2;
+                color: #fff;
+            }
+
+            .td_social_btn--wa:hover {
+                background: #25D366;
+                color: #fff;
+            }
+
+            @media (prefers-color-scheme: dark) {
+                .td_social_btn {
+                    --btn-bg: rgba(255, 255, 255, .06);
+                    --btn-icon: #e5e7eb;
+                    --btn-ring: rgba(255, 255, 255, .35);
+                    border-color: rgba(255, 255, 255, .08);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+
+                .td_social_btn,
+                .td_social_btn:hover {
+                    transition: none;
+                    transform: none;
+                }
+            }
+
+            .td_circle_btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: rgba(15, 23, 42, .06);
+                border: 1px solid rgba(15, 23, 42, .06);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .td_circle_btn:hover {
+                background: rgba(15, 23, 42, .10);
+            }
+
+            /* =============== SIDE HEADER =============== */
+
+            .td_side_header {
+                position: fixed;
+                inset: 0;
+                z-index: 999;
+                pointer-events: none;
+            }
+
+            .td_side_header_backdrop {
+                position: absolute;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.45);
+                opacity: 0;
+                transition: opacity .25s ease;
+            }
+
+            .td_side_header_panel {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 360px;
+                max-width: 90vw;
+                height: 100%;
+                background: #0f172a;
+                color: #e5e7eb;
+                transform: translateX(100%);
+                transition: transform .25s ease;
+                box-shadow: -12px 0 30px rgba(15, 23, 42, 0.45);
+            }
+
+            .td_side_header_in {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                padding: 20px 18px 18px;
+                gap: 18px;
+            }
+
+            .td_side_header_head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .td_side_header_title {
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+            .td_side_close_btn {
+                width: 32px;
+                height: 32px;
+                border-radius: 999px;
+                border: none;
+                background: rgba(15, 23, 42, 0.85);
+                color: #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .td_side_header_body {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                overflow-y: auto;
+            }
+
+            .td_side_lang_search {
+                display: none;
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+                border-radius: 14px;
+                background: rgba(15, 23, 42, 0.75);
+                border: 1px solid rgba(148, 163, 184, 0.35);
+            }
+
+            .td_side_lang_block label {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: .06em;
+                color: #94a3b8;
+                margin-bottom: 4px;
+                display: inline-block;
+            }
+
+            .td_side_lang_select_wrap {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 6px 10px;
+                border-radius: 999px;
+                background: rgba(15, 23, 42, 0.95);
+                border: 1px solid rgba(148, 163, 184, 0.6);
+            }
+
+            .td_side_lang_select_wrap img {
+                width: 22px;
+                height: 22px;
+                border-radius: 999px;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+
+            .td_side_lang_select_wrap select {
+                flex: 1 1 auto;
+                border: none;
+                outline: none;
+                background: transparent;
+                color: #e5e7eb;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 3px 0;
+                cursor: pointer;
+            }
+
+            .td_side_search_block {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .td_side_search_block label {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: .06em;
+                color: #94a3b8;
+            }
+
+            .td_side_search_form {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 8px;
+                border-radius: 999px;
+                background: #020617;
+                border: 1px solid rgba(148, 163, 184, 0.6);
+            }
+
+            .td_side_search_form input {
+                flex: 1 1 auto;
+                border: none;
+                outline: none;
+                background: transparent;
+                color: #e5e7eb;
+                font-size: 13px;
+            }
+
+            .td_side_search_form button {
+                width: 28px;
+                height: 28px;
+                border-radius: 999px;
+                border: none;
+                background: #e5e7eb;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .td_side_search_form button img {
+                width: 14px;
+                height: 14px;
+            }
+
+            .td_side_search_results {
+                max-height: 220px;
+                overflow-y: auto;
+                border-radius: 12px;
+                background: #020617;
+                border: 1px solid rgba(148, 163, 184, 0.35);
+                padding: 6px 0;
+                display: none;
+            }
+
+            .td_side_search_results .gsearch-item {
+                display: flex;
+                gap: 8px;
+                padding: 8px 10px;
+                border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+                cursor: pointer;
+            }
+
+            .td_side_search_results .gsearch-item:last-child {
+                border-bottom: none;
+            }
+
+            .td_side_search_results .gsearch-title {
+                font-size: 13px;
+                font-weight: 500;
+                color: #e5e7eb;
+            }
+
+            .td_side_search_results .gsearch-meta {
+                font-size: 11px;
+                color: #94a3b8;
+            }
+
+            .td_side_footer {
+                padding-top: 6px;
+                border-top: 1px solid rgba(148, 163, 184, 0.35);
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .td_side_social_row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .td_side_legal {
+                font-size: 11px;
+                color: #94a3b8;
+            }
+
+            .td_side_header.is-open {
+                pointer-events: auto;
+            }
+
+            .td_side_header.is-open .td_side_header_backdrop {
+                opacity: 1;
+            }
+
+            .td_side_header.is-open .td_side_header_panel {
+                transform: translateX(0);
+            }
+
+            /* 1199–1724 */
+            @media (min-width: 1199px) and (max-width: 1724px) {
+
+                .td_main_header_in,
+                .td_header_bar_left,
+                .td_main_header_right {
+                    align-items: center;
+                }
+
+                .td_site_branding img {
+                    margin-top: 0;
+                }
+
+                .td_main_header_right #globalSearch,
+                .td_main_header_right .td_header_social_btns {
+                    display: none;
+                }
+
+                .td_side_lang_search {
+                    display: flex;
+                }
+            }
+
+            .td_header_social_btns .td_social_btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .td_header_social_btns .td_social_btn i {
+                font-size: 12px;
+            }
+
+            @media (min-width: 1199px) and (max-width: 1261px) {
+                .td_nav_list {
+                    gap: 0px;
+                }
+            }
+
+            .td_side_head_actions {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .td_side_head_lang {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: .06em;
+            }
+
+            .td_side_head_lang a {
+                color: #e5e7eb;
+                text-decoration: none;
+            }
+
+            .td_side_head_lang a.is-active {
+                font-weight: 700;
+                text-decoration: underline;
+            }
+
+            /* inline language dropdown near search (<=1200px) */
+            .td_header_lang_inline {
+                display: none;
+                margin: 0 8px;
+            }
+
+            @media (max-width: 1200px) {
+                .td_header_lang_inline {
+                    display: block;
+                }
+            }
+
+            @media (prefers-color-scheme: dark) {
+                .td_header_lang_inline .td_header_dropdown_btn {
+                    color: #e5e7eb;
+                }
+            }
+
+            /* Mobil */
+            @media (max-width: 1200px) {
+
+                .td_nav_list_wrap_in {
+                    display: block;
+                }
+
+                .td_nav_list {
+                    display: block !important;
+                    margin: 0;
+                    padding: 0;
+                    white-space: normal;
+                }
+
+                .td_nav_list>li {
+                    width: 100%;
+                }
+
+                .td_nav_list>li>a {
+                    display: block;
+                    width: 100%;
+                    padding: 12px 0;
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul {
+                    position: static;
+                    background: transparent;
+                    box-shadow: none;
+                    padding: 4px 0 4px 24px;
+                    margin: 0;
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul>li>a {
+                    display: block;
+                    padding: 6px 0;
+                    color: #fff;
+                    font-size: 14px;
+                }
+            }
+
+            @media (max-width: 475px) {
+                .td_main_header .container-fluid {
+                    padding-right: 25px !important;
+                    padding-left: 25px !important;
+                }
+            }
+
+            /* ============================================================
+           FIX: Mobile submenu toggle (+ / -) + hover conflict on touch
+           ============================================================ */
+
+            .td_submenu_toggle {
+                display: none;
+                background: transparent;
+                border: 0;
+                padding: 0;
+                cursor: pointer;
+                line-height: 1;
+                user-select: none;
+                margin-right: 10px;
+            }
+
+            @media (max-width: 1200px) {
+                .td_nav_list>li.menu-item-has-children:hover>ul {
+                    display: none !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul {
+                    display: none !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children.is-open>ul {
+                    display: block !important;
+                }
+
+                .td_nav_list>li.menu-item-has-children {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>a {
+                    flex: 1 1 auto;
+                    order: 1;
+                    padding-right: 10px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 999px;
+                    background: rgba(255, 255, 255, .08);
+                    border: 1px solid rgba(255, 255, 255, .12);
+                    color: #fff;
+                    order: 2;
+                    margin-left: auto;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle::before {
+                    content: "+";
+                    font-size: 20px;
+                    font-weight: 700;
+                }
+
+                .td_nav_list>li.menu-item-has-children.is-open>.td_submenu_toggle::before {
+                    content: "−";
+                }
+
+                .td_nav_list>li.menu-item-has-children>ul {
+                    width: 100%;
+                    order: 3;
+                }
+            }
+
+            /* Side panel üçün submenu davranışı */
+            @media (max-width: 1200px) {
+                .td_side_header_panel li.menu-item-has-children:hover>ul {
+                    display: none !important;
+                }
+
+                .td_side_header_panel li.menu-item-has-children>ul {
+                    display: none !important;
+                }
+
+                .td_side_header_panel li.menu-item-has-children.is-open>ul {
+                    display: block !important;
+                }
+            }
+
+            /* ============================================================
+           REMOVE OLD PLUS: td_munu_dropdown_toggle (non-circle +)
+           Theme inject edir, ona gore həm CSS-lə gizlədirik, həm JS-lə silirik.
+           ============================================================ */
+            @media (max-width: 1200px) {
+
+                /* Köhnə (dairəsiz) + hər yerdə gizlənsin (hansı konteynerdə olmağından asılı deyil) */
+                .td_munu_dropdown_toggle,
+                span.td_munu_dropdown_toggle {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+
+                .td_munu_dropdown_toggle::before,
+                .td_munu_dropdown_toggle::after,
+                .td_munu_dropdown_toggle span::before,
+                .td_munu_dropdown_toggle span::after {
+                    content: none !important;
+                    display: none !important;
+                }
+
+                /* Bizim dairəli toggle düzgün yerdə dayansın (flex olmayan menyularda da) */
+                .td_side_header_panel li.menu-item-has-children,
+                .td_side_header li.menu-item-has-children,
+                .td_mobile_menu li.menu-item-has-children {
+                    position: relative;
+                }
+
+                .td_side_header_panel li.menu-item-has-children>a,
+                .td_side_header li.menu-item-has-children>a,
+                .td_mobile_menu li.menu-item-has-children>a {
+                    padding-right: 46px;
+                    /* düymə üçün yer */
+                }
+
+                .td_side_header_panel li.menu-item-has-children>button.td_submenu_toggle,
+                .td_side_header li.menu-item-has-children>button.td_submenu_toggle,
+                .td_mobile_menu li.menu-item-has-children>button.td_submenu_toggle {
+                    display: inline-flex !important;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    margin: 0 !important;
+                }
+
+                /* parent li flex olsun, amma link 100% olmasın */
+                .td_nav_list>li.menu-item-has-children {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    /* submenu aşağıda qalsın */
+                    gap: 10px;
+                }
+
+                /* IMPORTANT: burada width:100% override edirik */
+                .td_nav_list>li.menu-item-has-children>a {
+                    width: auto !important;
+                    /* bunu qoymasan yenə aşağı düşəcək */
+                    flex: 1 1 auto;
+                    order: 1;
+                    padding-right: 12px;
+                }
+
+                .td_nav_list>li.menu-item-has-children>.td_submenu_toggle {
+                    order: 2;
+                    margin-left: auto;
+                    flex: 0 0 auto;
+                    align-self: center;
+                }
+
+                /* submenu tam aşağı sətirdə qalsın */
+                .td_nav_list>li.menu-item-has-children>ul {
+                    width: 100%;
+                    order: 3;
+                }
+            }
+
+            .td_side_header_panel .td_munu_dropdown_toggle::before,
+            .td_side_header_panel .td_munu_dropdown_toggle::after,
+            .td_side_header_panel .td_munu_dropdown_toggle span::before,
+            .td_side_header_panel .td_munu_dropdown_toggle span::after {
+                content: none !important;
+                display: none !important;
+            }
+
+            /* Bizim dairəli toggle qalır */
+            .td_side_header_panel button.td_submenu_toggle {
+                display: inline-flex !important;
+            }
             }
         </style>
 
         {{-- ==== TOP STRIP ==== --}}
         @include('partials.top-strip')
 
-        {{-- ==== MAIN HEADER ==== --}}
+        <!-- MAIN HEADER -->
         <div class="td_main_header">
-            <div class="container" style="max-width:1400px!important;padding:0 16px!important;margin:0 auto!important;">
-                <div class="td_main_header_in"
-                    style="display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;width:100%!important;">
-
-                    {{-- Logo --}}
-                    <div class="td_main_header_left"
-                        style="flex:0 0 auto!important;display:flex!important;align-items:center!important;">
-                        <a class="td_site_branding td_accent_color" href="{{ route('home') }}"
-                            style="display:inline-flex!important;align-items:center!important;text-decoration:none!important;">
-                            <img src="{{ asset('assets/img/hse.png') }}" alt="{{ $siteName }}"
-                                style="height:54px!important;width:auto!important;display:block!important;margin-top:4px!important;">
+            <div class="container-fluid">
+                <div class="td_main_header_in">
+                    <div class="td_header_bar_left">
+                        <a class="td_site_branding" href="{{ route('home') }}" aria-label="Logo">
+                            <img src="{{ $logoUrl }}" alt="Logo">
                         </a>
-                    </div>
 
-                    {{-- Nav + icons --}}
-                    <div class="td_main_header_right"
-                        style="flex:1 1 0%!important;display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-width:0!important;">
-
-                        <nav class="td_nav"
-                            style="flex:1 1 auto!important;min-width:0!important;overflow-x:visible!important;white-space:normal!important;">
+                        <nav style="margin-left: -4px" class="td_nav" aria-label="Primary">
                             <div class="td_nav_list_wrap">
                                 <div class="td_nav_list_wrap_in">
                                     <ul class="td_nav_list">
-                                        <li>
-                                            <a href="{{ route('home') }}">
-                                                {{ __('Home') }}
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('faqss') }}">
-                                                {{ __('Faqs') }}
-                                            </a>
-                                        </li>
+                                        <li><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
 
-                                        <li class="has-submenu">
-                                            <a href="{{ route('about') }}">
-                                                {{ __('About Us') }}
-                                                <span class="submenu-indicator" aria-hidden="true"></span>
-                                            </a>
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('about') }}">{{ __('About Us') }}</a>
                                             <ul>
-                                                <li><a href="{{ route('about') }}#about-who">{{ __('Who we are') }}</a></li>
-                                                <li><a href="{{ route('about') }}#about-vision-mission">{{ __('Vision & Mission') }}</a></li>
-                                                <li><a href="{{ route('about') }}#about-accreditations">{{ __('Licenses & Accreditations') }}</a></li>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-who">
+                                                        {{ __('Who we are') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-vision-mission">
+                                                        {{ __('Vision & Mission') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('about') }}#about-accreditations">
+                                                        {{ __('Licenses & Accreditations') }}
+                                                    </a>
+                                                </li>
                                                 <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
                                                 <li><a href="{{ route('faqss') }}">{{ __('FAQ') }}</a></li>
                                             </ul>
                                         </li>
 
-                                        <li class="has-submenu">
-                                            <a href="{{ route('courses-grid-view') }}">
-                                                {{ __('Training') }}
-                                                <span class="submenu-indicator" aria-hidden="true"></span>
-                                            </a>
-                                            <ul>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=IOSH">{{ __('IOSH') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=NEBOSH">{{ __('NEBOSH') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=CIEH">{{ __('CIEH') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=IIRSM">{{ __('IIRSM') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=NSC">{{ __('NSC') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=Local%20Training">{{ __('Local Training') }}</a></li>
-                                                <li><a href="{{ route('courses-grid-view') }}?q=E-learning">{{ __('E-learning') }}</a></li>
-                                            </ul>
-                                        </li>
-
-                                        <li class="has-submenu">
-                                            <a href="{{ route('resources') }}">
-                                                {{ __('Resources') }}
-                                                <span class="submenu-indicator" aria-hidden="true"></span>
-                                            </a>
-                                            <ul>
-                                                <li><a href="{{ route('resources') }}?q=Reading materials">{{ __('Reading materials') }}</a></li>
-                                                <li><a href="{{ route('resources') }}?q=Posters">{{ __('Posters') }}</a></li>
-                                                <li><a href="{{ route('resources') }}?q=PPT training materials">{{ __('PPT training materials') }}</a></li>
-                                                <li><a href="{{ route('resources') }}?q=Checklists">{{ __('Checklists') }}</a></li>
-                                            </ul>
-                                        </li>
-
-                                        <li class="has-submenu">
-                                            <a href="{{ route('courses-grid-view') }}">
-                                                {{ __('Courses') }}
-                                                <span class="submenu-indicator" aria-hidden="true"></span>
-                                            </a>
-                                            <ul>
-                                                <li><a href="{{ route('courses-grid-view') }}">{{ __('Courses') }}</a></li>
-                                                <li><a href="{{ route('services') }}">{{ __('Services') }}</a></li>
-                                                <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
-                                            </ul>
-                                        </li>
-
-                                        <li class="has-submenu">
-                                            <a href="{{ route('topices') }}">
-                                                {{ __('Topics') }}
-                                                <span class="submenu-indicator" aria-hidden="true"></span>
-                                            </a>
-                                            <ul>
-                                                <li><a href="{{ route('topices') }}?q=Occupational safety">{{ __('Occupational safety') }}</a></li>
-                                                <li><a href="{{ route('topices') }}?q=Occupational health">{{ __('Occupational health') }}</a></li>
-                                                <li><a href="{{ route('topices') }}?q=Environemntal protection">{{ __('Environemntal protection') }}</a></li>
-                                                <li><a href="{{ route('topices') }}?q=Home safety">{{ __('Home safety') }}</a></li>
-                                                <li><a href="{{ route('topices') }}?q=Public safety">{{ __('Public safety') }}</a></li>
-                                                <li><a href="{{ route('topices') }}?q=Travel safety">{{ __('Travel safety') }}</a></li>
-                                            </ul>
-                                        </li>
-
-                                        <li><a href="{{ route('team') }}">{{ __('Team') }}</a></li>
                                         <li><a href="{{ route('contact') }}">{{ __('Contact') }}</a></li>
 
-                                        {{-- MOBILE: search + language inside menu --}}
-                                        <li class="nav-utility-row">
-                                            <div class="nav-utility-content">
-                                                <button class="td_circle_btn td_center js-open-global-search" type="button" aria-label="Search">
-                                                    <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
-                                                        style="width:16px!important;height:16px!important;">
-                                                </button>
-                                                <select class="top-lang-select nav-lang-select" aria-label="Language">
-                                                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
-                                                    <option value="az" {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
-                                                    <option value="ru" {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
-                                                </select>
-                                            </div>
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('services') }}">{{ __('Services') }}</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('services') }}?q=Training">
+                                                        {{ __('Training') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('services') }}?q=Consultancy">
+                                                        {{ __('Consultancy') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('services') }}?q=Evacuation%20Map">
+                                                        {{ __('Evacuation Map') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('services') }}?q=Instruction%20Books">
+                                                        {{ __('Instruction Books') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('services') }}?q=Safety%20Signs">
+                                                        {{ __('Safety Signs') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </li>
+
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('courses-grid-view') }}">{{ __('Training') }}</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=IOSH">
+                                                        {{ __('IOSH') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=NEBOSH">
+                                                        {{ __('NEBOSH') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=CIEH">
+                                                        {{ __('CIEH') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=IIRSM">
+                                                        {{ __('IIRSM') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=NSC">
+                                                        {{ __('NSC') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=Local%20Training">
+                                                        {{ __('Local Training') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('courses-grid-view') }}?q=E-learning">
+                                                        {{ __('E-learning') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('resources') }}">{{ __('Resources') }}</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Reading materials">
+                                                        {{ __('Reading materials') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Posters">
+                                                        {{ __('Posters') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=PPT training materials">
+                                                        {{ __('PPT training materials') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('resources') }}?q=Checklists">
+                                                        {{ __('Checklists') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li class="menu-item-has-children">
+                                            <a href="{{ route('topices') }}">{{ __('Topics') }}</a>
+                                            <ul>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Occupational safety">
+                                                        {{ __('Occupational safety') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Occupational health">
+                                                        {{ __('Occupational health') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Environemntal protection">
+                                                        {{ __('Environemntal protection') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Home safety">
+                                                        {{ __('Home safety') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Public safety">
+                                                        {{ __('Public safety') }}
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('topices') }}?q=Travel safety">
+                                                        {{ __('Travel safety') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li><a href="{{ route('vacancies') }}">{{ __('Vacancies') }}</a></li>
+                                        <li><a href="{{ route('news') }}">{{ __('News') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </nav>
+                    </div>
 
-                        <div class="td_hero_icon_btns position-relative">
-                            {{-- Desktop / tablet search --}}
-                            <div class="position-relative" id="globalSearch" style="position:relative!important;">
-                                <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
-                                    <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
-                                        style="width:16px!important;height:16px!important;">
-                                </button>
+                    <div class="td_main_header_right">
+                        @php
+                            $labels = ['en' => __('English'), 'az' => __('Azerbaijani'), 'ru' => __('Russian')];
+                            $currentLocale = app()->getLocale();
+                            $fb = setting('social.facebook');
+                            $tw = setting('social.twitter');
+                            $ig = setting('social.instagram');
+                            $pin = setting('social.pinterest');
+                            $wa = setting('social.whatsapp');
+                            $li = setting('social.linkedin', $pin);
+                            $attrs = 'target="_blank" rel="noopener noreferrer"';
+                        @endphp
 
-                                <div class="td_header_search_wrap"
-                                    style="position:absolute!important;right:0!important;top:120%!important;width:460px!important;max-width:calc(100vw - 32px)!important;background:#ffffff!important;border-radius:18px!important;box-shadow:0 18px 40px rgba(15,23,42,.22)!important;padding:12px 14px!important;display:none;">
-                                    <form action="javascript:void(0)" class="td_header_search" autocomplete="off"
-                                        style="display:flex!important;align-items:center!important;gap:8px!important;">
-                                        <input type="text" class="td_header_search_input" id="globalSearchInput"
-                                            placeholder="Search For Anything"
-                                            style="flex:1 1 auto!important;border-radius:999px!important;border:1px solid #e2e8f0!important;padding:6px 12px!important;font-size:14px!important;outline:none!important;">
-                                        <button class="td_header_search_btn td_center" type="submit"
-                                            style="width:32px!important;height:32px!important;border-radius:999px!important;border:none!important;background:#0f172a!important;display:flex!important;align-items:center!important;justify-content:center!important;">
-                                            <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt=""
-                                                style="width:14px!important;height:14px!important;filter:invert(1)!important;">
-                                        </button>
-                                    </form>
-
-                                    <div id="globalSearchResults" style="display:none;"></div>
-                                </div>
-                            </div>
-
-                            {{-- Desktop language selector --}}
-                            <div class="header-lang-desktop">
-                                <select class="top-lang-select" aria-label="Language">
-                                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
-                                    <option value="az" {{ app()->getLocale() === 'az' ? 'selected' : '' }}>AZ</option>
-                                    <option value="ru" {{ app()->getLocale() === 'ru' ? 'selected' : '' }}>RU</option>
-                                </select>
-                            </div>
-
-                            @auth
-                                <div class="position-relative ms-2" style="position:relative!important;">
-                                    <button class="td_circle_btn td_center" type="button" aria-label="Profile">
-                                        <img src="{{ asset('assets/img/icons/user.svg') }}" alt="User"
-                                            style="width:16px!important;height:16px!important;">
+                        <div class="position-relative" id="globalSearch">
+                            <button class="td_circle_btn td_center td_search_tobble_btn" type="button">
+                                <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt="">
+                            </button>
+                            <div class="td_header_search_wrap">
+                                <form action="javascript:void(0)" class="td_header_search" autocomplete="off">
+                                    <input type="text" class="td_header_search_input" id="globalSearchInput"
+                                        placeholder="Search For Anything">
+                                    <button class="td_header_search_btn td_center" type="submit">
+                                        <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt="">
                                     </button>
+                                </form>
+                                <div id="globalSearchResults" style="display:none;"></div>
+                            </div>
+                        </div>
+
+                        {{-- language dropdown near search (mobile / <=1200px) --}}
+                        <div style="margin-top:2px;" class="td_header_lang_inline">
+                            <div class="position-relative td_language_wrap">
+                                <button class="td_header_dropdown_btn td_medium td_heading_color" type="button">
+                                    <img src="{{ asset('assets/img/icons/world.svg') }}" alt=""
+                                        class="td_header_dropdown_btn_icon">
+                                </button>
+                                <ul class="td_header_dropdown_list td_mp_0">
+                                    <li><a href="/az">{{ __('Azerbaijani') }}</a></li>
+                                    <li><a href="/en">{{ __('English') }}</a></li>
+                                    <li><a href="/ru">{{ __('Russian') }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="td_header_social_btns" aria-label="Social links">
+                            @if ($fb)
+                                <a href="{{ $fb }}" class="td_social_btn td_social_btn--fb"
+                                    {!! $attrs !!} aria-label="Facebook" title="Facebook">
+                                    <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                                </a>
+                            @endif
+
+                            @if ($tw)
+                                <a href="{{ $tw }}" class="td_social_btn td_social_btn--tw"
+                                    {!! $attrs !!} aria-label="X (Twitter)" title="X (Twitter)">
+                                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                                </a>
+                            @endif
+
+                            @if ($ig)
+                                <a href="{{ $ig }}" class="td_social_btn td_social_btn--ig"
+                                    {!! $attrs !!} aria-label="Instagram" title="Instagram">
+                                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                                </a>
+                            @endif
+
+                            @if ($li)
+                                <a href="{{ $li }}" class="td_social_btn td_social_btn--li"
+                                    {!! $attrs !!} aria-label="LinkedIn" title="LinkedIn">
+                                    <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+                                </a>
+                            @endif
+
+                            @if ($wa)
+                                <a href="{{ $wa }}" class="td_social_btn td_social_btn--wa"
+                                    {!! $attrs !!} aria-label="WhatsApp" title="WhatsApp">
+                                    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+
+                        <button class="td_hamburger_btn" type="button" aria-label="Menu"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- SIDE HEADER --}}
+        <div class="td_side_header">
+            <div class="td_side_header_backdrop" data-side-close></div>
+            <div class="td_side_header_panel" role="dialog" aria-modal="true">
+                <div class="td_side_header_in">
+                    <div class="td_side_header_head">
+                        <div class="td_side_header_title">
+                            {{ __('Menu & Quick Actions') }}
+                        </div>
+
+                        <div class="td_side_head_actions">
+                            <div class="td_side_head_lang">
+                                <a href="/az" class="{{ $currentLocale === 'az' ? 'is-active' : '' }}">AZ</a>
+                                <span>·</span>
+                                <a href="/en" class="{{ $currentLocale === 'en' ? 'is-active' : '' }}">EN</a>
+                                <span>·</span>
+                                <a href="/ru" class="{{ $currentLocale === 'ru' ? 'is-active' : '' }}">RU</a>
+                            </div>
+
+                            <button class="td_side_close_btn" type="button" data-side-close
+                                aria-label="Close side menu">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="td_side_header_body">
+                        {{-- 1199–1724 aralığında dil + search burda görünəcək --}}
+                        <div class="td_side_lang_search">
+                            <div class="td_side_lang_block">
+                                <label>{{ __('Language') }}</label>
+                                <div class="td_side_lang_select_wrap">
+                                    <img id="sideLangFlag"
+                                        src="{{ asset('assets/img/flags/' . ($currentLocale === 'az' ? 'az.jpg' : ($currentLocale === 'ru' ? 'ru.jpg' : 'en.jpg'))) }}"
+                                        alt="Flag">
+                                    <select id="sideLangSelect">
+                                        <option value="az" data-flag="{{ asset('assets/img/flags/az.jpg') }}"
+                                            {{ $currentLocale === 'az' ? 'selected' : '' }}>
+                                            {{ __('Azerbaijani') }}
+                                        </option>
+                                        <option value="en" data-flag="{{ asset('assets/img/flags/en.jpg') }}"
+                                            {{ $currentLocale === 'en' ? 'selected' : '' }}>
+                                            {{ __('English') }}
+                                        </option>
+                                        <option value="ru" data-flag="{{ asset('assets/img/flags/ru.jpg') }}"
+                                            {{ $currentLocale === 'ru' ? 'selected' : '' }}>
+                                            {{ __('Russian') }}
+                                        </option>
+                                    </select>
                                 </div>
-                            @endauth
+                            </div>
+
+                            <div class="td_side_search_block" id="sideSearch">
+                                <label>{{ __('Search') }}</label>
+                                <form class="td_side_search_form" action="javascript:void(0)" autocomplete="off">
+                                    <input type="text" id="sideSearchInput"
+                                        placeholder="{{ __('Search for anything') }}">
+                                    <button type="submit">
+                                        <img src="{{ asset('assets/img/icons/search_2.svg') }}" alt="">
+                                    </button>
+                                </form>
+                                <div class="td_side_search_results" id="sideSearchResults"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="td_side_footer">
+                        <div class="td_side_social_row">
+                            @if ($fb)
+                                <a href="{{ $fb }}" class="td_social_btn td_social_btn--fb"
+                                    {!! $attrs !!} aria-label="Facebook" title="Facebook">
+                                    <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            @if ($tw)
+                                <a href="{{ $tw }}" class="td_social_btn td_social_btn--tw"
+                                    {!! $attrs !!} aria-label="X (Twitter)" title="X (Twitter)">
+                                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            @if ($ig)
+                                <a href="{{ $ig }}" class="td_social_btn td_social_btn--ig"
+                                    {!! $attrs !!} aria-label="Instagram" title="Instagram">
+                                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            @if ($li)
+                                <a href="{{ $li }}" class="td_social_btn td_social_btn--li"
+                                    {!! $attrs !!} aria-label="LinkedIn" title="LinkedIn">
+                                    <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                            @if ($wa)
+                                <a href="{{ $wa }}" class="td_social_btn td_social_btn--wa"
+                                    {!! $attrs !!} aria-label="WhatsApp" title="WhatsApp">
+                                    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+                        <div class="td_side_legal">
+                            © {{ date('Y') }} {{ $siteName ?? 'Educve' }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Global search JS --}}
+        {{-- Global search JS (desktop) --}}
         <script>
             (function() {
                 const root = document.getElementById('globalSearch');
@@ -1141,21 +1231,20 @@
                 const input = document.getElementById('globalSearchInput');
                 const box = document.getElementById('globalSearchResults');
                 const wrap = root.querySelector('.td_header_search_wrap');
-
+                const toggleBtn = root.querySelector('.td_search_tobble_btn');
                 let timer = null;
 
                 function render(html) {
                     box.innerHTML = html || '';
                     box.style.display = html ? 'block' : 'none';
                     if (html) {
-                        box.style.display = 'block';
                         wrap.style.display = 'block';
                     }
                 }
 
                 function search(q) {
                     if (!q || q.trim() === '') {
-                        box.style.display = 'none';
+                        render('');
                         return;
                     }
                     fetch(`{{ route('search') }}?q=${encodeURIComponent(q) }`, {
@@ -1164,158 +1253,358 @@
                             }
                         })
                         .then(r => r.json())
-                        .then(({ html }) => render(html))
+                        .then(({
+                            html
+                        }) => render(html))
                         .catch(() => render('<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
                 }
 
-                input?.addEventListener('input', function() {
+                input.addEventListener('input', function() {
                     clearTimeout(timer);
                     const value = this.value;
                     timer = setTimeout(() => search(value), 280);
                 });
 
-                root.querySelector('form')?.addEventListener('submit', (e) => {
+                root.querySelector('form').addEventListener('submit', (e) => {
                     e.preventDefault();
                     search(input.value);
                 });
 
                 document.addEventListener('click', (e) => {
                     if (!root.contains(e.target)) {
-                        if (wrap) wrap.style.display = 'none';
+                        wrap.style.display = 'none';
+                        box.style.display = 'none';
                     }
                 });
 
-                const mainToggleBtn = root.querySelector('.td_search_tobble_btn');
-
-                mainToggleBtn?.addEventListener('click', () => {
-                    if (!wrap) return;
-                    wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
-                    if (wrap.style.display === 'block') {
-                        setTimeout(() => input?.focus(), 50);
+                toggleBtn?.addEventListener('click', () => {
+                    const visible = wrap.style.display === 'block';
+                    wrap.style.display = visible ? 'none' : 'block';
+                    if (!visible) {
+                        setTimeout(() => input.focus(), 50);
                     }
-                });
-
-                const externalSearchBtns = document.querySelectorAll('.js-open-global-search');
-                externalSearchBtns.forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (!wrap) return;
-                        wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
-                        if (wrap.style.display === 'block') {
-                            setTimeout(() => input?.focus(), 50);
-                        }
-                    });
                 });
             })();
         </script>
 
-        <!-- ✅ MOBILE DROPDOWN FIX: click parent toggles open/close (no navigation) -->
+        {{-- Side header JS --}}
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const mq = window.matchMedia('(max-width: 992px)');
+            (function() {
+                const side = document.querySelector('.td_side_header');
+                const panel = document.querySelector('.td_side_header_panel');
+                const btn = document.querySelector('.td_hamburger_btn');
+                const closers = document.querySelectorAll('[data-side-close]');
+                if (!side || !panel || !btn) return;
 
-                function isMobile() {
-                    return mq.matches;
+                // --- helpers ---
+                function removeOldPluses(scope) {
+                    if (!scope) return;
+                    scope.querySelectorAll('.td_munu_dropdown_toggle').forEach(el => el.remove());
                 }
 
-                const navList = document.querySelector('.td_nav_list');
-                if (!navList) return;
+                function setupSubmenuToggles(scope) {
+                    if (!scope) return;
 
-                const submenuItems = Array.from(navList.querySelectorAll('li.has-submenu'));
+                    // köhnə + (theme) əvvəlcə silinsin
+                    removeOldPluses(scope);
 
-                function closeAll(exceptLi) {
-                    submenuItems.forEach(function(li) {
-                        if (exceptLi && li === exceptLi) return;
-                        li.classList.remove('is-open');
-                        const a = li.querySelector(':scope > a');
-                        if (a) a.setAttribute('aria-expanded', 'false');
-                    });
-                }
+                    const items = scope.querySelectorAll('li.menu-item-has-children');
+                    items.forEach((li) => {
+                        const submenu = li.querySelector(':scope > ul');
+                        const link = li.querySelector(':scope > a');
+                        if (!submenu || !link) return;
 
-                submenuItems.forEach(function(li) {
-                    const a = li.querySelector(':scope > a');
-                    if (a) a.setAttribute('aria-expanded', li.classList.contains('is-open') ? 'true' : 'false');
-                });
-
-                navList.addEventListener('click', function(e) {
-                    if (!isMobile()) return;
-
-                    const li = e.target.closest('li.has-submenu');
-                    if (!li) return;
-
-                    const link = li.querySelector(':scope > a');
-                    const dropdown = li.querySelector(':scope > ul');
-                    if (!link || !dropdown) return;
-
-                    // submenu link clicked, allow it
-                    if (dropdown.contains(e.target)) return;
-
-                    // parent clicked, always toggle (and prevent navigation)
-                    if (link.contains(e.target)) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const isOpen = li.classList.contains('is-open');
-                        if (isOpen) {
-                            li.classList.remove('is-open');
-                            link.setAttribute('aria-expanded', 'false');
-                        } else {
-                            closeAll(li);
-                            li.classList.add('is-open');
-                            link.setAttribute('aria-expanded', 'true');
+                        // bizim dairəli toggle
+                        let toggle = li.querySelector(':scope > button.td_submenu_toggle');
+                        if (!toggle) {
+                            toggle = document.createElement('button');
+                            toggle.type = 'button';
+                            toggle.className = 'td_submenu_toggle';
+                            toggle.setAttribute('aria-label', 'Toggle submenu');
+                            toggle.setAttribute('aria-expanded', 'false');
+                            link.insertAdjacentElement('afterend', toggle);
                         }
-                    }
-                });
 
-                document.addEventListener('click', function(e) {
-                    if (!isMobile()) return;
-                    const nav = document.querySelector('.td_nav');
-                    if (!nav) return;
-                    if (!nav.contains(e.target)) closeAll();
-                });
+                        // initial state (default bağlı)
+                        li.classList.remove('is-open');
+                        toggle.setAttribute('aria-expanded', 'false');
 
-                function onMqChange() {
-                    if (!isMobile()) closeAll();
-                }
-                if (mq.addEventListener) mq.addEventListener('change', onMqChange);
-                if (mq.addListener) mq.addListener(onMqChange);
+                        // click bind only once
+                        if (toggle.dataset.bound === '1') return;
+                        toggle.dataset.bound = '1';
 
-                // Language switcher
-                const langSelects = document.querySelectorAll('.top-lang-select');
-                langSelects.forEach(function(select) {
-                    select.addEventListener('change', function() {
-                        const lang = this.value;
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('lang', lang);
-                        window.location.href = url.toString();
+                        toggle.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            const isOpen = li.classList.toggle('is-open');
+                            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                        });
                     });
+                }
+
+                // MutationObserver: tema menyunu sonradan inject edəndə də işləsin
+                let observer = null;
+
+                function startObserver() {
+                    if (observer) return;
+
+                    observer = new MutationObserver(() => {
+                        // inject olunan köhnə plusları sil + toggle-ları yenilə
+                        setupSubmenuToggles(panel);
+                    });
+
+                    observer.observe(panel, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+
+                function stopObserver() {
+                    if (!observer) return;
+                    observer.disconnect();
+                    observer = null;
+                }
+
+                function openSide() {
+                    side.classList.add('is-open');
+
+                    // observer açıq olanda işləsin
+                    startObserver();
+
+                    // dərhal + bir az gecikmə ilə (inject varsa)
+                    setupSubmenuToggles(panel);
+                    setTimeout(() => setupSubmenuToggles(panel), 120);
+                    setTimeout(() => setupSubmenuToggles(panel), 350);
+                }
+
+                function closeSide() {
+                    side.classList.remove('is-open');
+                    stopObserver();
+                }
+
+                btn.addEventListener('click', openSide);
+                closers.forEach(el => el.addEventListener('click', closeSide));
+
+                document.addEventListener('keyup', (e) => {
+                    if (e.key === 'Escape') closeSide();
                 });
-            });
+
+                // Side language flag + redirect
+                const select = document.getElementById('sideLangSelect');
+                const flagImg = document.getElementById('sideLangFlag');
+                if (select && flagImg) {
+                    function updateFlagAndNavigate() {
+                        const opt = select.options[select.selectedIndex];
+                        if (!opt) return;
+                        const flagUrl = opt.getAttribute('data-flag');
+                        if (flagUrl) {
+                            flagImg.src = flagUrl;
+                            flagImg.alt = opt.value.toUpperCase() + ' flag';
+                        }
+                        window.location.href = `/${opt.value}`;
+                    }
+                    select.addEventListener('change', updateFlagAndNavigate);
+                }
+
+                // Side search
+                const searchRoot = document.getElementById('sideSearch');
+                if (searchRoot) {
+                    const input = document.getElementById('sideSearchInput');
+                    const results = document.getElementById('sideSearchResults');
+                    const form = searchRoot.querySelector('form');
+                    let timer = null;
+
+                    function renderSide(html) {
+                        results.innerHTML = html || '';
+                        results.style.display = html ? 'block' : 'none';
+                    }
+
+                    function sideSearch(q) {
+                        if (!q || q.trim() === '') {
+                            renderSide('');
+                            return;
+                        }
+                        fetch(`{{ route('search') }}?q=${encodeURIComponent(q) }`, {
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            })
+                            .then(r => r.json())
+                            .then(({
+                                html
+                            }) => renderSide(html))
+                            .catch(() => renderSide(
+                                '<div class="gsearch-dropdown"><div class="gsearch-empty">Error.</div></div>'));
+                    }
+
+                    input.addEventListener('input', function() {
+                        clearTimeout(timer);
+                        const value = this.value;
+                        timer = setTimeout(() => sideSearch(value), 280);
+                    });
+
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        sideSearch(input.value);
+                    });
+                }
+
+                // səhifə yüklənəndə də: varsa köhnə plusları sil
+                setupSubmenuToggles(document);
+            })();
         </script>
+        
 
     </header>
+
+    <div class="td_side_header" id="sideHeader">
+        <button class="td_close" type="button" aria-label="Close"></button>
+
+        {{-- Overlay content-in üstünü örtməsin deyə in-dən kənarda saxlayırıq --}}
+        <div class="td_side_header_overlay" aria-hidden="true"></div>
+
+        <div class="td_side_header_in">
+            <div class="td_side_header_shape"></div>
+
+            @if ($logoUrl)
+                <img src="{{ asset('assets/img/hse.png') }}" alt="{{ $siteName }}"
+                    style="max-height:64px;width:auto;">
+            @else
+                <svg width="241" height="64" viewBox="0 0 241 64" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    {{-- ... SVG path-ların burda qalır ... --}}
+                </svg>
+            @endif
+
+            <div class="td_side_header_box">
+                <h2 class="td_side_header_heading">
+                    Do you have a project in your <br> mind? Keep connect us.
+                </h2>
+            </div>
+
+            <div class="td_side_header_box">
+                <h3 class="td_side_header_title td_heading_color">Contact Us</h3>
+
+                <ul class="td_side_header_contact_info td_mp_0">
+                    @if ($phone && $telHref)
+                        <li>
+                            <i class="fa-solid fa-phone-volume"></i>
+                            <a href="{{ $telHref }}">{{ $phone }}</a>
+                        </li>
+                    @endif
+
+                    @if ($email)
+                        <li>
+                            <i class="fa-solid fa-envelope"></i>
+                            <a href="mailto:{{ $email }}">{{ $email }}</a>
+                        </li>
+                    @endif
+
+                    @if ($address)
+                        <li>
+                            <i class="fa-solid fa-location-dot"></i>
+                            {!! nl2br(e($address)) !!}
+                        </li>
+                    @endif
+                </ul>
+            </div>
+
+            <div class="td_side_header_box">
+                <h3 class="td_side_header_title td_heading_color">{{ __('Subscribe') }}</h3>
+
+                <div class="td_newsletter td_style_1">
+                    <form class="td_newsletter_form" action="{{ route('subscribe') }}" method="POST"
+                        id="newsletterForm">
+                        @csrf
+                        <input type="email" name="email" class="td_newsletter_input" placeholder="Email address"
+                            required>
+                        <button type="submit" class="td_btn td_style_1 td_radius_30 td_medium">
+                            <span class="td_btn_in td_white_color td_accent_bg">
+                                <span>{{ __('Subscribe now') }}</span>
+                            </span>
+                        </button>
+                    </form>
+
+                    @if (session('sub_ok'))
+                        <div class="alert alert-success mt-2">{{ session('sub_ok') }}</div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="td_side_header_box">
+                <h3 class="td_side_header_title td_heading_color">Follow Us</h3>
+
+                <div class="td_social_btns td_style_1 td_heading_color">
+                    @if ($fb)
+                        <a href="{{ $fb }}" class="td_center" {!! $attrs !!}><i
+                                class="fa-brands fa-facebook-f"></i></a>
+                    @endif
+                    @if ($tw)
+                        <a href="{{ $tw }}" class="td_center" {!! $attrs !!}><i
+                                class="fa-brands fa-x-twitter"></i></a>
+                    @endif
+                    @if ($ig)
+                        <a href="{{ $ig }}" class="td_center" {!! $attrs !!}><i
+                                class="fa-brands fa-instagram"></i></a>
+                    @endif
+                    @if ($li)
+                        <a href="{{ $li }}" class="td_center" {!! $attrs !!}><i
+                                class="fa-brands fa-linkedin-in"></i></a>
+                    @endif
+                    @if ($wa)
+                        <a href="{{ $wa }}" class="td_center" {!! $attrs !!}><i
+                                class="fa-brands fa-whatsapp"></i></a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .td_side_header {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+        }
+
+        /* overlay fon üçündür, amma content-in üstünü örtməsin */
+        .td_side_header_overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: auto;
+            /* overlay-ə klik edəndə bağlaya bilərsən */
+        }
+
+        /* content overlay-dən yuxarıda olmalıdır */
+        .td_side_header_in {
+            position: relative;
+            z-index: 2;
+            pointer-events: auto;
+        }
+
+        /* close button da yuxarıda olsun */
+        .td_close {
+            position: absolute;
+            z-index: 3;
+            pointer-events: auto;
+        }
+
+        /* ehtiyat üçün: input/button həmişə klik qəbul etsin */
+        .td_side_header_in input,
+        .td_side_header_in button,
+        .td_side_header_in a,
+        .td_side_header_in textarea,
+        .td_side_header_in select {
+            pointer-events: auto;
+        }
+    </style>
     {{-- ================= END HEADER ================= --}}
 
     {{-- VERTICAL SOCIAL RAIL --}}
-    <div class="header-social-rail">
-        @if (setting('social.facebook'))
-            <a href="{{ setting('social.facebook') }}" target="_blank" rel="noopener noreferrer"><i
-                    class="fab fa-facebook-f"></i></a>
-        @endif
-        @if (setting('social.instagram'))
-            <a href="{{ setting('social.instagram') }}" target="_blank" rel="noopener noreferrer"><i
-                    class="fab fa-instagram"></i></a>
-        @endif
-        @if (setting('social.linkedin') || setting('social.pinterest'))
-            <a href="{{ setting('social.linkedin', setting('social.pinterest')) }}" target="_blank"
-                rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
-        @endif
-        @if (setting('social.whatsapp'))
-            <a href="{{ setting('social.whatsapp') }}" target="_blank" rel="noopener noreferrer"><i
-                    class="fab fa-whatsapp"></i></a>
-        @endif
-    </div>
+ 
 </body>
+
+
 
 </html>

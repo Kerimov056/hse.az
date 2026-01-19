@@ -2,16 +2,42 @@
 
 @php
     use Illuminate\Support\Str;
+    use Illuminate\Support\Carbon;
 
     $title       = $course->name             ?? 'Course Title';
     $category    = $course->category->name   ?? ($course->category ?? 'General');
-    $trainer     = $course->trainer->name    ?? ($course->trainer_name ?? 'Instructor');
+
+    // ✅ Variant 1: trainer -> instructor (DB column: instructor)
+    $instructor  = $course->instructor       ?? ($course->trainer_name ?? 'Instructor');
+
     $updatedAt   = $course->updated_at       ?? now();
-    $updatedTxt  = \Illuminate\Support\Carbon::parse($updatedAt)->format('d M, Y');
+    $updatedTxt  = Carbon::parse($updatedAt)->format('d M, Y');
+
     $thumb       = $course->imageUrl         ?? asset('assets/img/placeholder/placeholder-800x500.jpg');
     $views       = $course->views            ?? 0;
     $videoUrl    = $course->video_url        ?? null;
+
     $description = $course->description      ?? 'No description provided yet.';
+    $info        = $course->info             ?? null;
+
+    // New columns
+    $duration    = trim((string)($course->duration ?? ''));
+    $priceRaw    = $course->price ?? null;
+
+    $hasPrice    = $priceRaw !== null && $priceRaw !== '' && is_numeric($priceRaw);
+    $priceNumber = $hasPrice ? (float)$priceRaw : null;
+
+    $currency    = $course->currency ?? 'AZN'; // sütun yoxdursa default
+    $priceText   = $hasPrice
+        ? (fmod($priceNumber, 1.0) === 0.0 ? number_format($priceNumber, 0) : rtrim(rtrim(number_format($priceNumber, 2, '.', ''), '0'), '.'))
+        : null;
+
+    $isFree      = $hasPrice && $priceNumber == 0.0;
+
+    // Topics (course_topics table)
+    $topics = collect($course->topics ?? $course->courseTopics ?? $course->course_topics ?? [])
+        ->sortBy(fn($t) => $t->sort_order ?? 9999)
+        ->values();
 
     // social links
     $sl = $course->socialLink ?? null;
@@ -34,12 +60,26 @@
 @endphp
 
 <style>
+  :root{
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e5e7eb;
+    --bg:#f8fafc;
+    --card:#ffffff;
+  }
+
+  .course-wrap{max-width: 980px; margin:0 auto;}
+  .course-top-grid{display:grid; grid-template-columns: 1.45fr .55fr; gap:18px;}
+  @media (max-width: 991.98px){ .course-top-grid{ grid-template-columns: 1fr; } }
+
   .course-thumb{
     position: relative;
-    border-radius: 10px;
-    background:#f6f7f9;
+    border-radius: 14px;
+    background:#0b1220;
     height: 520px;
     overflow: hidden;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow: 0 16px 50px rgba(15,23,42,.14);
   }
   @media (max-width: 991.98px){ .course-thumb{ height: 380px; } }
   @media (max-width: 575.98px){ .course-thumb{ height: 260px; } }
@@ -47,8 +87,9 @@
   .course-thumb img{
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
+    opacity: .95;
   }
 
   .course-thumb iframe{
@@ -59,19 +100,137 @@
     display: block;
   }
 
+  .media-grad{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,.10) 25%, rgba(0,0,0,.70) 100%);
+    pointer-events:none;
+  }
+
   .views-badge {
-    position: absolute; top: 10px; left: 10px;
-    background: rgba(0,0,0,0.6); color:#fff; font-weight:600;
-    font-size:13px; line-height:1; padding:6px 10px; border-radius: 999px;
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,0.6); color:#fff; font-weight:800;
+    font-size:13px; line-height:1; padding:7px 11px; border-radius: 999px;
     display:inline-flex; align-items:center; gap:6px; z-index:2;
+    backdrop-filter: blur(6px);
   }
   .views-badge svg{ width:16px; height:16px; }
+
+  .meta-chip-row{
+    position:absolute; left:12px; right:12px; bottom:12px;
+    display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:flex-end;
+    z-index:2;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:.45rem;
+    padding:7px 10px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:.78rem;
+    color:#0f172a;
+    background: rgba(255,255,255,.92);
+    border:1px solid rgba(255,255,255,.40);
+  }
+  .chip-dark{
+    color:#fff;
+    background: rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(6px);
+  }
+  .chip svg{ width:16px; height:16px; }
+
+  .side-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+    height:100%;
+  }
+  .side-title{
+    font-weight:900; font-size:16px; margin:0 0 10px 0;
+  }
+  .kv{
+    display:flex; justify-content:space-between; gap:12px;
+    padding:10px 0; border-top:1px dashed rgba(15,23,42,.10);
+    font-size:14px;
+  }
+  .kv:first-of-type{ border-top:0; padding-top:0; }
+  .kv .k{ color:var(--muted); }
+  .kv .v{ font-weight:800; color:var(--ink); text-align:right; }
+
+  .course-title{
+    font-weight: 900;
+    font-size: 44px;
+    margin: 10px 0 10px 0;
+    line-height: 1.08;
+  }
+  @media (max-width:575.98px){ .course-title{ font-size:34px; } }
+
+  .subline{
+    display:flex; flex-wrap:wrap; gap:12px;
+    align-items:center;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .subline .dot{ width:4px; height:4px; background:#cbd5e1; border-radius:50%; }
+
+  .label{
+    display:inline-flex; align-items:center;
+    padding:6px 10px; border-radius:999px;
+    background:#eef2ff;
+    color:#3730a3;
+    font-weight:900;
+    font-size:12px;
+    border:1px solid rgba(55,48,163,.12);
+  }
+
+  .section-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    box-shadow: 0 10px 26px rgba(15,23,42,.06);
+  }
+
+  .topics{
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .topic-item{
+    display:flex; gap:12px; align-items:flex-start;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid rgba(15,23,42,.08);
+    background:#fff;
+  }
+  .topic-num{
+    width:30px; height:30px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    background:#f1f5f9;
+    color:#0f172a;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+  .topic-txt{ font-weight:800; color:var(--ink); line-height:1.35; }
+  .topic-sub{ color:var(--muted); font-size:13px; margin-top:2px; }
 
   .social-btns{display:flex; flex-wrap:wrap; gap:.6rem;}
   .social-btns a{
     display:inline-flex; align-items:center; gap:.5rem;
-    border-radius:999px; padding:.55rem .9rem; font-weight:600;
-    text-decoration:none; border:1px solid var(--td-border, #e8e8e8);
+    border-radius:999px; padding:.55rem .9rem; font-weight:800;
+    text-decoration:none; border:1px solid var(--line);
+    background:#fff;
+  }
+
+  .register-box{
+    border:1px solid rgba(0,0,0,.08);
+    border-radius: 14px;
+    padding: 18px;
+    background: #fff;
+  }
+  .register-box .mini{
+    opacity:.8;
+    font-size: 14px;
+    margin:0;
   }
 
   .equal-card{display:flex;flex-direction:column;height:100%;}
@@ -81,128 +240,245 @@
   .equal-card .td_card_title{min-height:56px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .td_card_subtitle{min-height:72px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .btn-row{margin-top:auto;display:flex;gap:.5rem;align-items:center}
-
-  /* Register block */
-  .register-box{
-    border:1px solid rgba(0,0,0,.08);
-    border-radius: 12px;
-    padding: 18px;
-    background: #fff;
-  }
-  .register-box .mini{
-    opacity:.8;
-    font-size: 14px;
-    margin:0;
-  }
 </style>
 
-<section style="margin-top: 50px">
+<section style="margin-top: 50px; background:var(--bg)">
   <div class="td_height_120 td_height_lg_80"></div>
   <div class="container">
-    <div class="row td_gap_y_50">
-      <div class="col-lg-10 mx-auto">
-        <div class="td_course_details">
+    <div class="course-wrap">
 
-          <div class="course-thumb td_radius_10 td_mb_30">
-            <span class="views-badge" title="Views">
+      {{-- TOP GRID: media + quick facts --}}
+      <div class="course-top-grid td_mb_30">
+
+        <div class="course-thumb">
+          <span class="views-badge" title="Views">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" />
+            </svg>
+            {{ number_format($views) }}
+          </span>
+
+          @if($videoUrl)
+            <iframe class="embed-responsive-item" src="{{ $videoUrl }}" allowfullscreen></iframe>
+          @else
+            <img src="{{ $thumb }}" alt="{{ $title }}">
+          @endif
+
+          <div class="media-grad"></div>
+
+          <div class="meta-chip-row">
+            <span class="chip-dark">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" />
+                <path d="M12 20s7-4.5 7-10a7 7 0 0 0-14 0c0 5.5 7 10 7 10Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.5 10.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
               </svg>
-              {{ $views }}
+              {{ $category }}
             </span>
 
-            @if($videoUrl)
-              <iframe class="embed-responsive-item" src="{{ $videoUrl }}" allowfullscreen></iframe>
-            @else
-              <img src="{{ $thumb }}" alt="{{ $title }}">
-            @endif
+            <span class="d-flex gap-2 flex-wrap justify-content-end">
+              @if($duration !== '')
+                <span class="chip" title="Duration">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M12 7v6l4 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ $duration }}
+                </span>
+              @endif
+
+              @if($hasPrice)
+                <span class="chip" title="Price">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M9 11h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                  @if($isFree)
+                    Free
+                  @else
+                    <b style="font-weight:900">{{ $priceText }}</b> {{ $currency }}
+                  @endif
+                </span>
+              @endif
+            </span>
+          </div>
+        </div>
+
+        {{-- Quick facts --}}
+        <aside class="side-card">
+          <h3 class="side-title">Course info</h3>
+
+          <div class="kv">
+            <div class="k">Category</div>
+            <div class="v">{{ $category }}</div>
           </div>
 
-          <span class="td_course_label td_mb_10">{{ $category }}</span>
-          <h2 class="td_fs_48 td_mb_10">{{ $title }}</h2>
+          <div class="kv">
+            <div class="k">Instructor</div>
+            <div class="v">{{ $instructor }}</div>
+          </div>
 
-          <div class="d-flex flex-wrap align-items-center gap-3 td_mb_30">
-            <div class="d-flex align-items-center gap-2">
-              <img src="{{ $course->trainer->avatar ?? asset('assets/img/others/author_1.jpg') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
-              <p class="td_heading_color mb-0 td_medium">
-                <span class="td_accent_color">Trainer:</span> <a href="#">{{ $trainer }}</a>
+          @if($duration !== '')
+            <div class="kv">
+              <div class="k">Duration</div>
+              <div class="v">{{ $duration }}</div>
+            </div>
+          @endif
+
+          @if($hasPrice)
+            <div class="kv">
+              <div class="k">Price</div>
+              <div class="v">
+                @if($isFree) Free @else {{ $priceText }} {{ $currency }} @endif
+              </div>
+            </div>
+          @endif
+
+          <div class="kv">
+            <div class="k">Last update</div>
+            <div class="v">{{ $updatedTxt }}</div>
+          </div>
+
+          @if(!empty($course->courseUrl))
+            <div class="kv">
+              <div class="k">Link</div>
+              <div class="v">
+                <a href="{{ $course->courseUrl }}" target="_blank" rel="noopener" style="font-weight:900; text-decoration:none">
+                  Open
+                </a>
+              </div>
+            </div>
+          @endif
+
+          {{-- Registration button (if course type == course) --}}
+          @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
+            <div style="margin-top:14px">
+              <a href="{{ route('courses.register', $course->id) }}" class="td_btn td_style_1 td_radius_10 td_medium w-100">
+                <span class="td_btn_in td_white_color td_accent_bg">
+                  <span>Register</span>
+                </span>
+              </a>
+              <p class="mini mb-0" style="margin-top:10px; color:var(--muted)">
+                Fill the form and submit your registration for this course.
               </p>
             </div>
-            <div class="td_medium td_heading_color">
-              <span class="td_accent_color">Last Update:</span> {{ $updatedTxt }}
-            </div>
-          </div>
-
-          {{-- Description --}}
-          <div class="td_mb_40">
-            <h3 class="td_fs_36 td_mb_15">Description</h3>
-            @if(!empty($course->description))
-              {!! $description !!}
-            @else
-              <p class="mb-0">{{ $description }}</p>
-            @endif
-          </div>
-
-                 {{-- ✅ Register block --}}
-          @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
-            <div class="td_mb_50">
-              <div class="register-box">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                  <div>
-                    <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
-                    <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
-                  </div>
-
-                  <a href="{{ route('courses.register', $course->id) }}"
-                     class="td_btn td_style_1 td_radius_10 td_medium">
-                    <span class="td_btn_in td_white_color td_accent_bg">
-                      <span>Register</span>
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
           @endif
+        </aside>
 
-          {{-- Social links --}}
-          @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
-            <div class="td_mb_40">
-              <h3 class="td_fs_24 td_semibold td_mb_15">Follow / Contact</h3>
-              <div class="social-btns">
-                @if($twitter)
-                  <a href="{{ $twitter }}" target="_blank" rel="noopener">
-                    <i class="fa-brands fa-x-twitter"></i> Twitter
-                  </a>
-                @endif
-                @if($facebook)
-                  <a href="{{ $facebook }}" target="_blank" rel="noopener">
-                    <i class="fa-brands fa-facebook-f"></i> Facebook
-                  </a>
-                @endif
-                @if($linkedin)
-                  <a href="{{ $linkedin }}" target="_blank" rel="noopener">
-                    <i class="fa-brands fa-linkedin-in"></i> LinkedIn
-                  </a>
-                @endif
-                @if($emailLink)
-                  <a href="{{ $emailLink }}">
-                    <i class="fa-solid fa-envelope"></i> Email
-                  </a>
-                @endif
-                @if($waLink)
-                  <a href="{{ $waLink }}" target="_blank" rel="noopener">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                  </a>
-                @endif
-              </div>
-            </div>
+      </div>
+
+      {{-- Title + subtitle --}}
+      <div class="td_mb_30">
+        <span class="label">{{ $category }}</span>
+        <h1 class="course-title">{{ $title }}</h1>
+
+        <div class="subline">
+          <span><b style="color:var(--ink)">Instructor:</b> {{ $instructor }}</span>
+          <span class="dot"></span>
+          <span><b style="color:var(--ink)">Updated:</b> {{ $updatedTxt }}</span>
+          @if($duration !== '')
+            <span class="dot"></span>
+            <span><b style="color:var(--ink)">Duration:</b> {{ $duration }}</span>
           @endif
-
+          @if($hasPrice)
+            <span class="dot"></span>
+            <span><b style="color:var(--ink)">Price:</b>
+              @if($isFree) Free @else {{ $priceText }} {{ $currency }} @endif
+            </span>
+          @endif
         </div>
       </div>
+
+       {{-- Description --}}
+      <div class="section-card td_mb_30">
+        <h3 class="td_fs_36 td_mb_15">Description</h3>
+        @if(!empty($course->description))
+          {!! $description !!}
+        @else
+          <p class="mb-0">{{ $description }}</p>
+        @endif
+      </div>
+
+      {{-- Topics --}}
+      @if($topics->count() > 0)
+        <div class="section-card td_mb_30">
+          <h3 class="td_fs_36 td_mb_15" style="margin-bottom:10px">Topics</h3>
+          <div class="topics">
+            @foreach($topics as $i => $t)
+              <div class="topic-item">
+                <div class="topic-num">{{ $i + 1 }}</div>
+                <div>
+                  <div class="topic-txt">{{ $t->title ?? '' }}</div>
+                  @if(!empty($t->sort_order))
+                    <div class="topic-sub">Order: {{ $t->sort_order }}</div>
+                  @endif
+                </div>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      @endif
+
+     
+
+      {{-- ✅ Register block (secondary) --}}
+      @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
+        <div class="td_mb_30">
+          <div class="register-box">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div>
+                <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
+                <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
+              </div>
+
+              <a href="{{ route('courses.register', $course->id) }}"
+                 class="td_btn td_style_1 td_radius_10 td_medium">
+                <span class="td_btn_in td_white_color td_accent_bg">
+                  <span>Register</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      @endif
+
+      {{-- Social links --}}
+      @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
+        <div class="section-card td_mb_30">
+          <h3 class="td_fs_24 td_semibold td_mb_15">Follow / Contact</h3>
+          <div class="social-btns">
+            @if($twitter)
+              <a href="{{ $twitter }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-x-twitter"></i> Twitter
+              </a>
+            @endif
+            @if($facebook)
+              <a href="{{ $facebook }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-facebook-f"></i> Facebook
+              </a>
+            @endif
+            @if($linkedin)
+              <a href="{{ $linkedin }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+              </a>
+            @endif
+            @if($emailLink)
+              <a href="{{ $emailLink }}">
+                <i class="fa-solid fa-envelope"></i> Email
+              </a>
+            @endif
+            @if($waLink)
+              <a href="{{ $waLink }}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </a>
+            @endif
+          </div>
+        </div>
+      @endif
+
     </div>
   </div>
+  <div class="td_height_120 td_height_lg_80"></div>
 </section>
 
 {{-- Related Courses – max 3 card --}}
@@ -210,7 +486,7 @@
   $rel = collect($relatedCourses ?? [])->take(3);
 @endphp
 
-<section>
+<section style="background:#fff">
   <div class="td_height_60 td_height_lg_60"></div>
   <div class="container">
     <h2 class="td_fs_48 td_mb_50">Courses you may like</h2>
@@ -278,7 +554,7 @@
 </section>
 
 {{-- INFO TOAST – course üçün --}}
-@include('partials.info-toast', ['text' => $course->info ?? null])
+@include('partials.info-toast', ['text' => $info])
 
 {{-- Success Toast (after registration) --}}
 @if(session('ok'))
@@ -341,18 +617,15 @@
         setTimeout(() => backdrop.remove(), 180);
       }
 
-      // close by buttons
       if (closeBtn) closeBtn.addEventListener('click', closeToast);
       if (okBtn) okBtn.addEventListener('click', closeToast);
 
-      // close by click outside
       if (backdrop) {
         backdrop.addEventListener('click', function (e) {
           if (e.target === backdrop) closeToast();
         });
       }
 
-      // auto close after 4.5s
       setTimeout(closeToast, 4500);
     })();
   </script>

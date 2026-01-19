@@ -1867,8 +1867,6 @@
         })();
     </script>
 
-
-
     @php
 
         $heroButtons = \App\Models\HeroButton::orderBy('order')->get();
@@ -2045,10 +2043,6 @@
         </div>
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
-
-
-
-
     <!-- Start Popular Courses -->
     <section id="home-courses" class="td_gray_bg_3">
         <div class="td_height_112 td_height_lg_75"></div>
@@ -2470,7 +2464,6 @@
         })();
     </script>
 
-
     {{-- Start Feature Section (settings-driven) --}}
     @php
         $kicker = setting('home.features.kicker', 'CAMPUS');
@@ -2787,8 +2780,6 @@
     </section>
     {{-- End Campus Life --}}
 
-
-
     @php
         // MIME yoxlamaları
         function resIsPdf($mimeOrUrl)
@@ -2822,9 +2813,6 @@
             return asset('assets/img/icons/file.svg');
         }
     @endphp
-
-
-
 
     <section id="home-resources">
         <div class="td_height_112 td_height_lg_75"></div>
@@ -3022,8 +3010,6 @@
         <div class="td_height_120 td_height_lg_80"></div>
     </section>
 
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function updateHeroFromItem(el) {
@@ -3088,8 +3074,6 @@
                 });
         });
     </script>
-
-
 
     {{-- Scripts (pdf.js + thumb builder) --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous"
@@ -3252,8 +3236,6 @@
         })();
     </script>
 
-
-
     {{-- Start Video Section (settings-driven) --}}
     @php
 
@@ -3342,8 +3324,6 @@
         </div>
     </section>
     {{-- End Video Section --}}
-
-
 
     <!-- Start Accreditation Showcase -->
     <section id="home-accreditations">
@@ -3771,10 +3751,6 @@
         });
     </script>
 
-
-
-
-
     {{-- Start Departments Section (settings-driven) --}}
     @php
 
@@ -3929,9 +3905,6 @@
     </section>
     {{-- End Departments Section --}}
 
-
-
-
     @php
         // Sosial şəbəkələr
         $fb = setting('social.facebook');
@@ -3980,6 +3953,7 @@
             @include('partials.admin-shortcut')
         @endif
     @endauth
+    
     <footer class="td_footer td_style_1">
 
 
@@ -4188,6 +4162,7 @@
         </div> {{-- .container --}}
     </footer>
     <!-- End Footer Section -->
+
     <!-- Start Scroll Up Button -->
     <div class="td_scrollup">
         <i class="fa-solid fa-arrow-up"></i>

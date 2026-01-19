@@ -4,19 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
-    // Əgər fillable istifadə edirsənsə
     protected $fillable = [
         'type',
         'name',
+        'courseHoldingName', // NEW
         'courseUrl',
         'description',
-        'info',       // YENİ SƏTİR
+        'info',
         'imageUrl',
         'views',
-        // digər sütunların...
+
+        // optional sütunlar
+        'duration',
+        'instructor',
+        'price',
     ];
 
     public const TYPE_COURSE = 'course';
@@ -33,13 +38,11 @@ class Course extends Model
         self::TYPE_NEWS,
     ];
 
-    /** scope: müəyyən type üçün filtrlə */
     public function scopeType($query, string $type)
     {
         return $query->where('type', $type);
     }
 
-    // Sosial link əlaqəsi (course_id xarici açarı ilə)
     public function socialLink(): HasOne
     {
         return $this->hasOne(SocialLink::class, 'course_id');
@@ -48,5 +51,10 @@ class Course extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(\App\Models\CourseRegistration::class, 'course_id');
+    }
+
+    public function courseTopics(): HasMany
+    {
+        return $this->hasMany(\App\Models\CourseTopic::class, 'course_id')->orderBy('sort_order');
     }
 }

@@ -17,274 +17,153 @@
     }
 
     /* ===== SEARCH ===== */
-    .courses-search-wrap {
-        display: flex;
-        justify-content: center
-    }
-
-    .courses-search {
-        display: flex;
-        gap: .6rem;
-        width: 100%;
-        max-width: 820px
-    }
-
+    .courses-search-wrap { display:flex; justify-content:center }
+    .courses-search { display:flex; gap:.6rem; width:100%; max-width:820px }
     .courses-search input[type="text"] {
-        flex: 1;
-        min-width: 0;
-        height: 48px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: .8rem 1rem;
-        font-size: 1rem;
-        background: #fff;
+        flex:1; min-width:0; height:48px;
+        border:1px solid var(--line); border-radius:999px;
+        padding:.8rem 1rem; font-size:1rem; background:#fff;
     }
-
-    .courses-search .td_btn {
-        border: none;
-        border-radius: 999px;
-        padding: .8rem 1.1rem;
-        font-weight: 700
-    }
-
-    @media (max-width:575.98px) {
-        .courses-search {
-            flex-direction: column
-        }
-
-        .courses-search .td_btn {
-            width: 100%
-        }
+    .courses-search .td_btn { border:none; border-radius:999px; padding:.8rem 1.1rem; font-weight:700 }
+    @media (max-width:575.98px){
+        .courses-search{ flex-direction:column }
+        .courses-search .td_btn{ width:100% }
     }
 
     /* ===== CARD ===== */
-    .course-card {
-        height: 100%;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 10px 26px rgba(15, 23, 42, .06);
-        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease
+    .course-card{
+        height:100%;
+        background:var(--card);
+        border:1px solid var(--line);
+        border-radius:16px;
+        overflow:hidden;
+        box-shadow:0 10px 26px rgba(15,23,42,.06);
+        transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease
     }
-
-    .course-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 42px rgba(15, 23, 42, .10);
-        border-color: #dbe1ea
+    .course-card:hover{
+        transform:translateY(-4px);
+        box-shadow:0 18px 42px rgba(15,23,42,.10);
+        border-color:#dbe1ea
     }
 
     /* media */
-    .course-media {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        background: #0b1220
+    .course-media{
+        position:relative;
+        display:block;
+        overflow:hidden;
+        background:#0b1220
     }
-
-    .course-media::before {
-        content: "";
-        display: block;
-        padding-top: 62.5%
+    .course-media::before{ content:""; display:block; padding-top:62.5% }
+    .course-media>img{
+        position:absolute; inset:0;
+        width:100%; height:100%;
+        object-fit:cover;
+        transition:transform .35s ease
     }
-
-    .course-media>img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform .35s ease
+    .course-card:hover .course-media>img{ transform:scale(1.045) }
+    .media-grad{
+        position:absolute; inset:0;
+        background:linear-gradient(180deg, rgba(0,0,0,.0) 45%, rgba(0,0,0,.65) 100%)
     }
-
-    .course-card:hover .course-media>img {
-        transform: scale(1.045)
+    .media-top{
+        position:absolute; top:10px; left:10px; right:10px;
+        display:flex; justify-content:space-between; gap:8px
     }
-
-    .media-grad {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(0, 0, 0, .0) 45%, rgba(0, 0, 0, .65) 100%)
-    }
-
-    .media-top {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        display: flex;
-        justify-content: space-between;
-        gap: 8px
-    }
-
-    .media-bottom {
-        position: absolute;
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-        display: flex;
-        justify-content: space-between;
-        gap: 8px
+    .media-bottom{
+        position:absolute; left:12px; right:12px; bottom:12px;
+        display:flex; justify-content:space-between; gap:8px; align-items:flex-end;
+        flex-wrap:wrap;
     }
 
     /* chips */
-    .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: .4rem;
-        padding: 6px 10px;
-        font-weight: 700;
-        font-size: .78rem;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, .92);
-        color: #0f172a
+    .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:.4rem;
+        padding:6px 10px;
+        font-weight:700;
+        font-size:.78rem;
+        border-radius:999px;
+        background:rgba(255,255,255,.92);
+        color:#0f172a
     }
+    .chip-dark{ background:rgba(0,0,0,.65); color:#fff }
+    .chip-ghost{ background:rgba(255,255,255,.78); color:#0f172a }
 
-    .chip-dark {
-        background: rgba(0, 0, 0, .65);
-        color: #fff
+    /* price highlight */
+    .chip-price{
+        background:rgba(255,255,255,.95);
+        color:#0f172a;
+        border:1px solid rgba(255,255,255,.55);
     }
+    .chip-price b{ font-weight:900 }
 
     /* body */
-    .course-body {
-        padding: 14px 14px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: .5rem
+    .course-body{
+        padding:14px 14px 16px;
+        display:flex;
+        flex-direction:column;
+        gap:.5rem
+    }
+    .course-title{ font-size:1.05rem; font-weight:800; margin:0 }
+    .course-desc{ color:var(--ink); opacity:.78; line-height:1.55 }
+    .meta-row{
+        display:flex; gap:.5rem; align-items:center;
+        color:var(--muted); font-size:.9rem; flex-wrap:wrap
+    }
+    .meta-row .dot{
+        width:4px; height:4px;
+        background:#cbd5e1; border-radius:50%
     }
 
-    .course-title {
-        font-size: 1.05rem;
-        font-weight: 800;
-        margin: 0
-    }
-
-    .course-desc {
-        color: var(--ink);
-        opacity: .78;
-        line-height: 1.55
-    }
-
-    .meta-row {
-        display: flex;
-        gap: .5rem;
-        align-items: center;
-        color: var(--muted);
-        font-size: .9rem;
-        flex-wrap: wrap
-    }
-
-    .meta-row .dot {
-        width: 4px;
-        height: 4px;
-        background: #cbd5e1;
-        border-radius: 50%
-    }
-
-    .btn-wide {
-        min-width: 100px
-    }
-
-    .btn-wide .td_btn_in {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: .9rem 1.15rem
-    }
+    .btn-wide{ min-width:100px }
+    .btn-wide .td_btn_in{ display:inline-flex; align-items:center; justify-content:center; padding:.9rem 1.15rem }
 
     /* actions */
-    .actions {
-        margin-top: auto;
-        display: flex;
-        gap: .5rem;
-        flex-wrap: wrap
-    }
-
-    .btn-soft {
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        font-weight: 700
-    }
-
-    .btn-primary-round {
-        border-radius: 10px;
-        font-weight: 700
-    }
+    .actions{ margin-top:auto; display:flex; gap:.5rem; flex-wrap:wrap }
+    .btn-soft{ background:#fff; border:1px solid var(--line); border-radius:10px; font-weight:700 }
+    .btn-primary-round{ border-radius:10px; font-weight:700 }
 
     /* empty state */
-    .empty-state {
-        max-width: 560px;
-        margin: 40px auto 0;
-        text-align: center
+    .empty-state{ max-width:560px; margin:40px auto 0; text-align:center }
+    .empty-icon{
+        width:70px; height:70px; margin:0 auto 14px;
+        border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        background:#f5f7fb
     }
-
-    .empty-icon {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 14px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f5f7fb
-    }
-
-    .empty-title {
-        font-size: 1.4rem;
-        font-weight: 800;
-        margin-bottom: .25rem
-    }
-
-    .empty-desc {
-        opacity: .75
-    }
+    .empty-title{ font-size:1.4rem; font-weight:800; margin-bottom:.25rem }
+    .empty-desc{ opacity:.75 }
 
     /* ===== PAGINATION FIX (IMPORTANT) ===== */
-    .courses-pagination {
-        display: flex;
-        justify-content: center;
+    .courses-pagination{ display:flex; justify-content:center; }
+    .courses-pagination nav[role="navigation"]{
+        width:auto !important;
+        align-items:center !important;
+        justify-content:center !important;
+        gap:10px !important;
     }
-
-    /* Laravel default Tailwind pagination nav-ı stretch edir, bunu söndürürük */
-    .courses-pagination nav[role="navigation"] {
-        width: auto !important;
-        /* display: inline-flex !important; */
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 10px !important;
+    .courses-pagination nav[role="navigation"] .flex{
+        justify-content:center !important;
+        align-items:center !important;
+        gap:10px !important;
     }
-
-    /* İçindəki bloklar bəzən justify-between olur */
-    .courses-pagination nav[role="navigation"] .flex {
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 10px !important;
-    }
-
-    /* Link və span-lar normal düymə kimi görünsün */
     .courses-pagination a,
-    .courses-pagination span {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        line-height: 1 !important;
-        font-size: 14px !important;
+    .courses-pagination span{
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        line-height:1 !important;
+        font-size:14px !important;
     }
-
-    /* Əsas problem: SVG-lər böyüyür. Burda məcburi ölçü veririk */
-    .courses-pagination svg {
-        width: 18px !important;
-        height: 18px !important;
-        max-width: 18px !important;
-        max-height: 18px !important;
-        flex: 0 0 18px !important;
+    .courses-pagination svg{
+        width:18px !important;
+        height:18px !important;
+        max-width:18px !important;
+        max-height:18px !important;
+        flex:0 0 18px !important;
     }
-
-    /* Əgər hansısa global css svg-ni 100% edirsə, bu da onu boğur */
-    .courses-pagination svg * {
-        vector-effect: non-scaling-stroke;
-    }
+    .courses-pagination svg *{ vector-effect: non-scaling-stroke; }
 </style>
 
 <!-- Header -->
@@ -427,7 +306,7 @@
                 <span class="td_heading_color td_medium">
                     @if (method_exists($courses, 'total'))
                         @if (($q ?? '') !== '')
-                      
+                            {{-- istəsən burada "Result for" göstərə bilərik, indi boş saxladın --}}
                         @else
                             Showing {{ $courses->count() }} Courses of {{ $courses->total() }}
                         @endif
@@ -444,6 +323,26 @@
         @if ($courses->count() > 0)
             <div id="courses-grid" class="row td_gap_y_30 td_row_gap_30">
                 @foreach ($courses as $course)
+                    @php
+                        $duration = trim((string)($course->duration ?? ''));
+                        $priceRaw = $course->price ?? null;
+
+                        // Qiymət formatı: integer/double ola bilər
+                        $hasPrice = $priceRaw !== null && $priceRaw !== '' && is_numeric($priceRaw);
+                        $priceNumber = $hasPrice ? (float)$priceRaw : null;
+
+                        // Currency: project-də sütun yoxdursa default AZN
+                        $currency = $course->currency ?? 'AZN';
+
+                        // 199.00 -> 199, 199.5 -> 199.5
+                        $priceText = $hasPrice
+                            ? (fmod($priceNumber, 1.0) === 0.0 ? number_format($priceNumber, 0) : rtrim(rtrim(number_format($priceNumber, 2, '.', ''), '0'), '.'))
+                            : null;
+
+                        // pulsuz
+                        $isFree = $hasPrice && $priceNumber == 0.0;
+                    @endphp
+
                     <div class="col-lg-4 col-md-6">
                         <article class="course-card">
 
@@ -475,9 +374,37 @@
                                 </div>
 
                                 <div class="media-bottom">
-                                    @if (!empty($course->courseUrl))
-                                        <span class="chip">External</span>
-                                    @endif
+                                    <div class="d-flex gap-2 flex-wrap align-items-end">
+                                        @if ($duration !== '')
+                                            <span class="chip chip-ghost" title="Duration">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                                                    <path d="M12 7v6l4 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                {{ $duration }}
+                                            </span>
+                                        @endif
+
+                                        @if ($hasPrice)
+                                            <span class="chip chip-price" title="Price">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                    <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="1.6" />
+                                                    <path d="M9 11h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                                                </svg>
+                                                @if($isFree)
+                                                    <b>Free</b>
+                                                @else
+                                                    <b>{{ $priceText }}</b> {{ $currency }}
+                                                @endif
+                                            </span>
+                                        @endif
+
+                                        @if (!empty($course->courseUrl))
+                                            <span class="chip">External</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </a>
 
