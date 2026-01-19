@@ -144,6 +144,27 @@
             @endif
           </div>
 
+                 {{-- ✅ Register block --}}
+          @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
+            <div class="td_mb_50">
+              <div class="register-box">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                  <div>
+                    <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
+                    <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
+                  </div>
+
+                  <a href="{{ route('courses.register', $course->id) }}"
+                     class="td_btn td_style_1 td_radius_10 td_medium">
+                    <span class="td_btn_in td_white_color td_accent_bg">
+                      <span>Register</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          @endif
+
           {{-- Social links --}}
           @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
             <div class="td_mb_40">
@@ -174,27 +195,6 @@
                     <i class="fa-brands fa-whatsapp"></i> WhatsApp
                   </a>
                 @endif
-              </div>
-            </div>
-          @endif
-
-          {{-- ✅ Register block --}}
-          @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
-            <div class="td_mb_50">
-              <div class="register-box">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                  <div>
-                    <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
-                    <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
-                  </div>
-
-                  <a href="{{ route('courses.register', $course->id) }}"
-                     class="td_btn td_style_1 td_radius_10 td_medium">
-                    <span class="td_btn_in td_white_color td_accent_bg">
-                      <span>Register</span>
-                    </span>
-                  </a>
-                </div>
               </div>
             </div>
           @endif
