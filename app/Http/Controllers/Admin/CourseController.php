@@ -8,6 +8,7 @@ use App\Models\SocialLink;
 use App\Models\CourseTopic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -15,20 +16,20 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        $q = $request->get('q');
-        $holding = $request->get('holding'); // ?holding=A
+        $q = trim((string) $request->get('q', ''));
+        $holding = trim((string) $request->get('holding', ''));
 
         $query = Course::query()
             ->where('type', Course::TYPE_COURSE)
             ->with('courseTopics');
 
-        // ✅ HOLDING FILTER
-        if (!empty($holding)) {
+        // HOLDING FILTER
+        if ($holding !== '') {
             $query->where('courseHoldingName', $holding);
         }
 
-        // ✅ SEARCH (optional)
-        if (!empty($q)) {
+        // SEARCH
+        if ($q !== '') {
             $query->where(function ($qq) use ($q) {
                 $qq->where('name', 'like', "%{$q}%")
                     ->orWhere('instructor', 'like', "%{$q}%")
@@ -37,7 +38,7 @@ class CourseController extends Controller
             });
         }
 
-        $courses = $query->orderByDesc('id')->paginate(20);
+        $courses = $query->orderByDesc('id')->paginate(20)->withQueryString();
 
         return view('admin.courses.index', compact('courses', 'q', 'holding'));
     }
@@ -49,11 +50,17 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('[Course.store] START', [
+            'method' => $request->method(),
+            'content_type' => $request->header('Content-Type'),
+            'has_file_image' => $request->hasFile('image'),
+            'file_keys' => array_keys($request->allFiles()),
+        ]);
+
         $data = $request->validate([
             'type' => ['required', 'in:course'],
             'name' => ['required', 'string', 'max:160'],
 
-            // NEW
             'courseHoldingName' => ['nullable', 'string', 'max:160'],
 
             'courseUrl' => ['nullable', 'url', 'max:500'],
@@ -78,44 +85,55 @@ class CourseController extends Controller
             'topics.*' => ['nullable', 'string', 'max:120'],
         ]);
 
-        // image upload (səndə storage logic fərqli ola bilər, mövcud logic-i saxla)
+        Log::info('[Course.store] VALIDATION OK', [
+            'data_keys' => array_keys($data),
+            'type' => $data['type'] ?? null,
+            'name' => $data['name'] ?? null,
+        ]);
+
+        // Image upload (GCS if available, else public)
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('courses', 'public');
-            $data['imageUrl'] = asset('storage/' . $path);
+            $data['imageUrl'] = $this->uploadCourseImage($request->file('image'), $data['name'] ?? 'course');
+            Log::info('[Course.store] IMAGE URL SET', ['imageUrl' => $data['imageUrl']]);
         }
 
-        $course = Course::create($data);
+        $course = DB::transaction(function () use ($data, $request) {
+            $course = Course::create($data);
 
-        // social link upsert
-        $course->socialLink()->updateOrCreate(
-            ['course_id' => $course->id],
-            [
-                'twitterurl' => $request->twitterurl,
-                'facebookurl' => $request->facebookurl,
-                'linkedinurl' => $request->linkedinurl,
-                'emailurl' => $request->emailurl,
-                'whatsappurl' => $request->whatsappurl,
-            ]
-        );
+            // social link upsert
+            $course->socialLink()->updateOrCreate(
+                ['course_id' => $course->id],
+                [
+                    'twitterurl' => $request->twitterurl,
+                    'facebookurl' => $request->facebookurl,
+                    'linkedinurl' => $request->linkedinurl,
+                    'emailurl' => $request->emailurl,
+                    'whatsappurl' => $request->whatsappurl,
+                ]
+            );
 
-        // topics save
-        $topics = collect($request->input('topics', []))
-            ->map(fn($t) => trim((string) $t))
-            ->filter()
-            ->values();
+            // topics save
+            $topics = collect($request->input('topics', []))
+                ->map(fn($t) => trim((string) $t))
+                ->filter()
+                ->values();
 
-        if ($topics->count()) {
-            foreach ($topics as $i => $t) {
-                $course->courseTopics()->create([
-                    'title' => $t,
-                    'sort_order' => $i + 1,
-                ]);
+            if ($topics->count()) {
+                foreach ($topics as $i => $t) {
+                    $course->courseTopics()->create([
+                        'title' => $t,
+                        'sort_order' => $i + 1,
+                    ]);
+                }
             }
-        }
+
+            return $course;
+        });
+
+        Log::info('[Course.store] END', ['course_id' => $course->id]);
 
         return redirect()->route('admin.courses.index')->with('ok', 'Course yaradıldı.');
     }
-
 
     public function show(Course $course)
     {
@@ -132,11 +150,18 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        abort_unless($course->type === Course::TYPE_COURSE, 404);
+
+        Log::info('[Course.update] START', [
+            'course_id' => $course->id,
+            'method' => $request->method(),
+            'has_file_image' => $request->hasFile('image'),
+        ]);
+
         $data = $request->validate([
             'type' => ['required', 'in:course'],
             'name' => ['required', 'string', 'max:160'],
 
-            // NEW
             'courseHoldingName' => ['nullable', 'string', 'max:160'],
 
             'courseUrl' => ['nullable', 'url', 'max:500'],
@@ -161,41 +186,49 @@ class CourseController extends Controller
             'topics.*' => ['nullable', 'string', 'max:120'],
         ]);
 
+        // keep old image unless new uploaded
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('courses', 'public');
-            $data['imageUrl'] = asset('storage/' . $path);
+            $data['imageUrl'] = $this->uploadCourseImage($request->file('image'), $data['name'] ?? 'course');
+            Log::info('[Course.update] IMAGE URL SET', ['course_id' => $course->id, 'imageUrl' => $data['imageUrl']]);
+        } else {
+            unset($data['imageUrl']); // IMPORTANT: empty gəlməsin, köhnəni silməsin
         }
 
-        $course->update($data);
+        DB::transaction(function () use ($course, $data, $request) {
+            $course->update($data);
 
-        $course->socialLink()->updateOrCreate(
-            ['course_id' => $course->id],
-            [
-                'twitterurl' => $request->twitterurl,
-                'facebookurl' => $request->facebookurl,
-                'linkedinurl' => $request->linkedinurl,
-                'emailurl' => $request->emailurl,
-                'whatsappurl' => $request->whatsappurl,
-            ]
-        );
+            $course->socialLink()->updateOrCreate(
+                ['course_id' => $course->id],
+                [
+                    'twitterurl' => $request->twitterurl,
+                    'facebookurl' => $request->facebookurl,
+                    'linkedinurl' => $request->linkedinurl,
+                    'emailurl' => $request->emailurl,
+                    'whatsappurl' => $request->whatsappurl,
+                ]
+            );
 
-        // topics resync
-        $topics = collect($request->input('topics', []))
-            ->map(fn($t) => trim((string) $t))
-            ->filter()
-            ->values();
+            // topics resync
+            $topics = collect($request->input('topics', []))
+                ->map(fn($t) => trim((string) $t))
+                ->filter()
+                ->values();
 
-        $course->courseTopics()->delete();
+            $course->courseTopics()->delete();
 
-        foreach ($topics as $i => $t) {
-            $course->courseTopics()->create([
-                'title' => $t,
-                'sort_order' => $i + 1,
-            ]);
-        }
+            foreach ($topics as $i => $t) {
+                $course->courseTopics()->create([
+                    'title' => $t,
+                    'sort_order' => $i + 1,
+                ]);
+            }
+        });
+
+        Log::info('[Course.update] END', ['course_id' => $course->id]);
 
         return redirect()->route('admin.courses.edit', $course)->with('ok', 'Dəyişikliklər yadda saxlanıldı.');
     }
+
     public function destroy(Course $course)
     {
         abort_unless($course->type === Course::TYPE_COURSE, 404);
@@ -203,13 +236,62 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.index')->with('ok', 'Silindi');
     }
 
+    /**
+     * Upload image to GCS if disk exists; otherwise store on public disk.
+     * Returns public URL for saving into DB.
+     */
+    private function uploadCourseImage($file, string $nameForSlug): string
+    {
+        $original = $file->getClientOriginalName();
+        $ext = $file->getClientOriginalExtension() ?: 'png';
+        $safeName = Str::slug($nameForSlug ?: 'course');
+        $filename = $safeName . '-' . uniqid() . '.' . $ext;
+
+        // Prefer GCS if configured
+        try {
+            if (config('filesystems.disks.gcs')) {
+                Log::info('[Course.image] TRY GCS UPLOAD', [
+                    'original' => $original,
+                    'filename' => $filename,
+                ]);
+
+                Storage::disk('gcs')->put($filename, file_get_contents($file), 'public');
+
+                $url = $this->gcsPublicUrl($filename);
+
+                Log::info('[Course.image] GCS UPLOAD OK', [
+                    'filename' => $filename,
+                    'url' => $url,
+                ]);
+
+                return $url;
+            }
+        } catch (\Throwable $e) {
+            Log::error('[Course.image] GCS UPLOAD FAILED, FALLBACK TO PUBLIC', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Fallback: local public disk
+        $path = $file->storeAs('courses', $filename, 'public');
+        $url = Storage::disk('public')->url($path); // better than asset()
+
+        Log::info('[Course.image] PUBLIC UPLOAD OK', [
+            'path' => $path,
+            'url' => $url,
+            'disk_root' => storage_path('app/public'),
+        ]);
+
+        return $url;
+    }
+
     private function gcsPublicUrl(string $filename): string
     {
-        $base = rtrim(config('filesystems.disks.gcs.api_url'), '/');
-        $bucket = config('filesystems.disks.gcs.bucket');
-        $prefix = trim(config('filesystems.disks.gcs.path_prefix', ''), '/');
+        $base = rtrim((string) config('filesystems.disks.gcs.api_url'), '/');
+        $bucket = (string) config('filesystems.disks.gcs.bucket');
+        $prefix = trim((string) config('filesystems.disks.gcs.path_prefix', ''), '/');
 
-        return $prefix
+        return $prefix !== ''
             ? "{$base}/{$bucket}/{$prefix}/{$filename}"
             : "{$base}/{$bucket}/{$filename}";
     }
