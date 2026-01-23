@@ -60,6 +60,75 @@
 
     // Optional extra content (Safety leadership section)
     $safetyLeadership = $course->safety_leadership ?? $course->safetyLeadership ?? $course->safety ?? null;
+
+    /*
+      ✅ NEW: Parse description blocks created by admin
+      Format saved in DB:
+      <section data-desc-item="1">
+        <h3>Title</h3>
+        <div data-desc-body="1">Body with <br> etc</div>
+      </section>
+    */
+    $descSections = [];
+    $rawDesc = (string)($course->description ?? '');
+
+    if (trim($rawDesc) !== '' && str_contains($rawDesc, 'data-desc-item="1"')) {
+        try {
+            libxml_use_internal_errors(true);
+
+            $dom = new \DOMDocument('1.0', 'UTF-8');
+            // wrap to keep HTML valid
+            $dom->loadHTML('<div id="wrap">'.$rawDesc.'</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+            $xpath = new \DOMXPath($dom);
+            $nodes = $xpath->query('//section[@data-desc-item="1"]');
+
+            if ($nodes && $nodes->length > 0) {
+                foreach ($nodes as $sec) {
+                    $h3 = null;
+                    foreach ($sec->childNodes as $ch) {
+                        if ($ch instanceof \DOMElement && strtolower($ch->tagName) === 'h3') {
+                            $h3 = $ch;
+                            break;
+                        }
+                    }
+
+                    $titleTxt = $h3 ? trim($h3->textContent ?? '') : '';
+                    $titleTxt = $titleTxt !== '' ? $titleTxt : 'Description';
+
+                    $bodyEl = null;
+                    foreach ($sec->childNodes as $ch) {
+                        if ($ch instanceof \DOMElement && strtolower($ch->tagName) === 'div' && $ch->getAttribute('data-desc-body') === '1') {
+                            $bodyEl = $ch;
+                            break;
+                        }
+                    }
+
+                    $bodyHtml = '';
+                    if ($bodyEl) {
+                        $bodyHtml = '';
+                        foreach ($bodyEl->childNodes as $child) {
+                            $bodyHtml .= $dom->saveHTML($child);
+                        }
+                        $bodyHtml = trim($bodyHtml);
+                    }
+
+                    if ($titleTxt !== '' || $bodyHtml !== '') {
+                        $descSections[] = [
+                            'title' => $titleTxt,
+                            'body'  => $bodyHtml !== '' ? $bodyHtml : '',
+                        ];
+                    }
+                }
+            }
+
+            libxml_clear_errors();
+        } catch (\Throwable $e) {
+            $descSections = [];
+        }
+    }
+
+    $hasDescSections = count($descSections) > 0;
 @endphp
 
 <style>
@@ -285,6 +354,7 @@
     color:#fff;
     box-shadow: 0 10px 22px rgba(11,18,32,.14);
     flex:0 0 auto;
+    font-weight:900;
   }
 
   .acc-title{
@@ -330,9 +400,6 @@
     border-top:1px solid rgba(15,23,42,.06);
   }
 
-  .acc-focus:focus{
-    outline:none;
-  }
   .acc-trigger:focus-visible{
     outline:3px solid rgba(99,102,241,.25);
     outline-offset:-3px;
@@ -490,33 +557,73 @@
       {{-- CUSTOM ACCORDION (NO BOOTSTRAP) --}}
       <div class="acc-wrap td_mb_30" id="courseAcc">
 
-        {{-- Description (open by default) --}}
-        <div class="acc-item is-open" data-acc-item>
-          <button class="acc-trigger" type="button" data-acc-btn aria-expanded="true" aria-controls="accDesc">
-            <div class="acc-left">
-              <div class="acc-badge" aria-hidden="true">D</div>
-              <div style="min-width:0">
-                <p class="acc-title">Description</p>
-                <p class="acc-sub">Overview, what you will learn</p>
+        {{-- ✅ DESCRIPTION SECTIONS (from admin) --}}
+        @if($hasDescSections)
+          @foreach($descSections as $i => $sec)
+            @php
+              $accId = 'accDescSec'.($i+1);
+              $open = $i === 0;
+              $badge = $i + 1;
+              $subtitle = 'Description section';
+            @endphp
+
+            <div class="acc-item {{ $open ? 'is-open' : '' }}" data-acc-item>
+              <button class="acc-trigger" type="button" data-acc-btn aria-expanded="{{ $open ? 'true' : 'false' }}" aria-controls="{{ $accId }}">
+                <div class="acc-left">
+                  <div class="acc-badge" aria-hidden="true">{{ $badge }}</div>
+                  <div style="min-width:0">
+                    <p class="acc-title">{{ $sec['title'] ?? 'Description' }}</p>
+                    <p class="acc-sub">{{ $subtitle }}</p>
+                  </div>
+                </div>
+                <div class="acc-chevron" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </button>
+
+              <div class="acc-panel" id="{{ $accId }}" data-acc-panel role="region" aria-label="{{ $sec['title'] ?? 'Description' }}">
+                <div class="acc-content">
+                  @if(!empty($sec['body']))
+                    {!! $sec['body'] !!}
+                  @else
+                    <p class="mb-0"> </p>
+                  @endif
+                </div>
               </div>
             </div>
-            <div class="acc-chevron" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </button>
+          @endforeach
 
-          <div class="acc-panel" id="accDesc" data-acc-panel role="region" aria-label="Description">
-            <div class="acc-content">
-              @if(!empty($course->description))
-                {!! $description !!}
-              @else
-                <p class="mb-0">{{ $description }}</p>
-              @endif
+        @else
+          {{-- Fallback: old single description --}}
+          <div class="acc-item is-open" data-acc-item>
+            <button class="acc-trigger" type="button" data-acc-btn aria-expanded="true" aria-controls="accDesc">
+              <div class="acc-left">
+                <div class="acc-badge" aria-hidden="true">D</div>
+                <div style="min-width:0">
+                  <p class="acc-title">Description</p>
+                  <p class="acc-sub">Overview, what you will learn</p>
+                </div>
+              </div>
+              <div class="acc-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </button>
+
+            <div class="acc-panel" id="accDesc" data-acc-panel role="region" aria-label="Description">
+              <div class="acc-content">
+                @if(!empty($course->description))
+                  {!! $description !!}
+                @else
+                  <p class="mb-0">{{ $description }}</p>
+                @endif
+              </div>
             </div>
           </div>
-        </div>
+        @endif
 
         {{-- Topics --}}
         <div class="acc-item" data-acc-item>
@@ -767,7 +874,7 @@
       });
     }
 
-    // init (first open)
+    // init (open ones)
     items.forEach((it) => {
       const isOpen = it.classList.contains('is-open');
       setPanelHeight(it, isOpen);

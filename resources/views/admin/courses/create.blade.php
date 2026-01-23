@@ -2,15 +2,14 @@
 @section('title','Yeni Kurs')
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/trix@2.0.4/dist/trix.css">
 <style>
-  .trix-content { min-height: 260px; }
   .card .form-label { font-weight: 600; }
   .preview-img{max-height:240px;object-fit:cover}
   .input-help{font-size:.9rem;color:#6c757d}
   .badge-type{letter-spacing:.3px}
-  .trix-button-group.trix-button-group--file-tools{display:inline-flex;}
-  .trix-dialogs{z-index: 1050;}
+
+  /* Description rows */
+  .desc-row textarea { resize: vertical; }
 </style>
 @endpush
 
@@ -57,7 +56,6 @@
             @error('name')<div class="text-danger small">{{ $message }}</div>@enderror
           </div>
 
-          {{-- NEW --}}
           <div class="col-12">
             <label class="form-label">Course Holding Name (optional)</label>
             <input type="text" name="courseHoldingName" class="form-control"
@@ -65,12 +63,47 @@
             @error('courseHoldingName')<div class="text-danger small">{{ $message }}</div>@enderror
           </div>
 
+          {{-- ✅ DESCRIPTION (dynamic rows -> single hidden description) --}}
           <div class="col-12">
-            <label class="form-label">Açıqlama</label>
+            <label class="form-label">Açıqlama (Accordion bölmələri)</label>
+
+            {{-- real DB field --}}
             <input id="description" type="hidden" name="description" value="{{ old('description') }}">
-            <trix-editor input="description" class="trix-content border rounded p-2"></trix-editor>
+
+            @php
+              $descItems = old('desc_items');
+              if (!is_array($descItems) || count($descItems) === 0) {
+                $descItems = [['title' => '', 'text' => '']];
+              }
+            @endphp
+
+            <div id="descWrap" class="vstack gap-2">
+              @foreach($descItems as $i => $it)
+                <div class="border rounded p-2 desc-row">
+                  <div class="d-flex gap-2 align-items-center mb-2">
+                    <input type="text" class="form-control desc-title"
+                           placeholder="Başlıq (məs: Registration)" value="{{ $it['title'] ?? '' }}">
+
+                    <button type="button" class="btn btn-outline-primary btn-add-desc" title="Əlavə et">
+                      <i class="bi bi-plus-lg"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-outline-danger btn-remove-desc" title="Sil">
+                      <i class="bi bi-dash-lg"></i>
+                    </button>
+                  </div>
+
+                  <textarea class="form-control desc-text" rows="3"
+                            placeholder="Mətn...">{{ $it['text'] ?? '' }}</textarea>
+                </div>
+              @endforeach
+            </div>
+
+            <div class="form-text">
+              Bu hissə DB-də yenə 1 dənə <b>description</b> kimi saxlanacaq. Sadəcə admin üçün bölünmüş editor olacaq.
+            </div>
+
             @error('description')<div class="text-danger small">{{ $message }}</div>@enderror
-            <div class="form-text"><small>Şəkil əlavə etmək üçün sürükləyib buraxın və ya fayl ikonundan istifadə edin. (limit: 3MB)</small></div>
           </div>
 
           <div class="col-12">
@@ -79,7 +112,6 @@
             @error('info')<div class="text-danger small">{{ $message }}</div>@enderror
           </div>
 
-          {{-- duration / instructor / price --}}
           <div class="col-md-4">
             <label class="form-label">Duration (optional)</label>
             <input type="text" name="duration" class="form-control" value="{{ old('duration') }}" placeholder="Məs: 6 həftə">
@@ -197,13 +229,12 @@
 @endsection
 
 @push('scripts')
-<script src="https://unpkg.com/trix@2.0.4/dist/trix.umd.min.js"></script>
-
 <script>
 (function () {
+  // preview image
   const imgInput = document.getElementById('imageInput');
   const preview  = document.getElementById('previewImg');
-  if (imgInput) {
+  if (imgInput && preview) {
     imgInput.addEventListener('change', (e) => {
       const f = e.target.files?.[0];
       if (!f) return;
@@ -211,52 +242,95 @@
     });
   }
 
-  const MAX_FILE_SIZE = 3 * 1024 * 1024;
-  addEventListener('trix-file-accept', function (event) {
-    const file = event.file;
-    if (file && file.size > MAX_FILE_SIZE) {
-      event.preventDefault();
-      alert('Fayl 3MB-dan böyükdür.');
+  // ===== DESCRIPTION: rows -> hidden description =====
+  const descWrap = document.getElementById('descWrap');
+  const hiddenDesc = document.getElementById('description');
+  if (descWrap && hiddenDesc) {
+
+    function escapeHtml(str) {
+      return (str ?? '').toString()
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
     }
-  });
 
-  addEventListener('trix-attachment-add', function (event) {
-    const attachment = event.attachment;
-    if (attachment && attachment.file) uploadTrixFile(attachment);
-  });
+    function makeDescRow(title = '', text = '') {
+      const div = document.createElement('div');
+      div.className = 'border rounded p-2 desc-row';
+      div.innerHTML = `
+        <div class="d-flex gap-2 align-items-center mb-2">
+          <input type="text" class="form-control desc-title" placeholder="Başlıq (məs: Registration)" value="${escapeHtml(title)}">
+          <button type="button" class="btn btn-outline-primary btn-add-desc" title="Əlavə et"><i class="bi bi-plus-lg"></i></button>
+          <button type="button" class="btn btn-outline-danger btn-remove-desc" title="Sil"><i class="bi bi-dash-lg"></i></button>
+        </div>
+        <textarea class="form-control desc-text" rows="3" placeholder="Mətn...">${escapeHtml(text)}</textarea>
+      `;
+      return div;
+    }
 
-  function uploadTrixFile(attachment) {
-    const formData = new FormData();
-    formData.append('file', attachment.file);
+    function refreshDescButtons() {
+      const rows = descWrap.querySelectorAll('.desc-row');
+      rows.forEach((row, idx) => {
+        const addBtn = row.querySelector('.btn-add-desc');
+        const removeBtn = row.querySelector('.btn-remove-desc');
+        if (addBtn) addBtn.style.display = (idx === rows.length - 1) ? 'inline-flex' : 'none';
+        if (removeBtn) removeBtn.disabled = (rows.length === 1);
+      });
+    }
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', "{{ route('admin.uploads.trix') }}", true);
-    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+    function serializeDesc() {
+      const rows = descWrap.querySelectorAll('.desc-row');
+      let html = '';
 
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        attachment.setUploadProgress((e.loaded / e.total) * 100);
+      rows.forEach((row) => {
+        const title = row.querySelector('.desc-title')?.value?.trim() ?? '';
+        const text  = row.querySelector('.desc-text')?.value?.trim() ?? '';
+        if (!title && !text) return;
+
+        const safeTitle = escapeHtml(title);
+        const safeText  = escapeHtml(text).replaceAll('\n', '<br>');
+
+        html += `<section data-desc-item="1">` +
+                `<h3>${safeTitle}</h3>` +
+                `<div data-desc-body="1">${safeText}</div>` +
+                `</section>`;
+      });
+
+      hiddenDesc.value = html;
+    }
+
+    descWrap.addEventListener('click', (e) => {
+      const add = e.target.closest('.btn-add-desc');
+      const remove = e.target.closest('.btn-remove-desc');
+
+      if (add) {
+        descWrap.appendChild(makeDescRow('', ''));
+        refreshDescButtons();
+        serializeDesc();
+        const rows = descWrap.querySelectorAll('.desc-row');
+        rows[rows.length - 1]?.querySelector('.desc-title')?.focus();
+        return;
+      }
+
+      if (remove) {
+        const rows = descWrap.querySelectorAll('.desc-row');
+        if (rows.length === 1) return;
+        remove.closest('.desc-row')?.remove();
+        refreshDescButtons();
+        serializeDesc();
+        return;
       }
     });
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const { url } = JSON.parse(xhr.responseText);
-            attachment.setAttributes({ url, href: url });
-          } catch (e) {
-            alert('Serverdən gözlənilməyən cavab.');
-          }
-        } else {
-          alert('Şəkil yüklənmədi. Zəhmət olmasa yenidən cəhd edin.');
-        }
-      }
-    };
+    descWrap.addEventListener('input', () => serializeDesc());
 
-    xhr.send(formData);
+    refreshDescButtons();
+    serializeDesc();
   }
 
+  // ===== TOPICS (səndəki kimi) =====
   const wrap = document.getElementById('topicsWrap');
   if (!wrap) return;
 
