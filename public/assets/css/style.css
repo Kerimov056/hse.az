@@ -6170,9 +6170,7 @@ html .ui-button.ui-state-disabled:active {
   transform: scale(0.6);
   animation: scale_full 3s cubic-bezier(0.28, 1.84, 0.55, -0.11) infinite;
 }
-.td_scrollup.td_scrollup_show {
-  transform: scale(1);
-}
+
 .td_scrollup i {
   position: relative;
   z-index: 2;

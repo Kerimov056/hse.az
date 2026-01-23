@@ -3498,202 +3498,230 @@
     <!-- End Accreditation Showcase -->
 
 
-    <!-- Start Team Highlight (carousel) -->
-    <section id="home-team" class="td_heading_bg td_hobble">
-        <div class="td_height_112 td_height_lg_75"></div>
-        <div class="container">
-            <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s"
-                data-wow-delay="0.2s">
-                <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ __('Learn and grow with our team') }}
-                </h2>
-                <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">
-                    {{ __('Meet our experts from HSE.AZ') }}
-                </p>
-            </div>
-            <div class="td_height_50 td_height_lg_50"></div>
+   <!-- Start Team Highlight (carousel) -->
+<section id="home-team" class="td_heading_bg td_hobble">
+  <div class="td_height_112 td_height_lg_75"></div>
 
-            @if ($teamMembers->count())
-                @php
-                    $maleDefault =
-                        'https://t4.ftcdn.net/jpg/14/05/81/37/360_F_1405813706_e7f6ONwQ8KD8bRbinELfD1jazaXGB5q3.jpg';
-                    $femaleDefault =
-                        'https://img.freepik.com/premium-vector/portrait-business-woman_505024-2793.jpg?semt=ais_hybrid&w=740&q=80';
-                @endphp
+  <div class="container">
+    <div class="td_section_heading td_style_1 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+      <h2 class="td_section_title td_fs_48 mb-0 td_white_color">{{ __('Learn and grow with our team') }}</h2>
+      <p class="td_section_subtitle td_fs_18 mb-0 td_white_color td_opacity_7">{{ __('Meet our experts from HSE.AZ') }}</p>
+    </div>
 
-                <div class="js-home-team-slider">
-                    @foreach ($teamMembers as $member)
-                        @php
-                            $thumb =
-                                $member->imageUrl ?: ($member->gender === 'female' ? $femaleDefault : $maleDefault);
+    <div class="td_height_50 td_height_lg_50"></div>
 
-                            $skills = (array) ($member->skills ?? []);
-                            $skills = array_values(array_filter($skills, fn($s) => !empty($s['name'])));
-                        @endphp
+    @if ($teamMembers->count())
+      @php
+        $maleDefault =
+          'https://t4.ftcdn.net/jpg/14/05/81/37/360_F_1405813706_e7f6ONwQ8KD8bRbinELfD1jazaXGB5q3.jpg';
+        $femaleDefault =
+          'https://img.freepik.com/premium-vector/portrait-business-woman_505024-2793.jpg?semt=ais_hybrid&w=740&q=80';
+      @endphp
 
-                        <div class="js-home-team-slide">
-                            <div class="row align-items-center td_gap_y_40">
-                                <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
-                                    <div class="td_testimonial_img_wrap">
-                                        <img src="{{ $thumb }}" alt="{{ $member->full_name }}"
-                                            class="td_testimonial_img"
-                                            style="object-fit:cover;border-radius:18px;aspect-ratio:4/3;width:100%;height:auto;">
-                                        <span class="td_testimonial_img_shape_1"><span></span></span>
-                                        <span class="td_testimonial_img_shape_2 td_accent_color td_hover_layer_3">
-                                            <svg width="145" height="165" viewBox="0 0 145 165" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="34" cy="150" r="15" fill="currentColor" />
-                                                <circle cx="15" cy="137" r="15" fill="currentColor" />
-                                                <circle cx="24" cy="144" r="15" fill="white" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                </div>
+      <div class="js-home-team-slider">
+        @foreach ($teamMembers as $member)
+          @php
+            $thumb = $member->imageUrl ?: ($member->gender === 'female' ? $femaleDefault : $maleDefault);
 
-                                <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
-                                    <div class="td_white_bg td_radius_5"
-                                        style="border-radius:14px;border:1px solid #eef2f7;padding:26px 24px;">
-                                        <div class="d-flex align-items-center gap-3 td_mb_20">
-                                            <div
-                                                style="width:58px;height:58px;border-radius:50%;overflow:hidden;border:1px solid #eee;">
-                                                <img src="{{ $thumb }}" alt="{{ $member->full_name }}"
-                                                    style="width:100%;height:100%;object-fit:cover;">
-                                            </div>
-                                            <div>
-                                                <h3 class="td_fs_24 td_semibold td_mb_2">{{ $member->full_name }}
-                                                </h3>
-                                                <p class="td_fs_14 mb-0 td_heading_color td_opacity_7">
-                                                    {{ $member->position ?: 'Team Member' }}</p>
-                                            </div>
-                                        </div>
+            $skills = (array) ($member->skills ?? []);
+            $skills = array_values(array_filter($skills, fn($s) => !empty($s['name'])));
+          @endphp
 
-                                        <blockquote class="td_fs_18 td_heading_color td_opacity_9"
-                                            style="line-height:1.7;">
-                                            {!! \Illuminate\Support\Str::limit(strip_tags($member->description ?? ''), 320) ?: '—' !!}
-                                        </blockquote>
-
-                                        @if (count($skills))
-                                            <div class="td_height_10"></div>
-                                            @foreach (array_slice($skills, 0, 3) as $s)
-                                                @php $p = (int)($s['percent'] ?? 0); @endphp
-                                                <div class="mb-2">
-                                                    <div class="d-flex justify-content-between td_medium">
-                                                        <span>{{ $s['name'] }}</span><span>{{ $p }}%</span>
-                                                    </div>
-                                                    <div class="progress" style="height:8px;background:#f1f5f9;">
-                                                        <div class="progress-bar td_accent_bg" role="progressbar"
-                                                            style="width: {{ $p }}%"></div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-
-                                        <div class="d-flex gap-2 td_mt_20">
-                                            <a href="{{ route('team-details', $member) }}"
-                                                class="td_btn td_style_1 td_radius_10 td_medium">
-                                                <span class="td_btn_in td_white_color td_accent_bg"><span>View
-                                                        Profile</span></span>
-                                            </a>
-                                            @if ($member->email)
-                                                <a href="mailto:{{ $member->email }}"
-                                                    class="td_btn td_style_1 td_radius_10 td_medium">
-                                                    <span
-                                                        class="td_btn_in td_accent_color td_white_bg"><span>Email</span></span>
-                                                </a>
-                                            @endif
-                                            @if ($member->phone)
-                                                <a href="tel:{{ preg_replace('/\s+/', '', $member->phone) }}"
-                                                    class="td_btn td_style_1 td_radius_10 td_medium">
-                                                    <span
-                                                        class="td_btn_in td_accent_color td_white_bg"><span>Call</span></span>
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+          <div class="js-home-team-slide">
+            <div class="row align-items-center td_gap_y_40">
+              <div class="col-lg-6 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
+                <div class="td_testimonial_img_wrap">
+                  <img
+                    src="{{ $thumb }}"
+                    alt="{{ $member->full_name }}"
+                    class="td_testimonial_img"
+                    style="object-fit:cover;border-radius:18px;aspect-ratio:4/3;width:100%;height:auto;"
+                  >
+                  <span class="td_testimonial_img_shape_1"><span></span></span>
+                  <span class="td_testimonial_img_shape_2 td_accent_color td_hover_layer_3">
+                    <svg width="145" height="165" viewBox="0 0 145 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="34" cy="150" r="15" fill="currentColor" />
+                      <circle cx="15" cy="137" r="15" fill="currentColor" />
+                      <circle cx="24" cy="144" r="15" fill="white" />
+                    </svg>
+                  </span>
                 </div>
-            @endif
-        </div>
-        <div class="td_height_120 td_height_lg_80"></div>
-    </section>
-    <!-- End Team Highlight -->
+              </div>
 
-    <style>
-        /* Slick dots custom style for team slider */
-        #home-team .slick-dots {
-            position: static;
-            margin-top: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+              <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.2s">
+                <div class="td_white_bg td_radius_5" style="border-radius:14px;border:1px solid #eef2f7;padding:26px 24px;">
+                  <div class="d-flex align-items-center gap-3 td_mb_20">
+                    <div style="width:58px;height:58px;border-radius:50%;overflow:hidden;border:1px solid #eee;">
+                      <img src="{{ $thumb }}" alt="{{ $member->full_name }}" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <div>
+                      <h3 class="td_fs_24 td_semibold td_mb_2">{{ $member->full_name }}</h3>
+                      <p class="td_fs_14 mb-0 td_heading_color td_opacity_7">{{ $member->position ?: 'Team Member' }}</p>
+                    </div>
+                  </div>
 
-        #home-team .slick-dots li {
-            margin: 0;
-            padding: 0;
-        }
+                  <blockquote class="td_fs_18 td_heading_color td_opacity_9" style="line-height:1.7;">
+                    {!! \Illuminate\Support\Str::limit(strip_tags($member->description ?? ''), 320) ?: '-' !!}
+                  </blockquote>
 
-        #home-team .slick-dots li button {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            border: none;
-            padding: 0;
-            background: rgba(255, 255, 255, 0.35);
-            cursor: pointer;
-            font-size: 0;
-            /* rəqəmi gizlət */
-            line-height: 0;
-            outline: none;
-            transition: all 0.25s ease;
-        }
+                  @if (count($skills))
+                    <div class="td_height_10"></div>
+                    @foreach (array_slice($skills, 0, 3) as $s)
+                      @php $p = (int)($s['percent'] ?? 0); @endphp
+                      <div class="mb-2">
+                        <div class="d-flex justify-content-between td_medium">
+                          <span>{{ $s['name'] }}</span><span>{{ $p }}%</span>
+                        </div>
+                        <div class="progress" style="height:8px;background:#f1f5f9;">
+                          <div class="progress-bar td_accent_bg" role="progressbar" style="width: {{ $p }}%"></div>
+                        </div>
+                      </div>
+                    @endforeach
+                  @endif
 
-        #home-team .slick-dots li.slick-active button {
-            width: 22px;
-            height: 9px;
-            background: #ff7a3c;
-            box-shadow: 0 0 0 2px rgba(255, 122, 60, 0.35);
-        }
+                  <div class="d-flex gap-2 td_mt_20">
+                    <a href="{{ route('team-details', $member) }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                      <span class="td_btn_in td_white_color td_accent_bg"><span>View Profile</span></span>
+                    </a>
 
-        #home-team .slick-dots li button::before {
-            display: none;
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof jQuery === 'undefined' || typeof jQuery.fn.slick !== 'function') return;
+                    @if ($member->email)
+                      <a href="mailto:{{ $member->email }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                        <span class="td_btn_in td_accent_color td_white_bg"><span>Email</span></span>
+                      </a>
+                    @endif
 
-            const $slider = jQuery('.js-home-team-slider');
-            if (!$slider.length) return;
+                    @if ($member->phone)
+                      <a href="tel:{{ preg_replace('/\s+/', '', $member->phone) }}" class="td_btn td_style_1 td_radius_10 td_medium">
+                        <span class="td_btn_in td_accent_color td_white_bg"><span>Call</span></span>
+                      </a>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    @endif
+  </div>
 
-            // Əgər əvvəl init olunubsa, sök və yenidən qur
-            if ($slider.hasClass('slick-initialized')) {
-                $slider.slick('unslick');
-            }
+  <div class="td_height_120 td_height_lg_80"></div>
+</section>
 
-            $slider.slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                arrows: false,
-                dots: true,
-                autoplay: true,
-                autoplaySpeed: 2000, // 2 saniyə
-                speed: 400, // keçid animasiyası
-                adaptiveHeight: true,
+<style>
+  /* Slick dots custom style for team slider */
+  #home-team .slick-dots{
+    position: static !important;
+    margin: 26px 0 0 0 !important;
+    padding: 0 !important;
 
-                // Autoplay-ı dayandıran şeyləri söndür
-                pauseOnHover: false,
-                pauseOnFocus: false,
-                pauseOnDotsHover: false,
-            });
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    gap: 10px;
 
-            // Bəzi hallarda autoplay start olmur, bunu zorla başladırıq
-            $slider.slick('slickPlay');
-        });
-    </script>
+    list-style:none !important;
+
+    /* Bu hissə arxadaki pill/kolge effektini tam silir */
+    background: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: 0 !important;
+  }
+
+  /* Bazi temalarda ul:before / ul:after arxa fon cəkir, bunu da kill eliyirik */
+  #home-team .slick-dots::before,
+  #home-team .slick-dots::after{
+    content: none !important;
+    display: none !important;
+  }
+
+  #home-team .slick-dots li{
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: 0 !important;
+  }
+
+  #home-team .slick-dots li::before,
+  #home-team .slick-dots li::after{
+    content: none !important;
+    display: none !important;
+  }
+
+  #home-team .slick-dots li button{
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    border: none !important;
+    padding: 0;
+    background: rgba(255,255,255,0.35);
+
+    cursor: pointer;
+    font-size: 0;
+    line-height: 0;
+    outline: none;
+
+    /* Bütün kölgələri söndür */
+    box-shadow: none !important;
+    filter: none !important;
+
+    transition: all 0.25s ease;
+  }
+
+  /* Slick-in default number/dot pseudo elementini söndür */
+  #home-team .slick-dots li button::before{
+    content: none !important;
+    display:none !important;
+  }
+
+  #home-team .slick-dots li.slick-active button{
+    width: 24px;
+    height: 9px;
+    background: #ff7a3c;
+
+    /* Active dot-un da arxa kölgəsini söndür (səndəki "halo" burdan gəlirdi) */
+    box-shadow: none !important;
+    filter: none !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof jQuery === 'undefined' || typeof jQuery.fn.slick !== 'function') return;
+
+    const $slider = jQuery('.js-home-team-slider');
+    if (!$slider.length) return;
+
+    if ($slider.hasClass('slick-initialized')) {
+      $slider.slick('unslick');
+    }
+
+    $slider.slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      dots: true,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      speed: 400,
+      adaptiveHeight: true,
+
+      pauseOnHover: false,
+      pauseOnFocus: false,
+      pauseOnDotsHover: false,
+    });
+
+    $slider.slick('slickPlay');
+  });
+</script>
+<!-- End Team Highlight -->
+
+
 
     {{-- Start Departments Section (settings-driven) --}}
     @php

@@ -7,7 +7,7 @@
     $title       = $course->name             ?? 'Course Title';
     $category    = $course->category->name   ?? ($course->category ?? 'General');
 
-    // ✅ Variant 1: trainer -> instructor (DB column: instructor)
+    // trainer -> instructor (DB column: instructor)
     $instructor  = $course->instructor       ?? ($course->trainer_name ?? 'Instructor');
 
     $updatedAt   = $course->updated_at       ?? now();
@@ -57,6 +57,9 @@
             ? $waRaw
             : ('https://wa.me/'.preg_replace('/\D+/', '', $waRaw));
     }
+
+    // Optional extra content (Safety leadership section)
+    $safetyLeadership = $course->safety_leadership ?? $course->safetyLeadership ?? $course->safety ?? null;
 @endphp
 
 <style>
@@ -66,6 +69,10 @@
     --line:#e5e7eb;
     --bg:#f8fafc;
     --card:#ffffff;
+
+    --accBg:#0b1220;
+    --accGlow: rgba(99, 102, 241, .18);
+    --accGlow2: rgba(14, 165, 233, .12);
   }
 
   .course-wrap{max-width: 980px; margin:0 auto;}
@@ -184,14 +191,6 @@
     border:1px solid rgba(55,48,163,.12);
   }
 
-  .section-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:18px;
-    box-shadow: 0 10px 26px rgba(15,23,42,.06);
-  }
-
   .topics{
     display:flex; flex-direction:column; gap:10px;
   }
@@ -240,6 +239,105 @@
   .equal-card .td_card_title{min-height:56px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .td_card_subtitle{min-height:72px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .equal-card .btn-row{margin-top:auto;display:flex;gap:.5rem;align-items:center}
+
+  /* Custom accordion (NO Bootstrap dependency) */
+  .acc-wrap{
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(15,23,42,.10);
+    background:
+      radial-gradient(1200px 240px at 20% 0%, var(--accGlow), transparent 60%),
+      radial-gradient(900px 240px at 80% 0%, var(--accGlow2), transparent 55%),
+      #ffffff;
+    box-shadow: 0 14px 40px rgba(15,23,42,.08);
+  }
+
+  .acc-item{
+    border-top:1px solid rgba(15,23,42,.08);
+    background:rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+  }
+  .acc-item:first-child{ border-top:0; }
+
+  .acc-trigger{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:16px 18px;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    text-align:left;
+  }
+
+  .acc-left{
+    display:flex; align-items:center; gap:12px;
+    min-width:0;
+  }
+
+  .acc-badge{
+    width:36px; height:36px;
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    background:#0b1220;
+    color:#fff;
+    box-shadow: 0 10px 22px rgba(11,18,32,.14);
+    flex:0 0 auto;
+  }
+
+  .acc-title{
+    font-weight:950;
+    font-size:18px;
+    color:var(--ink);
+    line-height:1.2;
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .acc-sub{
+    margin:2px 0 0 0;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.25;
+  }
+
+  .acc-chevron{
+    width:36px; height:36px;
+    border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    background:#f1f5f9;
+    border:1px solid rgba(15,23,42,.08);
+    flex:0 0 auto;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .acc-item.is-open .acc-chevron{
+    transform: rotate(180deg);
+    background:#eaf0ff;
+  }
+
+  .acc-panel{
+    overflow:hidden;
+    max-height:0;
+    transition: max-height .22s ease;
+  }
+
+  .acc-content{
+    padding:0 18px 18px 18px;
+    border-top:1px solid rgba(15,23,42,.06);
+  }
+
+  .acc-focus:focus{
+    outline:none;
+  }
+  .acc-trigger:focus-visible{
+    outline:3px solid rgba(99,102,241,.25);
+    outline-offset:-3px;
+    border-radius:12px;
+  }
 </style>
 
 <section style="margin-top: 50px; background:var(--bg)">
@@ -389,99 +487,181 @@
         </div>
       </div>
 
-       {{-- Description --}}
-      <div class="section-card td_mb_30">
-        <h3 class="td_fs_36 td_mb_15">Description</h3>
-        @if(!empty($course->description))
-          {!! $description !!}
-        @else
-          <p class="mb-0">{{ $description }}</p>
-        @endif
-      </div>
+      {{-- CUSTOM ACCORDION (NO BOOTSTRAP) --}}
+      <div class="acc-wrap td_mb_30" id="courseAcc">
 
-      {{-- Topics --}}
-      @if($topics->count() > 0)
-        <div class="section-card td_mb_30">
-          <h3 class="td_fs_36 td_mb_15" style="margin-bottom:10px">Topics</h3>
-          <div class="topics">
-            @foreach($topics as $i => $t)
-              <div class="topic-item">
-                <div class="topic-num">{{ $i + 1 }}</div>
-                <div>
-                  <div class="topic-txt">{{ $t->title ?? '' }}</div>
-                  @if(!empty($t->sort_order))
-                    <div class="topic-sub">Order: {{ $t->sort_order }}</div>
-                  @endif
-                </div>
+        {{-- Description (open by default) --}}
+        <div class="acc-item is-open" data-acc-item>
+          <button class="acc-trigger" type="button" data-acc-btn aria-expanded="true" aria-controls="accDesc">
+            <div class="acc-left">
+              <div class="acc-badge" aria-hidden="true">D</div>
+              <div style="min-width:0">
+                <p class="acc-title">Description</p>
+                <p class="acc-sub">Overview, what you will learn</p>
               </div>
-            @endforeach
-          </div>
-        </div>
-      @endif
+            </div>
+            <div class="acc-chevron" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </button>
 
-     
-
-      {{-- ✅ Register block (secondary) --}}
-      @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
-        <div class="td_mb_30">
-          <div class="register-box">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-              <div>
-                <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
-                <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
-              </div>
-
-              <a href="{{ route('courses.register', $course->id) }}"
-                 class="td_btn td_style_1 td_radius_10 td_medium">
-                <span class="td_btn_in td_white_color td_accent_bg">
-                  <span>Register</span>
-                </span>
-              </a>
+          <div class="acc-panel" id="accDesc" data-acc-panel role="region" aria-label="Description">
+            <div class="acc-content">
+              @if(!empty($course->description))
+                {!! $description !!}
+              @else
+                <p class="mb-0">{{ $description }}</p>
+              @endif
             </div>
           </div>
         </div>
-      @endif
 
-      {{-- Social links --}}
-      @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
-        <div class="section-card td_mb_30">
-          <h3 class="td_fs_24 td_semibold td_mb_15">Follow / Contact</h3>
-          <div class="social-btns">
-            @if($twitter)
-              <a href="{{ $twitter }}" target="_blank" rel="noopener">
-                <i class="fa-brands fa-x-twitter"></i> Twitter
-              </a>
-            @endif
-            @if($facebook)
-              <a href="{{ $facebook }}" target="_blank" rel="noopener">
-                <i class="fa-brands fa-facebook-f"></i> Facebook
-              </a>
-            @endif
-            @if($linkedin)
-              <a href="{{ $linkedin }}" target="_blank" rel="noopener">
-                <i class="fa-brands fa-linkedin-in"></i> LinkedIn
-              </a>
-            @endif
-            @if($emailLink)
-              <a href="{{ $emailLink }}">
-                <i class="fa-solid fa-envelope"></i> Email
-              </a>
-            @endif
-            @if($waLink)
-              <a href="{{ $waLink }}" target="_blank" rel="noopener">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp
-              </a>
-            @endif
+        {{-- Topics --}}
+        <div class="acc-item" data-acc-item>
+          <button class="acc-trigger" type="button" data-acc-btn aria-expanded="false" aria-controls="accTopics">
+            <div class="acc-left">
+              <div class="acc-badge" aria-hidden="true">T</div>
+              <div style="min-width:0">
+                <p class="acc-title">Topics</p>
+                <p class="acc-sub">Lessons, order, curriculum</p>
+              </div>
+            </div>
+            <div class="acc-chevron" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </button>
+
+          <div class="acc-panel" id="accTopics" data-acc-panel role="region" aria-label="Topics">
+            <div class="acc-content">
+              @if($topics->count() > 0)
+                <div class="topics">
+                  @foreach($topics as $i => $t)
+                    <div class="topic-item">
+                      <div class="topic-num">{{ $i + 1 }}</div>
+                      <div>
+                        <div class="topic-txt">{{ $t->title ?? '' }}</div>
+                        @if(!empty($t->sort_order))
+                          <div class="topic-sub">Order: {{ $t->sort_order }}</div>
+                        @endif
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              @else
+                <div class="alert alert-light border mb-0">No topics yet.</div>
+              @endif
+            </div>
           </div>
         </div>
-      @endif
+
+        {{-- Registration --}}
+        <div class="acc-item" data-acc-item>
+          <button class="acc-trigger" type="button" data-acc-btn aria-expanded="false" aria-controls="accReg">
+            <div class="acc-left">
+              <div class="acc-badge" aria-hidden="true">R</div>
+              <div style="min-width:0">
+                <p class="acc-title">Registration</p>
+                <p class="acc-sub">Submit your registration form</p>
+              </div>
+            </div>
+            <div class="acc-chevron" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </button>
+
+          <div class="acc-panel" id="accReg" data-acc-panel role="region" aria-label="Registration">
+            <div class="acc-content">
+              @if(($course->type ?? null) === \App\Models\Course::TYPE_COURSE)
+                <div class="register-box">
+                  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                      <h3 class="td_fs_24 td_semibold mb-1">Registration</h3>
+                      <p class="mini mb-0">Fill the form and submit your registration for this course.</p>
+                    </div>
+
+                    <a href="{{ route('courses.register', $course->id) }}"
+                       class="td_btn td_style_1 td_radius_10 td_medium">
+                      <span class="td_btn_in td_white_color td_accent_bg">
+                        <span>Register</span>
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              @else
+                <div class="alert alert-light border mb-0">Registration is not available for this item.</div>
+              @endif
+            </div>
+          </div>
+        </div>
+
+        {{-- Follow / Contact --}}
+        <div class="acc-item" data-acc-item>
+          <button class="acc-trigger" type="button" data-acc-btn aria-expanded="false" aria-controls="accSocial">
+            <div class="acc-left">
+              <div class="acc-badge" aria-hidden="true">F</div>
+              <div style="min-width:0">
+                <p class="acc-title">Follow / Contact</p>
+                <p class="acc-sub">Social links and quick contact</p>
+              </div>
+            </div>
+            <div class="acc-chevron" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </button>
+
+          <div class="acc-panel" id="accSocial" data-acc-panel role="region" aria-label="Follow / Contact">
+            <div class="acc-content">
+              @if($twitter || $facebook || $linkedin || $emailLink || $waLink)
+                <div class="social-btns">
+                  @if($twitter)
+                    <a href="{{ $twitter }}" target="_blank" rel="noopener">
+                      <i class="fa-brands fa-x-twitter"></i> Twitter
+                    </a>
+                  @endif
+                  @if($facebook)
+                    <a href="{{ $facebook }}" target="_blank" rel="noopener">
+                      <i class="fa-brands fa-facebook-f"></i> Facebook
+                    </a>
+                  @endif
+                  @if($linkedin)
+                    <a href="{{ $linkedin }}" target="_blank" rel="noopener">
+                      <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+                    </a>
+                  @endif
+                  @if($emailLink)
+                    <a href="{{ $emailLink }}">
+                      <i class="fa-solid fa-envelope"></i> Email
+                    </a>
+                  @endif
+                  @if($waLink)
+                    <a href="{{ $waLink }}" target="_blank" rel="noopener">
+                      <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </a>
+                  @endif
+                </div>
+              @else
+                <div class="alert alert-light border mb-0">No social links added yet.</div>
+              @endif
+            </div>
+          </div>
+        </div>
+
+      </div>
 
     </div>
   </div>
   <div class="td_height_120 td_height_lg_80"></div>
 </section>
 
-{{-- Related Courses – max 3 card --}}
+{{-- Related Courses: max 3 card --}}
 @php
   $rel = collect($relatedCourses ?? [])->take(3);
 @endphp
@@ -553,8 +733,77 @@
   <div class="td_height_120 td_height_lg_80"></div>
 </section>
 
-{{-- INFO TOAST – course üçün --}}
+{{-- INFO TOAST --}}
 @include('partials.info-toast', ['text' => $info])
+
+{{-- Custom accordion JS (no Bootstrap needed) --}}
+<script>
+  (function () {
+    const root = document.getElementById('courseAcc');
+    if (!root) return;
+
+    const items = Array.from(root.querySelectorAll('[data-acc-item]'));
+
+    function setPanelHeight(item, open) {
+      const panel = item.querySelector('[data-acc-panel]');
+      const btn = item.querySelector('[data-acc-btn]');
+      if (!panel || !btn) return;
+
+      if (open) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      } else {
+        item.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = '0px';
+      }
+    }
+
+    function closeAll(except) {
+      items.forEach((it) => {
+        if (except && it === except) return;
+        setPanelHeight(it, false);
+      });
+    }
+
+    // init (first open)
+    items.forEach((it) => {
+      const isOpen = it.classList.contains('is-open');
+      setPanelHeight(it, isOpen);
+    });
+
+    // click handlers
+    items.forEach((item) => {
+      const btn = item.querySelector('[data-acc-btn]');
+      const panel = item.querySelector('[data-acc-panel]');
+      if (!btn || !panel) return;
+
+      btn.addEventListener('click', function () {
+        const isOpen = item.classList.contains('is-open');
+        if (isOpen) {
+          setPanelHeight(item, false);
+          return;
+        }
+        closeAll(item);
+        setPanelHeight(item, true);
+      });
+    });
+
+    // keep heights correct on resize
+    let rAf = null;
+    window.addEventListener('resize', function () {
+      if (rAf) cancelAnimationFrame(rAf);
+      rAf = requestAnimationFrame(function () {
+        items.forEach((it) => {
+          if (!it.classList.contains('is-open')) return;
+          const panel = it.querySelector('[data-acc-panel]');
+          if (panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+        });
+      });
+    });
+  })();
+</script>
 
 {{-- Success Toast (after registration) --}}
 @if(session('ok'))
