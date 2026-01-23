@@ -6,6 +6,18 @@
     <input type="text" name="name" class="form-control" required value="{{ old('name', $resource->name ?? '') }}">
   </div>
 
+  {{-- NEW: holdingName --}}
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Holding name (opsional)</label>
+    <input
+      type="text"
+      name="holdingName"
+      class="form-control"
+      value="{{ old('holdingName', $resource->holdingName ?? '') }}"
+      placeholder="Məs: Cambridge, IELTS, SAT və s."
+    >
+  </div>
+
   <div class="col-md-3">
     <label class="form-label fw-semibold">İl (opsional)</label>
     <input type="number" name="year" class="form-control" min="1900" max="2100" value="{{ old('year', $resource->year ?? '') }}">

@@ -41,6 +41,7 @@ class ResourcesController extends Controller
         $data = $request->validate([
             'resource_type_id' => ['required', 'exists:resource_types,id'],
             'name'             => ['required', 'string', 'max:255'],
+            'holdingName'      => ['nullable', 'string', 'max:255'],
             'year'             => ['nullable', 'integer', 'between:1900,2100'],
             'file'             => ['required', 'file', 'max:20480'], // 20MB
         ]);
@@ -57,6 +58,7 @@ class ResourcesController extends Controller
             ResourceItem::create([
                 'resource_type_id' => $data['resource_type_id'],
                 'name'             => $data['name'],
+                'holdingName'      => $data['holdingName'] ?? null,
                 'resourceUrl'      => $url,
                 'year'             => $data['year'] ?? null,
                 'mime'             => $mime,
@@ -82,6 +84,7 @@ class ResourcesController extends Controller
         $data = $request->validate([
             'resource_type_id' => ['required', 'exists:resource_types,id'],
             'name'             => ['required', 'string', 'max:255'],
+            'holdingName'      => ['nullable', 'string', 'max:255'],
             'year'             => ['nullable', 'integer', 'between:1900,2100'],
             'file'             => ['nullable', 'file', 'max:20480'],
         ]);
@@ -102,6 +105,7 @@ class ResourcesController extends Controller
         $resource->update([
             'resource_type_id' => $data['resource_type_id'],
             'name'             => $data['name'],
+            'holdingName'      => $data['holdingName'] ?? null,
             'resourceUrl'      => $url,
             'year'             => $data['year'] ?? null,
             'mime'             => $mime,

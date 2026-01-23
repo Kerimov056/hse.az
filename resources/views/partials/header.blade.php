@@ -921,31 +921,25 @@
                                         </li>
 
 
-                                        <li class="menu-item-has-children">
-                                            <a href="{{ route('resources') }}">{{ __('Resources') }}</a>
-                                            <ul>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Reading materials">
-                                                        {{ __('Reading materials') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Posters">
-                                                        {{ __('Posters') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=PPT training materials">
-                                                        {{ __('PPT training materials') }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ route('resources') }}?q=Checklists">
-                                                        {{ __('Checklists') }}
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                   <li class="menu-item-has-children">
+    <a href="{{ route('resources') }}">{{ __('Resources') }}</a>
+    <ul>
+        @php
+            $rh = $resourceHoldings ?? collect();
+        @endphp
+
+        @forelse($rh as $h)
+            <li>
+                <a href="{{ route('resources', ['holding' => $h]) }}">
+                    {{ __($h) }}
+                </a>
+            </li>
+        @empty
+            <li><a href="{{ route('resources') }}">{{ __('All') }}</a></li>
+        @endforelse
+    </ul>
+</li>
+
 
                                         <li class="menu-item-has-children">
                                             <a href="{{ route('topices') }}">{{ __('Topics') }}</a>

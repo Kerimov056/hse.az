@@ -133,6 +133,10 @@
                                         @endif
                                         <div class="min-w-0">
                                             <div class="fw-semibold text-truncate">{{ $r->name }}</div>
+                                            @if (!empty($r->holdingName))
+                                                <div class="small text-muted text-truncate">Holding: {{ $r->holdingName }}
+                                                </div>
+                                            @endif
                                             @if (!empty($r->mime))
                                                 <div class="small text-muted text-truncate">{{ $r->mime }}</div>
                                             @endif
